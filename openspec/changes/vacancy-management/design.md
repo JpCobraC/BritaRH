@@ -1,42 +1,64 @@
 ## Context
 
-Este change adiciona o gerenciamento de vagas ao painel do recrutador. A tabela `jobs` já foi prevista no `candidate-recruitment-flow`, mas os campos são mínimos e a UI de criação não existe. Este change expande o modelo de dados e cria as telas de criação/edição de vagas.
+Este change adiciona o gerenciamento de vagas ao painel do recrutador. A tabela `jobs` é criada aqui com todos os campos necessários, junto com a tabela `questions`. As telas de criação e edição de vagas ficam no frontend Next.js, consumindo a API FastAPI.
+
+**Stack:** FastAPI + PostgreSQL + Next.js + Docker (ver design de `candidate-recruitment-flow` para detalhes completos de infraestrutura).
 
 ## Goals / Non-Goals
 
 **Goals:**
-- Formulário de criação de vaga com: título, área, tipo de contrato, carga horária/turno, local de trabalho, requisitos (rich text ou lista), atribuições (rich text ou lista)
-- Interface de criação de questões de múltipla escolha vinculadas à vaga (mínimo 5, máximo 20 questões)
-- Edição de vaga e questões enquanto a vaga está aberta (sem candidatos) ou com candidatos (apenas campos não relacionados ao teste)
-- Listagem de vagas criadas no painel do recrutador com status (aberta/fechada)
+- Endpoints FastAPI para criar, editar e listar vagas (com questões)
+- Formulário Next.js de criação de vaga (campos descritivos + questões do teste)
+- Edição de vaga com bloqueio de questões quando há candidatos
+- Listagem de vagas no painel do recrutador com status e contagem de candidatos
 
 **Non-Goals:**
-- Aprovação de vagas por um gestor antes de publicar
-- Vaga em rascunho (draft) — ao salvar, já fica visível
-- Histórico de edições de vagas
+- Aprovação de vagas por gestor
+- Modo rascunho (draft) — ao salvar, vaga é publicada imediatamente
+- Histórico de edições
 - Duplicação de vagas
 
 ## Decisions
 
-### Decision 1: Questões criadas inline no formulário da vaga
-As perguntas do teste são criadas dentro do mesmo formulário de criação de vaga, em uma seção dedicada com componente dinâmico (adicionar/remover questões).
+### Decision 1: Vagas e Questões em endpoints separados
+- `POST /api/v1/jobs` → cria vaga + questões em uma transação
+- `PUT /api/v1/jobs/{id}` → edita vaga; verifica se há candidatos antes de permitir edição de questões
+- `GET /api/v1/jobs/{id}/questions` → retorna questões (candidatos) ou todas (recrutador)
 
-**Alternativas consideradas:**
-- Tela separada de gerenciamento de questões: mais cliques, mas mais organizado para muitas questões
-- Questões pré-cadastradas por área: menos flexível, recrutador não tem controle
+**Razão:** Separar leitura de questões permite servir apenas as perguntas (sem gabarito) ao candidato.
 
-**Razão:** Simples para o recrutador, mantém tudo num fluxo único de criação.
+### Decision 2: Validação de mínimo de questões no backend
+O endpoint de criação/edição valida que há entre 5 e 20 questões antes de persistir. Frontend também valida, mas a fonte de verdade é o backend.
 
-### Decision 2: Mínimo de questões obrigatório
-A vaga só pode ser publicada se tiver no mínimo **5 questões** cadastradas. Sem questões, o teste não faz sentido.
-
-### Decision 3: Edição restrita com candidatos ativos
-Se a vaga já possui candidatos, apenas campos descritivos (título, requisitos, atribuições) podem ser editados. As questões do teste ficam bloqueadas para edição após o primeiro candidato se inscrever.
-
-**Razão:** Evita inconsistência entre pontuações de candidatos que fizeram o teste com versões diferentes das questões.
+### Decision 3: Bloqueio de edição de questões via query
+Antes de aceitar edição de questões, o backend faz `SELECT COUNT(*) FROM applications WHERE job_id = ?`. Se > 0, retorna 422 com mensagem clara. Frontend interpreta esse erro e exibe o estado bloqueado.
 
 ## Risks / Trade-offs
 
-- **[Risco] Recrutador salva vaga sem questões** → Mitigação: validação client + server, mínimo 5 questões obrigatório
-- **[Risco] Edição de questões com candidatos** → Mitigação: bloqueio via regra no backend ao detectar candidatos existentes
-- **[Trade-off] Sem modo rascunho** → aceito no MVP; vaga ativa imediatamente ao salvar
+- **[Risco] Transação falha no meio (vaga salva, questões não)** → Mitigação: criar vaga + questões em uma única transação SQLAlchemy
+- **[Trade-off] Sem rascunho** → aceito no MVP; vaga ativa imediatamente ao salvar
+
+## Modelo de Dados
+
+```sql
+-- jobs
+id           SERIAL PRIMARY KEY
+title        VARCHAR(200) NOT NULL
+area         VARCHAR(100) NOT NULL
+contract_type VARCHAR(50) NOT NULL  -- CLT, PJ, Temporário
+schedule     VARCHAR(100) NOT NULL  -- ex: "Segunda a Sexta, 08h-17h"
+workplace    VARCHAR(200) NOT NULL
+requirements TEXT NOT NULL
+duties       TEXT NOT NULL
+status       VARCHAR(20) DEFAULT 'open'  -- open | closed
+created_by   INTEGER REFERENCES users(id)
+created_at   TIMESTAMP DEFAULT NOW()
+
+-- questions
+id           SERIAL PRIMARY KEY
+job_id       INTEGER REFERENCES jobs(id) ON DELETE CASCADE
+text         TEXT NOT NULL
+options      JSONB NOT NULL  -- ["opção A", "opção B", "opção C", "opção D"]
+correct_index INTEGER NOT NULL  -- 0-3
+order_index  INTEGER NOT NULL
+```

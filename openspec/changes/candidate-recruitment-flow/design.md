@@ -1,58 +1,66 @@
 ## Context
 
-O BritaRH é um sistema de recrutamento da Britasul que atualmente permite visualização de vagas e envio de currículo sem estrutura. É necessário adicionar autenticação, um fluxo guiado de candidatura (formulário + teste + upload de currículo) e um painel para o recrutador gerenciar candidatos por vaga.
+O BritaRH é um sistema de recrutamento da Britasul com dois perfis: candidato e recrutador. O sistema precisa de autenticação Google OAuth, um fluxo guiado de candidatura (formulário + teste + upload) e um painel para o recrutador gerenciar candidatos por vaga.
 
-O sistema não possui backend persistente definido. Esta mudança estabelece a arquitetura base.
+**Stack definida:**
+- Backend: Python 3.12+ + FastAPI + PostgreSQL (SQLAlchemy async + Alembic)
+- Frontend: TypeScript + Next.js 14+ (App Router)
+- Auth: NextAuth.js (Google OAuth) no frontend; backend valida JWT
+- Storage: MinIO (dev) / S3-compatible (prod) para currículos em PDF
+- DevOps: Docker + Docker Compose, GitHub Actions
 
 ## Goals / Non-Goals
 
 **Goals:**
 - Autenticação Google OAuth com roles: `candidate` e `recruiter`
-- Fluxo de candidatura: formulário de perfil → teste de área → upload de currículo + mensagem
-- Armazenar candidaturas em banco de dados relacional
-- Armazenar currículos em sistema de arquivos/storage
-- Painel do recrutador: listar candidatos por vaga, ver score do teste, contratar
-- Ao contratar: fechar vaga e excluir todos os dados de candidatos (hard delete)
+- Fluxo de candidatura: formulário de perfil → teste → upload de currículo
+- Armazenar candidaturas em PostgreSQL
+- Armazenar currículos em storage S3-compatible
+- Painel do recrutador: listar candidatos por vaga, ver score, contratar
+- Ao contratar: fechar vaga e hard delete de todos os dados de candidatos + arquivos
 
 **Non-Goals:**
-- Notificações por e-mail para candidatos
-- Sistema de agendamento de entrevistas
-- Múltiplos recrutadores com permissões diferentes
-- Questões do teste editáveis via UI (por ora, gerenciadas via banco)
+- Notificações por e-mail
+- Agendamento de entrevistas
+- CRUD de recrutadores via UI (gerenciado via banco)
 
 ## Decisions
 
-### Decision 1: Stack — Next.js + Supabase
-Utilizar Next.js (App Router) no frontend+backend e Supabase como banco de dados (PostgreSQL), auth via Google OAuth e storage para os currículos.
+### Decision 1: Separação Backend / Frontend
+Backend FastAPI expõe REST API em `/api/v1/`. Frontend Next.js consome a API via Server Actions ou fetch direto (dependendo da rota). Sem BFF extra.
+
+**Razão:** Clareza de responsabilidades; o backend pode ser consumido por outros clientes no futuro.
+
+### Decision 2: Autenticação — NextAuth.js + JWT
+NextAuth.js gerencia o fluxo OAuth no frontend. Ao autenticar, o backend emite um JWT assinado com o role do usuário. Frontend anexa o JWT em todas as chamadas ao backend.
+
+Recrutadores são identificados por uma tabela `recruiter_whitelist` no PostgreSQL (email + ativo).
 
 **Alternativas consideradas:**
-- Backend separado (Node.js + Express): mais complexo de manter para um projeto de tamanho pequeno
-- Firebase: menos controle sobre dados e SQL
+- Supabase Auth: descartado, a stack usa backend próprio
+- Session cookies: menos adequado para API REST
 
-**Razão:** Supabase oferece PostgreSQL + Auth + Storage em um só lugar, com integração Google OAuth nativa, ideal para o escopo do projeto.
+### Decision 3: Storage de currículos com MinIO (dev) / S3 (prod)
+Currículos são armazenados no storage S3-compatible. O backend gera URLs pré-assinadas para upload (frontend envia direto ao storage) e para download (recrutador visualiza/baixa).
 
-### Decision 2: Roles via Supabase Auth metadata
-Usar o campo `user_metadata` do Supabase Auth para definir o role (`candidate` | `recruiter`). Recrutadores serão cadastrados manualmente via dashboard do Supabase (whitelist de emails).
+**Razão:** Evita tráfego de arquivo pelo backend; presigned URLs são seguras e expiram.
 
-**Razão:** Simples de implementar, sem necessidade de UI de administração extra.
-
-### Decision 3: Hard delete ao contratar
-Ao fechar uma vaga (contratar), todos os registros de candidatos e arquivos são excluídos permanentemente do BD e do Storage.
-
-**Alternativas consideradas:**
-- Soft delete: mantém histórico, mais complexo e potencial risco de privacidade
-- Exportar antes de excluir: escopo futuro se necessário
-
-**Razão:** Alinhado com a política de privacidade da Britasul e simplifica o sistema.
-
-### Decision 4: Perguntas do teste gerenciadas via banco
-As perguntas do teste ficam em uma tabela `questions` associada a `job_id` ou `area`. O recrutador pode editá-las via dashboard Supabase inicialmente.
-
-**Razão:** Evita complexidade de UI de gerenciamento de questões no MVP.
+### Decision 4: Hard delete ao contratar
+Endpoint `/api/v1/jobs/{id}/hire` executa: marcar vaga como fechada, deletar todas as `applications`, deletar objetos do storage. Exige confirmação dupla no frontend.
 
 ## Risks / Trade-offs
 
-- **[Risco] Exclusão irreversível de dados** → Mitigação: confirmação dupla no UI ao contratar; possibilidade futura de exportação PDF antes da exclusão
-- **[Risco] Candidatos não autenticados perdendo progresso** → Mitigação: salvar progresso no `localStorage` até o submit final
-- **[Risco] Upload de arquivos maliciosos** → Mitigação: validar MIME type (PDF only) no client e server; limite de tamanho (5MB)
-- **[Trade-off] Questões não editáveis via UI** → aceito no MVP; roadmap futuro inclui CRUD de questões
+- **[Risco] JWT sem revogação** → Mitigação: tokens com TTL curto (15min); refresh token armazenado em httpOnly cookie
+- **[Risco] Upload direto ao storage exposto** → Mitigação: presigned URLs com expiração de 5min e escopo por path
+- **[Risco] Exclusão irreversível** → Mitigação: confirmação dupla no frontend; log server-side da ação
+- **[Trade-off] CORS entre Next.js e FastAPI** → configurar `CORS_ORIGINS` no FastAPI via env var
+
+## Estrutura de Containers (Docker Compose)
+
+```
+services:
+  db         → PostgreSQL 16
+  storage    → MinIO (S3-compatible)
+  backend    → FastAPI (uvicorn)
+  frontend   → Next.js (dev: turbopack | prod: standalone)
+```
