@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-br"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2f7f33",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#141e15",
+                        "surface-card": "#F1F8E9",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<header class="sticky top-0 z-50 w-full border-b border-primary/10 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md">
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+<div class="flex h-16 items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white">
+<span class="material-symbols-outlined text-xl">eco</span>
+</div>
+<h2 class="text-xl font-bold tracking-tight text-primary">BritaRH</h2>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<nav class="flex gap-6">
+<a class="text-sm font-medium text-primary border-b-2 border-primary pb-1" href="#">Vagas</a>
+<a class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">Candidaturas</a>
+<a class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">Empresas</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex h-10 w-10 items-center justify-center rounded-full text-slate-500 hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="h-10 w-10 overflow-hidden rounded-full border-2 border-primary/20 bg-primary/10" data-alt="User professional profile portrait photo" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC9mFiH_I_N5RMAq8T9M2MDnRLCWp8WTG5jpM7IFFQCHwJItoCZpjaQQWKWiLoLDhnZ1-qoRcNUCzeyLOxNMPL_iN1rvwV-2f2_CAJj8v9KK-YWWNdr4nizJDAKb3G5hO1B7pEkGJiAssJE4AeptMMO1uqNgPYqVbbbt-isLHStV6b0WoPH5C6Q5l9ypNQdeHZZpGbf6TNFz5CBmnul3sMWNnHkKMq7F0D1EqhrGUB75RFZDtEb8Y6rY9KawPqcXtMIG1GWOJ84SWY')">
+</div>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-1">
+<div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+<div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<h1 class="text-4xl font-black tracking-tight text-slate-900 dark:text-slate-50 mb-2">Vagas Disponíveis</h1>
+<p class="text-slate-600 dark:text-slate-400">Encontre sua próxima oportunidade de carreira na BritaRH.</p>
+</div>
+<div class="flex flex-wrap gap-2">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+<input class="h-10 rounded-lg border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark pl-9 pr-4 text-sm focus:border-primary focus:ring-primary w-64" placeholder="Buscar cargo ou cidade..." type="text"/>
+</div>
+<button class="flex h-10 items-center gap-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark px-4 text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
+<span class="material-symbols-outlined text-sm">tune</span>
+                            Filtros
+                        </button>
+</div>
+</div>
+<div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+<div class="group flex flex-col justify-between rounded-xl bg-surface-card p-6 shadow-sm border border-primary/5 hover:shadow-md transition-all">
+<div class="flex flex-col gap-4">
+<div class="flex items-start justify-between">
+<div class="flex h-12 w-12 items-center justify-center rounded-lg bg-white shadow-sm border border-primary/10">
+<span class="material-symbols-outlined text-primary text-2xl">code</span>
+</div>
+<span class="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary">Tecnologia</span>
+</div>
+<div>
+<h3 class="text-xl font-bold text-slate-900 leading-snug">Desenvolvedor Frontend Sênior</h3>
+<div class="mt-2 flex flex-wrap gap-4 text-sm text-slate-600">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">description</span>
+                                        CLT
+                                    </div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">location_on</span>
+                                        São Paulo, SP (Híbrido)
+                                    </div>
+</div>
+</div>
+</div>
+<div class="mt-8 flex items-center justify-between gap-4 border-t border-primary/10 pt-6">
+<div class="text-xs text-slate-500 font-medium">Publicado há 2 dias</div>
+<button class="rounded-lg bg-primary px-6 py-2.5 text-sm font-bold text-white hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20">
+                                Candidatar-se
+                            </button>
+</div>
+</div>
+<div class="group flex flex-col justify-between rounded-xl bg-surface-card p-6 shadow-sm border border-primary/5 hover:shadow-md transition-all">
+<div class="flex flex-col gap-4">
+<div class="flex items-start justify-between">
+<div class="flex h-12 w-12 items-center justify-center rounded-lg bg-white shadow-sm border border-primary/10">
+<span class="material-symbols-outlined text-primary text-2xl">groups</span>
+</div>
+<span class="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary">Recursos Humanos</span>
+</div>
+<div>
+<h3 class="text-xl font-bold text-slate-900 leading-snug">Analista de RH Pleno</h3>
+<div class="mt-2 flex flex-wrap gap-4 text-sm text-slate-600">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">description</span>
+                                        CLT
+                                    </div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">location_on</span>
+                                        Curitiba, PR
+                                    </div>
+</div>
+</div>
+</div>
+<div class="mt-8 flex items-center justify-between gap-4 border-t border-primary/10 pt-6">
+<div class="text-xs text-slate-500 font-medium">Publicado há 5 dias</div>
+<button class="rounded-lg bg-primary px-6 py-2.5 text-sm font-bold text-white hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20">
+                                Candidatar-se
+                            </button>
+</div>
+</div>
+<div class="group flex flex-col justify-between rounded-xl bg-surface-card p-6 shadow-sm border border-primary/5 hover:shadow-md transition-all">
+<div class="flex flex-col gap-4">
+<div class="flex items-start justify-between">
+<div class="flex h-12 w-12 items-center justify-center rounded-lg bg-white shadow-sm border border-primary/10">
+<span class="material-symbols-outlined text-primary text-2xl">palette</span>
+</div>
+<span class="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary">Design</span>
+</div>
+<div>
+<h3 class="text-xl font-bold text-slate-900 leading-snug">Product Designer (UX/UI)</h3>
+<div class="mt-2 flex flex-wrap gap-4 text-sm text-slate-600">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">description</span>
+                                        PJ / Remoto
+                                    </div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">location_on</span>
+                                        Brasil (Remoto)
+                                    </div>
+</div>
+</div>
+</div>
+<div class="mt-8 flex items-center justify-between gap-4 border-t border-primary/10 pt-6">
+<div class="text-xs text-slate-500 font-medium">Publicado há 1 semana</div>
+<button class="rounded-lg bg-primary px-6 py-2.5 text-sm font-bold text-white hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20">
+                                Candidatar-se
+                            </button>
+</div>
+</div>
+<div class="group flex flex-col justify-between rounded-xl bg-surface-card p-6 shadow-sm border border-primary/5 hover:shadow-md transition-all">
+<div class="flex flex-col gap-4">
+<div class="flex items-start justify-between">
+<div class="flex h-12 w-12 items-center justify-center rounded-lg bg-white shadow-sm border border-primary/10">
+<span class="material-symbols-outlined text-primary text-2xl">monitoring</span>
+</div>
+<span class="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary">Gestão</span>
+</div>
+<div>
+<h3 class="text-xl font-bold text-slate-900 leading-snug">Gerente de Projetos Digitais</h3>
+<div class="mt-2 flex flex-wrap gap-4 text-sm text-slate-600">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">description</span>
+                                        CLT
+                                    </div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">location_on</span>
+                                        Belo Horizonte, MG
+                                    </div>
+</div>
+</div>
+</div>
+<div class="mt-8 flex items-center justify-between gap-4 border-t border-primary/10 pt-6">
+<div class="text-xs text-slate-500 font-medium">Publicado há 3 dias</div>
+<button class="rounded-lg bg-primary px-6 py-2.5 text-sm font-bold text-white hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20">
+                                Candidatar-se
+                            </button>
+</div>
+</div>
+</div>
+<div class="mt-12 flex justify-center">
+<nav class="flex items-center gap-2">
+<button class="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark text-slate-500 hover:bg-primary/10 hover:text-primary transition-colors disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary font-bold text-white shadow-md">1</button>
+<button class="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark text-slate-600 hover:bg-primary/10 hover:text-primary transition-colors">2</button>
+<button class="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark text-slate-600 hover:bg-primary/10 hover:text-primary transition-colors">3</button>
+<button class="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark text-slate-500 hover:bg-primary/10 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</nav>
+</div>
+</div>
+</main>
+<footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark py-8 mt-auto">
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+<div class="flex flex-col items-center justify-between gap-4 md:flex-row">
+<div class="flex items-center gap-2 grayscale opacity-60">
+<div class="flex h-6 w-6 items-center justify-center rounded bg-slate-400 text-white">
+<span class="material-symbols-outlined text-sm">eco</span>
+</div>
+<span class="text-sm font-bold text-slate-500">BritaRH © 2024</span>
+</div>
+<div class="flex gap-8 text-sm text-slate-500">
+<a class="hover:text-primary transition-colors" href="#">Termos de Uso</a>
+<a class="hover:text-primary transition-colors" href="#">Privacidade</a>
+<a class="hover:text-primary transition-colors" href="#">Suporte</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+</body></html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2f7f33",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#141e15",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 z-50 w-full bg-white dark:bg-slate-900 border-b border-primary/10 px-4 md:px-10 py-3">
+<div class="max-w-7xl mx-auto flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="bg-primary p-1.5 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-xl">account_tree</span>
+</div>
+<h1 class="text-slate-900 dark:text-white text-xl font-bold tracking-tight">BritaRH</h1>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-slate-600 dark:text-slate-300 text-sm font-medium hover:text-primary transition-colors" href="#">Dashboard</a>
+<a class="text-primary text-sm font-semibold border-b-2 border-primary pb-1" href="#">Vagas</a>
+<a class="text-slate-600 dark:text-slate-300 text-sm font-medium hover:text-primary transition-colors" href="#">Candidatos</a>
+<a class="text-slate-600 dark:text-slate-300 text-sm font-medium hover:text-primary transition-colors" href="#">Configurações</a>
+</nav>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center overflow-hidden">
+<img alt="User avatar" class="w-full h-full object-cover" data-alt="Profile avatar of the HR manager" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTK1WVO_OGF6JWiFONG5u43131VTsOHJHwTIY8h4oJWtSYPMQLJ4C5clLKkylAXIze6WBF_5oU4QGDA4Js4x6wD4mV_lST9L74TMQ9y119pI207cussj5Pg7cTq9QBxF1u40H0bHCq4UKgDVM3N8DDQY0HzzDvJRiux_Lq29P7sBKZcvaovhS5QI-w2Cn1qdXw7KBNmcN44PR9vXV57x2zeNkusUk3xKprgj-HkpKdHAjI6n5EdOQ_JYqKrvPLyF1SQech9SxruxM"/>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-4 md:px-10 py-8 pb-32">
+<!-- Page Header -->
+<div class="mb-8">
+<h2 class="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Nova Vacancy</h2>
+<p class="text-slate-500 dark:text-slate-400 mt-1">Preencha os dados abaixo para publicar uma nova oportunidade e configurar o teste técnico.</p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+<!-- Section A: Dados da Vaga -->
+<section class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-primary/10 shadow-sm">
+<div class="flex items-center gap-2 mb-6 border-b border-primary/5 pb-4">
+<span class="material-symbols-outlined text-primary">description</span>
+<h3 class="text-xl font-bold text-slate-900 dark:text-white">Dados da Vaga</h3>
+</div>
+<div class="space-y-5">
+<div>
+<label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Título da Vaga</label>
+<input class="w-full rounded-lg border-slate-200 dark:border-slate-700 dark:bg-slate-800 focus:border-primary focus:ring-primary h-12" placeholder="Ex: Desenvolvedor Full Stack Sênior" type="text"/>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Área</label>
+<select class="w-full rounded-lg border-slate-200 dark:border-slate-700 dark:bg-slate-800 focus:border-primary focus:ring-primary h-12">
+<option>Tecnologia</option>
+<option>Recursos Humanos</option>
+<option>Financeiro</option>
+<option>Comercial</option>
+</select>
+</div>
+<div>
+<label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Carga Horária</label>
+<input class="w-full rounded-lg border-slate-200 dark:border-slate-700 dark:bg-slate-800 focus:border-primary focus:ring-primary h-12" placeholder="Ex: 40h semanais" type="text"/>
+</div>
+</div>
+<div>
+<label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Tipo de Contrato</label>
+<div class="flex gap-6 mt-1">
+<label class="flex items-center gap-2 cursor-pointer">
+<input checked="" class="text-primary focus:ring-primary" name="contract" type="radio"/>
+<span class="text-sm text-slate-600 dark:text-slate-400">CLT</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer">
+<input class="text-primary focus:ring-primary" name="contract" type="radio"/>
+<span class="text-sm text-slate-600 dark:text-slate-400">PJ</span>
+</label>
+</div>
+</div>
+<div>
+<label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Localização</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-3 text-slate-400">location_on</span>
+<input class="w-full pl-10 rounded-lg border-slate-200 dark:border-slate-700 dark:bg-slate-800 focus:border-primary focus:ring-primary h-12" placeholder="São Paulo, SP ou Remoto" type="text"/>
+</div>
+</div>
+<div>
+<label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Requisitos</label>
+<textarea class="w-full rounded-lg border-slate-200 dark:border-slate-700 dark:bg-slate-800 focus:border-primary focus:ring-primary" placeholder="Liste as habilidades e experiências necessárias..." rows="4"></textarea>
+</div>
+<div>
+<label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Responsabilidades</label>
+<textarea class="w-full rounded-lg border-slate-200 dark:border-slate-700 dark:bg-slate-800 focus:border-primary focus:ring-primary" placeholder="Descreva o dia a dia e os desafios da função..." rows="4"></textarea>
+</div>
+</div>
+</section>
+<!-- Section B: Questões do Teste -->
+<section class="flex flex-col gap-6">
+<div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-primary/10 shadow-sm">
+<div class="flex flex-wrap items-center justify-between gap-4 mb-6 border-b border-primary/5 pb-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">quiz</span>
+<h3 class="text-xl font-bold text-slate-900 dark:text-white">Questões do Teste</h3>
+</div>
+<div class="flex items-center gap-2 bg-primary/10 px-3 py-1 rounded-full">
+<span class="text-xs font-bold text-primary tracking-wider uppercase">Progresso:</span>
+<span class="text-sm font-black text-primary">3 / 20</span>
+</div>
+</div>
+<p class="text-xs text-slate-500 dark:text-slate-400 mb-6 italic">Mínimo de 5 e máximo de 20 questões para habilitar a publicação.</p>
+<!-- Question Cards Stack -->
+<div class="space-y-6">
+<!-- Question Card 1 -->
+<div class="p-5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/30">
+<div class="flex justify-between items-center mb-4">
+<span class="text-sm font-bold text-primary uppercase tracking-widest">Questão 1</span>
+<button class="flex items-center gap-1 text-red-500 hover:text-red-600 text-xs font-semibold transition-colors">
+<span class="material-symbols-outlined text-sm">delete</span>
+                                    Remover questão
+                                </button>
+</div>
+<input class="w-full rounded-lg border-slate-200 dark:border-slate-700 dark:bg-slate-800 focus:border-primary focus:ring-primary mb-4" placeholder="Digite o enunciado da questão..." type="text" value="Como você lidaria com um conflito técnico em sua equipe?"/>
+<div class="space-y-3">
+<div class="flex items-center gap-3">
+<input checked="" class="text-primary focus:ring-primary" name="q1_correct" type="radio"/>
+<span class="text-xs font-bold text-slate-400">A</span>
+<input class="flex-1 rounded-lg border-slate-200 dark:border-slate-700 dark:bg-slate-800 focus:border-primary focus:ring-primary text-sm h-10" placeholder="Alternativa A" type="text" value="Proporia uma reunião para ouvir ambos os lados."/>
+</div>
+<div class="flex items-center gap-3">
+<input class="text-primary focus:ring-primary" name="q1_correct" type="radio"/>
+<span class="text-xs font-bold text-slate-400">B</span>
+<input class="flex-1 rounded-lg border-slate-200 dark:border-slate-700 dark:bg-slate-800 focus:border-primary focus:ring-primary text-sm h-10" placeholder="Alternativa B" type="text" value="Decidiria sozinho sem consultar ninguém."/>
+</div>
+<div class="flex items-center gap-3">
+<input class="text-primary focus:ring-primary" name="q1_correct" type="radio"/>
+<span class="text-xs font-bold text-slate-400">C</span>
+<input class="flex-1 rounded-lg border-slate-200 dark:border-slate-700 dark:bg-slate-800 focus:border-primary focus:ring-primary text-sm h-10" placeholder="Alternativa C" type="text" value="Ignoraria o conflito até que passasse."/>
+</div>
+<div class="flex items-center gap-3">
+<input class="text-primary focus:ring-primary" name="q1_correct" type="radio"/>
+<span class="text-xs font-bold text-slate-400">D</span>
+<input class="flex-1 rounded-lg border-slate-200 dark:border-slate-700 dark:bg-slate-800 focus:border-primary focus:ring-primary text-sm h-10" placeholder="Alternativa D" type="text" value="Escalaria imediatamente para a diretoria."/>
+</div>
+</div>
+</div>
+<!-- Question Card 2 (Empty Example) -->
+<div class="p-5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/30">
+<div class="flex justify-between items-center mb-4">
+<span class="text-sm font-bold text-primary uppercase tracking-widest">Questão 2</span>
+<button class="flex items-center gap-1 text-red-500 hover:text-red-600 text-xs font-semibold transition-colors">
+<span class="material-symbols-outlined text-sm">delete</span>
+                                    Remover questão
+                                </button>
+</div>
+<input class="w-full rounded-lg border-slate-200 dark:border-slate-700 dark:bg-slate-800 focus:border-primary focus:ring-primary mb-4" placeholder="Digite o enunciado da questão..." type="text"/>
+<div class="space-y-3">
+<div class="flex items-center gap-3">
+<input class="text-primary focus:ring-primary" name="q2_correct" type="radio"/>
+<span class="text-xs font-bold text-slate-400">A</span>
+<input class="flex-1 rounded-lg border-slate-200 dark:border-slate-700 dark:bg-slate-800 focus:border-primary focus:ring-primary text-sm h-10" placeholder="Alternativa A" type="text"/>
+</div>
+<div class="flex items-center gap-3">
+<input class="text-primary focus:ring-primary" name="q2_correct" type="radio"/>
+<span class="text-xs font-bold text-slate-400">B</span>
+<input class="flex-1 rounded-lg border-slate-200 dark:border-slate-700 dark:bg-slate-800 focus:border-primary focus:ring-primary text-sm h-10" placeholder="Alternativa B" type="text"/>
+</div>
+<div class="flex items-center gap-3">
+<input class="text-primary focus:ring-primary" name="q2_correct" type="radio"/>
+<span class="text-xs font-bold text-slate-400">C</span>
+<input class="flex-1 rounded-lg border-slate-200 dark:border-slate-700 dark:bg-slate-800 focus:border-primary focus:ring-primary text-sm h-10" placeholder="Alternativa C" type="text"/>
+</div>
+<div class="flex items-center gap-3">
+<input class="text-primary focus:ring-primary" name="q2_correct" type="radio"/>
+<span class="text-xs font-bold text-slate-400">D</span>
+<input class="flex-1 rounded-lg border-slate-200 dark:border-slate-700 dark:bg-slate-800 focus:border-primary focus:ring-primary text-sm h-10" placeholder="Alternativa D" type="text"/>
+</div>
+</div>
+</div>
+<!-- Add Question Button -->
+<button class="w-full py-4 border-2 border-dashed border-primary/30 rounded-xl flex items-center justify-center gap-2 text-primary font-bold hover:bg-primary/5 transition-all">
+<span class="material-symbols-outlined">add_circle</span>
+                            Adicionar Questão
+                        </button>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Bottom Action Bar -->
+<div class="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-900 border-t border-primary/10 px-4 md:px-10 py-5 z-40 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+<div class="max-w-7xl mx-auto flex items-center justify-end gap-4">
+<button class="px-6 py-3 rounded-lg text-slate-500 dark:text-slate-400 font-bold text-sm hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                Cancelar
+            </button>
+<button class="px-10 py-3 rounded-lg bg-primary hover:bg-primary/90 text-white font-bold text-sm shadow-lg shadow-primary/20 transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">rocket_launch</span>
+                Publicar Vaga
+            </button>
+</div>
+</div>
+</body></html>

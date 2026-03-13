@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+
+<html lang="pt-br"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2f7f33",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#141e15",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<title>Candidatura Enviada - BritaRH</title>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Top Navigation Bar -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/10 px-6 py-4 lg:px-40 bg-white dark:bg-background-dark/50">
+<div class="flex items-center gap-4 text-primary">
+<div class="flex items-center justify-center">
+<span class="material-symbols-outlined text-3xl font-bold">eco</span>
+</div>
+<h2 class="text-slate-900 dark:text-slate-100 text-xl font-bold leading-tight tracking-tight">BritaRH</h2>
+</div>
+<button class="flex cursor-pointer items-center justify-center rounded-lg h-10 w-10 bg-primary/10 text-primary hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-2xl">close</span>
+</button>
+</header>
+<!-- Main Content Section -->
+<main class="flex flex-1 items-center justify-center px-6 py-12">
+<div class="layout-content-container flex flex-col max-w-[600px] w-full items-center text-center">
+<!-- Hero Image / Visual Element -->
+<div class="w-full mb-8 @container">
+<div class="w-full h-64 bg-primary/5 rounded-xl flex items-center justify-center border border-primary/10 relative overflow-hidden">
+<!-- Decorative Pattern -->
+<div class="absolute inset-0 opacity-10 pointer-events-none" data-alt="Abstract green dots pattern background" style="background-image: radial-gradient(circle at 2px 2px, #2f7f33 1px, transparent 0); background-size: 24px 24px;">
+</div>
+<!-- Success Icon Circle -->
+<div class="relative z-10 flex flex-col items-center">
+<div class="bg-primary text-white rounded-full p-6 shadow-xl shadow-primary/20 mb-4">
+<span class="material-symbols-outlined text-7xl leading-none">check_circle</span>
+</div>
+<div class="h-1 w-12 bg-primary/20 rounded-full"></div>
+</div>
+</div>
+</div>
+<!-- Confirmation Text -->
+<div class="space-y-4">
+<h1 class="text-slate-900 dark:text-slate-100 tracking-tight text-3xl md:text-4xl font-bold leading-tight px-4">
+                            Candidatura enviada com sucesso!
+                        </h1>
+<p class="text-slate-600 dark:text-slate-400 text-lg font-normal leading-relaxed px-4">
+                            Boa sorte! Recebemos suas informações e entraremos em contato em breve através do seu e-mail cadastrado.
+                        </p>
+</div>
+<!-- Actions -->
+<div class="mt-10 flex flex-col items-center gap-6">
+<a class="inline-flex items-center justify-center px-8 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-all shadow-md shadow-primary/10" href="#">
+                            Acompanhar Processo
+                        </a>
+<a class="group flex items-center gap-2 text-primary font-medium hover:opacity-80 transition-all underline underline-offset-4 decoration-primary/30 hover:decoration-primary" href="#">
+<span>Ver outras vagas</span>
+<span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</a>
+</div>
+<!-- Footer Info -->
+<div class="mt-16 pt-8 border-t border-primary/5 w-full">
+<p class="text-slate-400 dark:text-slate-500 text-sm">
+                            Um e-mail de confirmação foi enviado para você. <br class="hidden sm:block"/>
+                            Dúvidas? <a class="text-primary hover:underline" href="#">Entre em contato com o suporte</a>.
+                        </p>
+</div>
+</div>
+</main>
+<!-- Bottom Spacer -->
+<footer class="py-6 text-center text-slate-400 text-xs">
+                © 2024 BritaRH. Todos os direitos reservados.
+            </footer>
+</div>
+</div>
+</body></html>

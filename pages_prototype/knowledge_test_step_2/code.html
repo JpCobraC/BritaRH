@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2f7f33",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#141e15",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<title>BritaRH - Teste de Conhecimento</title>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 transition-colors duration-300">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Header / TopNavBar Component -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/10 px-6 py-4 md:px-40 bg-white dark:bg-slate-900/50">
+<div class="flex items-center gap-4 text-primary">
+<div class="size-8 flex items-center justify-center bg-primary/10 rounded-lg">
+<span class="material-symbols-outlined text-primary text-2xl">account_tree</span>
+</div>
+<h2 class="text-slate-900 dark:text-slate-100 text-xl font-bold leading-tight tracking-tight">BritaRH</h2>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center justify-center rounded-lg h-10 w-10 bg-primary/10 text-primary hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="flex items-center justify-center rounded-lg h-10 w-10 bg-primary/10 text-primary hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<main class="flex-1 flex justify-center py-8 px-4 md:px-0">
+<div class="max-w-[800px] w-full flex flex-col gap-8">
+<!-- Step Indicator -->
+<nav class="flex items-center justify-center gap-4 text-sm font-medium">
+<div class="flex items-center gap-2 text-slate-500 dark:text-slate-400">
+<span class="size-6 flex items-center justify-center rounded-full bg-slate-200 dark:bg-slate-800 text-xs">1</span>
+<span>Perfil</span>
+</div>
+<span class="material-symbols-outlined text-slate-300">chevron_right</span>
+<div class="flex items-center gap-2 text-primary">
+<span class="size-6 flex items-center justify-center rounded-full bg-primary text-white text-xs">2</span>
+<span class="font-bold">Teste</span>
+</div>
+<span class="material-symbols-outlined text-slate-300">chevron_right</span>
+<div class="flex items-center gap-2 text-slate-400 dark:text-slate-600">
+<span class="size-6 flex items-center justify-center rounded-full border border-slate-300 dark:border-slate-700 text-xs">3</span>
+<span>Currículo</span>
+</div>
+</nav>
+<!-- Progress Section -->
+<div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-primary/10 shadow-sm">
+<div class="flex flex-col gap-4">
+<div class="flex justify-between items-end">
+<div>
+<h1 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Teste de Competências</h1>
+<p class="text-slate-500 dark:text-slate-400 text-sm">Responda com sinceridade baseando-se em sua experiência.</p>
+</div>
+<div class="text-right">
+<p class="text-primary font-bold text-lg">3/10</p>
+<p class="text-slate-400 text-xs uppercase tracking-wider">Questões</p>
+</div>
+</div>
+<div class="w-full h-3 bg-primary/10 rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full transition-all duration-500" style="width: 30%;"></div>
+</div>
+</div>
+</div>
+<!-- Question Card -->
+<div class="flex flex-col gap-6">
+<div class="p-2">
+<h3 class="text-xl md:text-2xl font-semibold leading-relaxed text-slate-900 dark:text-slate-100">
+                            Qual das seguintes competências é considerada essencial para a gestão eficaz de conflitos em um ambiente corporativo moderno?
+                        </h3>
+</div>
+<!-- Answers Options -->
+<div class="grid gap-4">
+<!-- Option A (Selected State Example) -->
+<label class="group relative flex cursor-pointer items-center gap-4 rounded-xl border-2 border-primary bg-primary/5 p-5 transition-all hover:bg-primary/10">
+<input checked="" class="hidden" name="question-3" type="radio" value="a"/>
+<div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary text-white font-bold">
+                                A
+                            </div>
+<div class="flex flex-col">
+<span class="text-slate-900 dark:text-slate-100 font-semibold text-base">Comunicação Assertiva</span>
+<span class="text-slate-600 dark:text-slate-400 text-sm">Habilidade de expressar necessidades e sentimentos de forma direta, clara e respeitosa.</span>
+</div>
+<div class="ml-auto">
+<span class="material-symbols-outlined text-primary">check_circle</span>
+</div>
+</label>
+<!-- Option B -->
+<label class="group relative flex cursor-pointer items-center gap-4 rounded-xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 transition-all hover:border-primary/50 hover:bg-primary/5">
+<input class="hidden" name="question-3" type="radio" value="b"/>
+<div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-bold group-hover:bg-primary/20 group-hover:text-primary transition-colors">
+                                B
+                            </div>
+<div class="flex flex-col">
+<span class="text-slate-900 dark:text-slate-100 font-semibold text-base">Autoritarismo Hierárquico</span>
+<span class="text-slate-600 dark:text-slate-400 text-sm">Resolução de problemas baseada puramente na posição de poder ocupada na empresa.</span>
+</div>
+</label>
+<!-- Option C -->
+<label class="group relative flex cursor-pointer items-center gap-4 rounded-xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 transition-all hover:border-primary/50 hover:bg-primary/5">
+<input class="hidden" name="question-3" type="radio" value="c"/>
+<div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-bold group-hover:bg-primary/20 group-hover:text-primary transition-colors">
+                                C
+                            </div>
+<div class="flex flex-col">
+<span class="text-slate-900 dark:text-slate-100 font-semibold text-base">Evitação Estratégica</span>
+<span class="text-slate-600 dark:text-slate-400 text-sm">Ignorar sistematicamente conflitos menores esperando que se resolvam sozinhos.</span>
+</div>
+</label>
+<!-- Option D -->
+<label class="group relative flex cursor-pointer items-center gap-4 rounded-xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 transition-all hover:border-primary/50 hover:bg-primary/5">
+<input class="hidden" name="question-3" type="radio" value="d"/>
+<div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-bold group-hover:bg-primary/20 group-hover:text-primary transition-colors">
+                                D
+                            </div>
+<div class="flex flex-col">
+<span class="text-slate-900 dark:text-slate-100 font-semibold text-base">Microgerenciamento</span>
+<span class="text-slate-600 dark:text-slate-400 text-sm">Monitoramento excessivo de cada tarefa para prevenir que divergências ocorram.</span>
+</div>
+</label>
+</div>
+<!-- Action Footer -->
+<div class="flex items-center justify-between pt-6 border-t border-primary/10 mt-4">
+<button class="flex items-center gap-2 px-6 py-3 rounded-lg border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400 font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+                            Anterior
+                        </button>
+<button class="flex items-center gap-2 px-10 py-3 rounded-lg bg-primary text-white font-bold shadow-lg shadow-primary/20 hover:brightness-110 active:scale-95 transition-all">
+                            Próxima Questão
+                            <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Footer Info -->
+<div class="mt-12 mb-8 text-center flex flex-col items-center gap-4">
+<div class="flex items-center gap-2 text-slate-400 text-sm">
+<span class="material-symbols-outlined text-sm">lock</span>
+                        Suas respostas são confidenciais e usadas apenas para análise de perfil.
+                    </div>
+<div class="flex gap-6 grayscale opacity-50">
+<div class="h-6 w-20 bg-slate-300 dark:bg-slate-700 rounded flex items-center justify-center text-[8px] font-bold text-white">LOGO PARCEIRO</div>
+<div class="h-6 w-20 bg-slate-300 dark:bg-slate-700 rounded flex items-center justify-center text-[8px] font-bold text-white">TRUSTED BY</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>

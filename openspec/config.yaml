@@ -1,28 +1,73 @@
 schema: spec-driven
 
 context: |
-  Project: BritaRH — recruitment platform for Britasul (Brazilian industrial company)
+  # Projeto
+  BritaRH — plataforma de R&S da Britasul (indústria brasileira).
+  Candidatos visualizam vagas, fazem teste de 15 questões e enviam currículo (PDF/DOCX).
+  Recrutadores (RH) gerenciam vagas e candidatos via painel admin.
 
-  Tech Stack:
-  - Backend: Python 3.12+, FastAPI, PostgreSQL (via SQLAlchemy async + Alembic migrations)
-  - Frontend: TypeScript, Next.js 14+ (App Router)
-  - Auth: NextAuth.js (Google OAuth) on frontend; JWT validation on backend
-  - File Storage: local volume or S3-compatible (MinIO in dev, configure via env)
-  - DevOps: Docker + Docker Compose, GitHub Actions for CI/CD
+  # Stack
+  Backend:  Python 3.12+, FastAPI (async), SQLAlchemy 2.x + Alembic, PostgreSQL 15+
+  Frontend: TypeScript 5+, Next.js 14+ App Router, React Server Components
+  Auth:     NextAuth.js v5 (Google OAuth) no frontend; JWT Bearer validado no backend
+  Storage:  MinIO (dev) / S3-compatível (prod) — path salvo no banco, arquivo fora dele
+  DevOps:   Docker Compose, GitHub Actions CI/CD
+  Qualidade: pytest + pytest-asyncio, ruff (backend), ESLint + Prettier (frontend)
 
-  Conventions:
-  - Backend: REST API at /api/v1/, Pydantic v2 schemas, async endpoints
-  - Frontend: Server Components by default, client components only when needed
-  - Commits: Conventional Commits (feat:, fix:, chore:, etc.)
-  - Env vars: managed via .env files, never hardcoded
+  # Estrutura de Pastas
+  backend/app/
+    api/v1/   — routers REST (1 arquivo por recurso)
+    models/   — SQLAlchemy models
+    schemas/  — Pydantic v2 schemas (request/response)
+    services/ — lógica de negócio (sem acesso direto ao DB)
+    crud/     — operações CRUD
+    core/     — config, segurança, dependências compartilhadas
+  frontend/
+    app/        — rotas (App Router)
+    components/ — componentes reutilizáveis
+    lib/        — utilitários, hooks, client API
 
-  Domain:
-  - Two roles: candidate (job seeker) and recruiter (Britasul HR staff)
-  - Recruiters are whitelisted by email in the database
-  - Vacancies have multi-choice test questions; candidates are scored on submission
-  - All candidate data is hard-deleted when a vacancy is closed (hired)
+  # Convenções Backend
+  - Endpoints async; URLs /api/v1/<recurso> (plural, snake_case)
+  - Pydantic v2: model_config = ConfigDict(from_attributes=True)
+  - Routers não acessam o DB diretamente; usam service/crud
+  - Env vars via pydantic-settings (Settings em core/config.py)
+
+  # Convenções Frontend
+  - RSC por padrão; "use client" só para interatividade/hooks/eventos
+  - Tailwind CSS; TypeScript strict; sem `any` explícito
+  - Formulários: React Hook Form + Zod
+
+  # Domínio
+  Papéis: candidate | recruiter
+
+  Recrutadores: whitelisted por e-mail (`recruiter_whitelist`); login Google OAuth;
+                acesso ao painel admin.
+
+  Candidatos: sem cadastro; identificados por e-mail/CPF na candidatura.
+              Fluxo: vagas → selecionar → 15 questões → enviar currículo.
+              Score calculado na submissão. Dados HARD-DELETED ao encerrar vaga.
+
+  Vagas: estados draft → open → closed; N questões múltipla escolha (1 correta).
+
+  # Segurança
+  - JWT de curta expiração + refresh token
+  - Upload: validar MIME type e tamanho máximo (5 MB) no backend
+  - Endpoints admin exigem role `recruiter` no token
+  - Não logar dados sensíveis (CPF, e-mail, currículo)
+
+  # Idioma
+  Código e commits: inglês (Conventional Commits).
+  Textos de UI: português (pt-BR).
 
 rules:
   tasks:
     - Break tasks into chunks completable in one session
-    - Backend and frontend tasks should be listed separately
+    - Backend and frontend tasks must be listed separately
+    - Every new API endpoint must have Pydantic request and response schemas
+    - Database schema changes must include an Alembic migration
+    - Business logic tasks must include pytest tests
+
+  design:
+    - Candidate data is purged on vacancy close — always consider this in data models
+    - Prefer extending existing models over creating new tables when reasonable
