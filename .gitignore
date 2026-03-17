@@ -1,6 +1,61 @@
+# ─── Dependências ────────────────────────────────────────────────
 node_modules/
-.node_modules
-.venv
-venv
-.vscode
-vscode
+.pnp
+.pnp.js
+
+# ─── Next.js ─────────────────────────────────────────────────────
+.next/
+out/
+build/
+dist/
+
+# ─── Variáveis de ambiente ────────────────────────────────────────
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env*.local
+
+# ─── Logs ────────────────────────────────────────────────────────
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# ─── Testing / Coverage ──────────────────────────────────────────
+coverage/
+.nyc_output/
+
+# ─── Python ──────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+.venv/
+venv/
+env/
+ENV/
+*.egg-info/
+dist/
+*.egg
+
+# ─── Editores / IDEs ─────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ─── Sistema Operacional ─────────────────────────────────────────
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ─── Misc ────────────────────────────────────────────────────────
+*.tsbuildinfo
+.eslintcache
+.cache/
+*.local
