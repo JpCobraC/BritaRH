@@ -1,0 +1,1 @@
+"""Pacote schemas — Pydantic schemas."""

@@ -1,0 +1,45 @@
+name: Backend CI
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "backend/**"
+
+jobs:
+  lint-and-test:
+    name: Lint & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Instalar dependências
+        working-directory: backend
+        run: pip install -e ".[dev]"
+
+      - name: Lint com ruff
+        working-directory: backend
+        run: ruff check .
+
+      - name: Type check com mypy
+        working-directory: backend
+        run: mypy app/
+
+      - name: Rodar testes
+        working-directory: backend
+        run: pytest
+        env:
+          DATABASE_URL: "postgresql+asyncpg://britarh:britarh_secret@localhost:5432/britarh_db"
