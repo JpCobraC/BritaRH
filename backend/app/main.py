@@ -2,7 +2,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.v1 import health
+from app.api.v1 import (
+    health,
+    jobs,
+    recruiter,
+    applications,
+)
 from app.core.config import settings
 
 app = FastAPI(
@@ -23,4 +28,7 @@ app.add_middleware(
 )
 
 # ─── Routers ─────────────────────────────────────────────────────────────────
-app.include_router(health.router, prefix="/api/v1")
+app.include_router(health.router, prefix="/api/v1", tags=["health"])
+app.include_router(jobs.router, prefix="/api/v1/jobs", tags=["Jobs"])
+app.include_router(recruiter.router, prefix="/api/v1/recruiter", tags=["Recruiter Dashboard"])
+app.include_router(applications.router, prefix="/api/v1/applications", tags=["Candidate Applications"])
