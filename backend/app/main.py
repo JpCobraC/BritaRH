@@ -1,5 +1,5 @@
 """FastAPI application entry point."""
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1 import (
@@ -12,11 +12,20 @@ from app.core.config import settings
 
 app = FastAPI(
     title="BritaRH API",
-    description="API do sistema de recrutamento e seleção da Britasul.",
-    version="0.1.0",
-    docs_url="/docs",
-    redoc_url="/redoc",
+    description="Backend para plataforma de Recrutamento BritaRH",
+    version="1.0.0",
 )
+
+# ─── Middleware de Headers de Segurança ───────────────────────────────────────
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    """Adiciona cabeçalhos de segurança em todas as respostas."""
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+    return response
 
 # ─── CORS ────────────────────────────────────────────────────────────────────
 app.add_middleware(

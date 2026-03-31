@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.models.models import Application, Job
-from app.schemas.application import ApplicationRead
+from app.schemas.application import ApplicationRead, ApplicationProfile
 from app.services.storage import storage_service
 
 router = APIRouter()
@@ -30,11 +30,24 @@ async def submit_application(
     Garante que não haja duplicidade de candidatura para a mesma vaga.
     """
     
-    # 1. Validação de formato de arquivo
-    if file.content_type != "application/pdf":
+    # 1. Validação de formato de arquivo e tamanho (5MB max)
+    MAX_FILE_SIZE = 5 * 1024 * 1024  # 5 Megabytes
+    
+    if file.content_type != "application/pdf" or not file.filename.lower().endswith(".pdf"):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Apenas arquivos PDF são aceitos para o currículo."
+        )
+
+    # Verifica o tamanho do arquivo
+    file.file.seek(0, 2)
+    file_size = file.file.tell()
+    file.file.seek(0)
+    
+    if file_size > MAX_FILE_SIZE:
+        raise HTTPException(
+            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            detail=f"O currículo deve ter no máximo 5MB. Tamanho enviado: {file_size / (1024 * 1024):.2f}MB"
         )
 
     # 2. Verifica se a vaga existe
@@ -57,13 +70,14 @@ async def submit_application(
             detail="Você já se candidatou para esta vaga."
         )
 
-    # 4. Processa JSON de perfil
+    # 4. Validar dados de perfil com Pydantic
     try:
-        profile_json = json.loads(profile_data)
-    except json.JSONDecodeError:
+        profile_obj = ApplicationProfile.model_validate_json(profile_data)
+        profile_json = profile_obj.model_dump()
+    except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail="Dados de perfil inválidos (formato JSON esperado)."
+            detail=f"Dados de perfil inválidos: {str(e)}"
         )
 
     # 5. Upload para MinIO

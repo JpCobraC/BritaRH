@@ -37,7 +37,7 @@ async def list_jobs(
 async def create_job(
     *,
     db: Annotated[AsyncSession, Depends(get_db)],
-    # current_user: Annotated[User, Depends(deps.get_current_recruiter)], # Comentado para facilitar testes iniciais, mas planejado
+    current_user: Annotated[User, Depends(deps.get_current_recruiter)],
     job_in: JobCreate,
 ):
     """Cria uma nova vaga com suas questões associadas."""
@@ -92,6 +92,7 @@ async def update_job(
     job_id: uuid.UUID,
     job_in: JobUpdate,
     db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(deps.get_current_recruiter)],
 ):
     """Atualiza dados básicos da vaga."""
     stmt = select(Job).options(selectinload(Job.questions)).where(Job.id == job_id)
@@ -114,6 +115,7 @@ async def update_job_questions(
     job_id: uuid.UUID,
     questions_in: JobQuestionsUpdate,
     db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(deps.get_current_recruiter)],
     x_simulate_has_applicants: Annotated[str | None, Header()] = None,
 ):
     """Atualiza as questões da vaga (bloqueado se houver candidatos)."""

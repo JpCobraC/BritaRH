@@ -5,8 +5,22 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, Asyn
 from sqlalchemy.pool import NullPool
 
 from app.main import app
+from app.api import deps
 from app.core.database import get_db
 from app.core.config import settings
+from app.schemas.user import User
+
+# ─── Mocks para Segurança ───────────────────────────────────────────────────
+async def override_get_current_recruiter():
+    """Simula um recrutador autenticado para testes."""
+    return User(
+        email="test-recruiter@britasul.com.br",
+        name="Test Recruiter",
+        is_recruiter=True
+    )
+
+# Override da dependência globalmente para os testes
+app.dependency_overrides[deps.get_current_recruiter] = override_get_current_recruiter
 
 # ─── Configuração de Banco de Testes ──────────────────────────────────────────
 # Usamos NullPool para evitar que conexões persistam entre diferentes event loops

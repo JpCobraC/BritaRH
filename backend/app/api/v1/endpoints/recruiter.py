@@ -16,7 +16,7 @@ router = APIRouter()
 @router.get("/jobs", response_model=list[JobRecruiter])
 async def list_recruiter_jobs(
     db: Annotated[AsyncSession, Depends(get_db)],
-    # current_user: Annotated[User, Depends(deps.get_current_recruiter)], # Comentado para testes TDD
+    current_user: Annotated[User, Depends(deps.get_current_recruiter)],
 ):
     """Retorna todas as vagas com contagem de candidatos para o painel de recrutador."""
     # Query: Select jobs e subquery ou count lateral de candidatos

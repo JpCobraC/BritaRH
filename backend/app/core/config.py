@@ -35,8 +35,8 @@ class Settings(BaseSettings):
             return [i.strip() for i in v.split(",")]
         return v
 
-    # JWT
-    backend_secret: str = "shared-jwt-secret-between-frontend-and-backend"
+    # JWT Secret para autenticação de recrutadores
+    backend_secret: str = "shared-jwt-secret-between-frontend-and-backend"  # DEVE ser alterada em prod!
 
 
 settings = Settings()

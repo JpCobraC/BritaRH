@@ -53,7 +53,7 @@ class StorageService:
         
         return unique_filename
 
-    def get_presigned_url(self, object_key: str, expires_in: int = 3600) -> str:
+    def get_presigned_url(self, object_key: str, expires_in: int = 900) -> str:
         """Gera uma URL temporária para visualização do arquivo."""
         return self.s3.generate_presigned_url(
             "get_object",
