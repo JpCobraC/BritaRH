@@ -1,6 +1,7 @@
+import uuid
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select, func, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -51,3 +52,28 @@ async def list_recruiter_jobs(
             )
         )
     return jobs
+
+
+@router.get("/jobs/{job_id}/applications", response_model=list[ApplicationRead])
+async def list_job_applications(
+    job_id: uuid.UUID,
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(deps.get_current_recruiter)],
+):
+    """Lista todos os candidatos que se aplicaram a uma vaga específica."""
+    # 1. Verifica se a vaga existe
+    stmt_job = select(Job).where(Job.id == job_id)
+    result_job = await db.execute(stmt_job)
+    job = result_job.scalar_one_or_none()
+    
+    if not job:
+        raise HTTPException(status_code=404, detail="Vaga não encontrada")
+
+    # 2. Busca candidaturas
+    stmt_app = (
+        select(Application)
+        .where(Application.job_id == job_id)
+        .order_by(desc(Application.score), desc(Application.created_at))
+    )
+    result_app = await db.execute(stmt_app)
+    return result_app.scalars().all()

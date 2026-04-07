@@ -1,3 +1,8 @@
+"use client";
+
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 const vagas = [
@@ -59,6 +64,19 @@ const nivelColors: Record<string, string> = {
 };
 
 export default function VagasPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (session?.user?.role === "recruiter") {
+      router.push("/dashboard");
+    }
+  }, [session, router]);
+
+  if (status === "loading") {
+    return <div className="min-h-screen flex items-center justify-center">Gerando oportunidades...</div>;
+  }
+
   return (
     <div className="min-h-screen bg-background-light">
       {/* Hero */}

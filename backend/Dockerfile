@@ -10,7 +10,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Instalar dependências Python
 COPY pyproject.toml .
-RUN pip install --no-cache-dir -e ".[dev]"
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir bcrypt python-jose[cryptography] && \
+    pip install --no-cache-dir -e ".[dev]"
 
 # Copiar código-fonte
 COPY . .

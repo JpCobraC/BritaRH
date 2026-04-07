@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import StepIndicator from "@/components/ui/StepIndicator";
 import ProgressBar from "@/components/ui/ProgressBar";
+import { maskPhone } from "@/utils/masks";
 
 export default function PerfilPage() {
   const router = useRouter();
@@ -21,7 +22,12 @@ export default function PerfilPage() {
   });
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    if (name === "telefone") {
+      setForm({ ...form, [name]: maskPhone(value) });
+    } else {
+      setForm({ ...form, [name]: value });
+    }
   }
 
   return (

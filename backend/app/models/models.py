@@ -3,7 +3,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any
 
-from sqlalchemy import ForeignKey, String, Text, func, UUID
+from sqlalchemy import ForeignKey, String, Text, func, UUID, Date
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -13,6 +13,11 @@ from app.core.database import Base
 class JobStatus(str, Enum):
     OPEN = "open"
     CLOSED = "closed"
+
+
+class UserRole(str, Enum):
+    CANDIDATE = "candidate"
+    RECRUITER = "recruiter"
 
 
 class Job(Base):
@@ -69,3 +74,17 @@ class RecruiterWhitelist(Base):
 
     email: Mapped[str] = mapped_column(String(255), primary_key=True, index=True)
     is_active: Mapped[bool] = mapped_column(default=True, server_default="true")
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    email: Mapped[str] = mapped_column(String(255), unique=True, index=True)
+    hashed_password: Mapped[str | None] = mapped_column(String(255), nullable=True)  # Null para login social
+    name: Mapped[str] = mapped_column(String(255))
+    cpf: Mapped[str | None] = mapped_column(String(11), unique=True, index=True, nullable=True)
+    birth_date: Mapped[datetime | None] = mapped_column(Date, nullable=True)
+    role: Mapped[UserRole] = mapped_column(String(20), default=UserRole.CANDIDATE)
+    picture: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(server_default=func.now())

@@ -9,6 +9,6 @@ RUN npm ci
 # Copiar código-fonte
 COPY . .
 
-# Expor porta e rodar em modo dev com turbopack
+# Expor porta e rodar em modo dev com Turbopack (modo otimizado)
 EXPOSE 3000
-CMD ["npm", "run", "dev", "--", "--turbopack"]
+CMD ["npm", "run", "dev", "--", "--turbo"]
