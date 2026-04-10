@@ -3,7 +3,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any
 
-from sqlalchemy import ForeignKey, String, Text, func, UUID, Date
+from sqlalchemy import ForeignKey, String, Text, func, UUID, Date, CheckConstraint, Index
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -35,7 +35,10 @@ class Job(Base):
     status: Mapped[JobStatus] = mapped_column(
         String(20), default=JobStatus.OPEN, server_default=JobStatus.OPEN.value
     )
-    created_at: Mapped[datetime] = mapped_column(server_default=func.now())
+    created_at: Mapped[datetime] = mapped_column(server_default=func.now(), index=True)
+    updated_at: Mapped[datetime] = mapped_column(
+        server_default=func.now(), onupdate=func.now()
+    )
 
     # Relacionamentos
     questions: Mapped[list["Question"]] = relationship(back_populates="job", cascade="all, delete-orphan")
@@ -46,10 +49,13 @@ class Question(Base):
     __tablename__ = "questions"
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    job_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("jobs.id", ondelete="CASCADE"))
+    job_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("jobs.id", ondelete="CASCADE"), index=True)
     text: Mapped[str] = mapped_column(Text)
     options: Mapped[dict[str, Any]] = mapped_column(JSONB)  # Ex: {"0": "Opção A", "1": "Opção B"}
     correct_index: Mapped[int] = mapped_column()
+    updated_at: Mapped[datetime] = mapped_column(
+        server_default=func.now(), onupdate=func.now()
+    )
 
     job: Mapped["Job"] = relationship(back_populates="questions")
 
@@ -58,15 +64,25 @@ class Application(Base):
     __tablename__ = "applications"
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    job_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("jobs.id", ondelete="CASCADE"))
+    job_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("jobs.id", ondelete="CASCADE"), index=True)
+    user_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id", ondelete="SET NULL"), index=True, nullable=True)
     candidate_email: Mapped[str] = mapped_column(String(255), index=True)
     profile_data: Mapped[dict[str, Any]] = mapped_column(JSONB)  # Dados do formulário de perfil
     score: Mapped[int] = mapped_column()  # Pontuação no teste
     message: Mapped[str | None] = mapped_column(Text, nullable=True)
     resume_url: Mapped[str] = mapped_column(Text)  # URL ou path no MinIO
-    created_at: Mapped[datetime] = mapped_column(server_default=func.now())
+    created_at: Mapped[datetime] = mapped_column(server_default=func.now(), index=True)
+    updated_at: Mapped[datetime] = mapped_column(
+        server_default=func.now(), onupdate=func.now()
+    )
 
     job: Mapped["Job"] = relationship(back_populates="applications")
+    user: Mapped["User"] = relationship()
+
+    __table_args__ = (
+        CheckConstraint("score >= 0 AND score <= 100", name="check_score_range"),
+        Index("ix_applications_profile_data_gin", "profile_data", postgresql_using="gin"),
+    )
 
 
 class RecruiterWhitelist(Base):
@@ -87,4 +103,7 @@ class User(Base):
     birth_date: Mapped[datetime | None] = mapped_column(Date, nullable=True)
     role: Mapped[UserRole] = mapped_column(String(20), default=UserRole.CANDIDATE)
     picture: Mapped[str | None] = mapped_column(String(500), nullable=True)
-    created_at: Mapped[datetime] = mapped_column(server_default=func.now())
+    created_at: Mapped[datetime] = mapped_column(server_default=func.now(), index=True)
+    updated_at: Mapped[datetime] = mapped_column(
+        server_default=func.now(), onupdate=func.now()
+    )
