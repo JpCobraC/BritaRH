@@ -53,6 +53,7 @@ class Question(Base):
     text: Mapped[str] = mapped_column(Text)
     options: Mapped[dict[str, Any]] = mapped_column(JSONB)  # Ex: {"0": "Opção A", "1": "Opção B"}
     correct_index: Mapped[int] = mapped_column()
+    created_at: Mapped[datetime] = mapped_column(server_default=func.now(), index=True)
     updated_at: Mapped[datetime] = mapped_column(
         server_default=func.now(), onupdate=func.now()
     )

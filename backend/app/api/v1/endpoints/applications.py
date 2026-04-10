@@ -8,7 +8,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.models.models import Application, Job
+from app.models.models import Application, Job, User
 from app.schemas.application import ApplicationRead, ApplicationProfile
 from app.services.storage import storage_service
 
@@ -96,8 +96,15 @@ async def submit_application(
         )
 
     # 6. Salva no Banco de Dados
+    # Tenta encontrar o usuário pelo e-mail para vincular a candidatura
+    user_query = select(User).where(User.email == candidate_email)
+    user_result = await db.execute(user_query)
+    found_user = user_result.scalar_one_or_none()
+    user_id = found_user.id if found_user else None
+
     new_app = Application(
         job_id=job_id,
+        user_id=user_id,
         candidate_email=candidate_email,
         profile_data=profile_json,
         score=score,
