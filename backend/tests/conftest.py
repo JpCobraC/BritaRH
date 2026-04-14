@@ -43,12 +43,24 @@ async def db_session():
 
 # ─── Mocks e Overrides ────────────────────────────────────────────────────────
 
+@pytest_asyncio.fixture(scope="function")
+async def mock_recruiter():
+    """Simula um recrutador autenticado."""
+    from app.schemas.user import User
+    return User(
+        email="recruiter@test.com",
+        name="Teste Recrutador",
+        role="recruiter"
+    )
+
 @pytest.fixture(autouse=True)
-def mock_storage():
-    """Impede que os testes tentem fazer upload real para o MinIO."""
-    with patch("app.api.v1.endpoints.applications.storage_service") as mock:
-        mock.upload_file.return_value = "mock_resume_path.pdf"
-        yield mock
+def override_auth(mock_recruiter):
+    """Aplica o mock de autenticação globalmente para os testes."""
+    async def _mock_auth():
+        return await mock_recruiter
+    app.dependency_overrides[deps.get_current_recruiter] = _mock_auth
+    yield
+    app.dependency_overrides.pop(deps.get_current_recruiter, None)
 
 async def override_get_db():
     async with TestAsyncSessionLocal() as session:

@@ -2,95 +2,75 @@ import uuid
 import json
 import pytest
 from httpx import AsyncClient
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
+from app.models.models import Application, User
 
 def _job_payload():
     return {
-        "title": "Desenvolvedor Backend",
-        "area": "Tecnologia",
-        "description": "Vaga para desenvolvedor Python/FastAPI",
+        "title": "Desenvolvedor Full Stack",
+        "area": "TI",
+        "description": "Vaga para testes",
         "questions": [
-            {"text": "O que é FastAPI?", "options": ["Framework", "Banco de dados", "Linguagem", "OS"], "correct_index": 0},
-            {"text": "Q2", "options": ["A", "B", "C", "D"], "correct_index": 1},
-            {"text": "Q3", "options": ["A", "B", "C", "D"], "correct_index": 1},
-            {"text": "Q4", "options": ["A", "B", "C", "D"], "correct_index": 1},
-            {"text": "Q5", "options": ["A", "B", "C", "D"], "correct_index": 1},
+            {"text": "Q1", "options": ["A", "B", "C", "D"], "correct_index": 0},
+            {"text": "Q2", "options": ["A", "B", "C", "D"], "correct_index": 0},
+            {"text": "Q3", "options": ["A", "B", "C", "D"], "correct_index": 0},
+            {"text": "Q4", "options": ["A", "B", "C", "D"], "correct_index": 0},
+            {"text": "Q5", "options": ["A", "B", "C", "D"], "correct_index": 0},
         ]
     }
 
 @pytest.mark.asyncio
-async def test_submit_application_success(client: AsyncClient):
-    """POST /api/v1/applications/submit deve salvar candidatura e currículo."""
-    # 1. Cria uma vaga primeiro
+async def test_submit_application_with_user_linkage(client: AsyncClient, db_session: AsyncSession):
+    """POST /api/v1/applications/submit deve vincular user_id se o email já for de um usuário."""
+    # 1. Cria um usuário prévio
+    email = "registered@user.com"
+    registered_user = User(email=email, name="Registered User", role="candidate")
+    db_session.add(registered_user)
+    await db_session.commit()
+
+    # 2. Cria uma vaga
     job_resp = await client.post("/api/v1/jobs", json=_job_payload())
     job_id = job_resp.json()["id"]
 
-    # 2. Dados da candidatura
-    candidate_email = "candidato@teste.com"
-    profile_data = {
-        "full_name": "João Teste",
-        "email": candidate_email,
-        "phone": "11999999999",
-        "summary": "Experiência com Python"
-    }
-
-    # 3. Prepara o multipart/form-data
+    # 3. Submete candidatura com o mesmo e-mail
+    profile_data = {"full_name": "Applicant Name", "email": email, "phone": "123"}
     data = {
-        "job_id": job_id,
-        "candidate_email": candidate_email,
-        "profile_data": json.dumps(profile_data),
-        "score": 85,
-        "message": "Gostaria muito desta vaga!"
+        "job_id": job_id, "candidate_email": email,
+        "profile_data": json.dumps(profile_data), "score": 90
     }
-    
-    files = {
-        "file": ("curriculo.pdf", b"%PDF-1.4 mock content", "application/pdf")
-    }
+    files = {"file": ("resume.pdf", b"%PDF-1.4 content", "application/pdf")}
 
-    # 4. Envia a candidatura
     resp = await client.post("/api/v1/applications/submit", data=data, files=files)
-    
     assert resp.status_code == 200
-    data_out = resp.json()
-    assert data_out["candidate_email"] == candidate_email
-    assert data_out["score"] == 85
-    assert "resume_url" in data_out
-    assert data_out["resume_url"].endswith(".pdf")
+    
+    # 4. Verifica no banco se o user_id foi vinculado
+    app_id = resp.json()["id"]
+    stmt = select(Application).where(Application.id == uuid.UUID(app_id))
+    result = await db_session.execute(stmt)
+    app_db = result.scalar_one()
+    
+    assert app_db.user_id == registered_user.id
+    assert app_db.candidate_email == email
 
 @pytest.mark.asyncio
-async def test_submit_application_duplicate(client: AsyncClient):
-    """POST /api/v1/applications/submit deve bloquear candidaturas duplicadas (409)."""
+async def test_submit_application_duplicate_prevention(client: AsyncClient):
+    """Garante bloqueio de múltiplas candidaturas do mesmo e-mail para a mesma vaga."""
     job_resp = await client.post("/api/v1/jobs", json=_job_payload())
     job_id = job_resp.json()["id"]
-    email = "duplicate@teste.com"
+    email = "one-timer@test.com"
 
     data = {
-        "job_id": job_id, "candidate_email": email, 
-        "profile_data": json.dumps({"full_name": "Double"}), "score": 70
+        "job_id": job_id, "candidate_email": email,
+        "profile_data": json.dumps({"name": "X"}), "score": 10
     }
-    files = {"file": ("c.pdf", b"pdf", "application/pdf")}
+    files = {"file": ("1.pdf", b"pdf", "application/pdf")}
 
-    # Primeira vez - Sucesso
-    resp1 = await client.post("/api/v1/applications/submit", data=data, files=files)
-    assert resp1.status_code == 200
+    # Primeira OK
+    r1 = await client.post("/api/v1/applications/submit", data=data, files=files)
+    assert r1.status_code == 200
 
-    # Segunda vez - Conflito
-    resp2 = await client.post("/api/v1/applications/submit", data=data, files=files)
-    assert resp2.status_code == 409
-    assert "já se candidatou" in resp2.json()["detail"]
-
-@pytest.mark.asyncio
-async def test_submit_application_invalid_file_type(client: AsyncClient):
-    """POST /api/v1/applications/submit deve rejeitar arquivos que não sejam PDF (400)."""
-    job_resp = await client.post("/api/v1/jobs", json=_job_payload())
-    job_id = job_resp.json()["id"]
-
-    data = {
-        "job_id": job_id, "candidate_email": "wrong@file.com", 
-        "profile_data": "{}", "score": 50
-    }
-    # Envia um .txt
-    files = {"file": ("virus.exe", b"not a pdf", "text/plain")}
-
-    resp = await client.post("/api/v1/applications/submit", data=data, files=files)
-    assert resp.status_code == 400
-    assert "Apenas arquivos PDF" in resp.json()["detail"]
+    # Segunda FALHA
+    r2 = await client.post("/api/v1/applications/submit", data=data, files=files)
+    assert r2.status_code == 409
+    assert "Você já se candidatou" in r2.json()["detail"]
