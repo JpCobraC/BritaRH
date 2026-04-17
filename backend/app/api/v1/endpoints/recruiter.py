@@ -9,9 +9,35 @@ from app.api import deps
 from app.core.database import get_db
 from app.models.models import Job, Application
 from app.schemas.job import JobRecruiter
+from app.schemas.application import ApplicationRead
+from app.schemas.recruiter import RecruiterStats
 from app.schemas.user import User
 
 router = APIRouter()
+
+
+@router.get("/stats", response_model=RecruiterStats)
+async def get_recruiter_stats(
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(deps.get_current_recruiter)],
+):
+    """Retorna estatísticas consolidadas para o dashboard do recrutador."""
+    total_jobs = await db.scalar(select(func.count(Job.id)))
+    active_jobs = await db.scalar(select(func.count(Job.id)).where(Job.status == "open"))
+    total_apps = await db.scalar(select(func.count(Application.id)))
+    
+    from datetime import date
+    today = date.today()
+    apps_today = await db.scalar(
+        select(func.count(Application.id)).where(func.date(Application.created_at) == today)
+    )
+
+    return RecruiterStats(
+        total_jobs=total_jobs or 0,
+        active_jobs=active_jobs or 0,
+        total_applications=total_apps or 0,
+        new_applications_today=apps_today or 0
+    )
 
 
 @router.get("/jobs", response_model=list[JobRecruiter])

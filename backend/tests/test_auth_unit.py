@@ -21,12 +21,15 @@ def test_verify_password_invalid_hash():
 @pytest.mark.asyncio
 async def test_get_user_by_cpf_cleaning(db_session: AsyncSession):
     """Valida que a busca por CPF ignora pontuação (limpeza automática)."""
-    clean_cpf = "12345678901"
-    masked_cpf = "123.456.789-01"
+    import uuid
+    unique_suffix = str(uuid.uuid4())[:8]
+    clean_cpf = str(uuid.uuid4().int)[:11]
+    masked_cpf = f"{clean_cpf[:3]}.{clean_cpf[3:6]}.{clean_cpf[6:9]}-{clean_cpf[9:]}"
+    email = f"cpf_{unique_suffix}@test.com"
     
     # Cria um usuário com CPF limpo
     user = User(
-        email="cpf-test@example.com",
+        email=email,
         name="CPF Tester",
         cpf=clean_cpf,
         role="candidate"
@@ -39,4 +42,4 @@ async def test_get_user_by_cpf_cleaning(db_session: AsyncSession):
     
     assert found_user is not None
     assert found_user.cpf == clean_cpf
-    assert found_user.email == "cpf-test@example.com"
+    assert found_user.email == email

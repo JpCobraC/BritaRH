@@ -21,19 +21,20 @@ def _job_payload():
     }
 
 @pytest.mark.asyncio
-async def test_submit_application_with_user_linkage(client: AsyncClient, db_session: AsyncSession):
+async def test_submit_application_with_user_linkage(recruiter_client: AsyncClient, db_session: AsyncSession):
     """POST /api/v1/applications/submit deve vincular user_id se o email já for de um usuário."""
-    # 1. Cria um usuário prévio
-    email = "registered@user.com"
-    registered_user = User(email=email, name="Registered User", role="candidate")
+    import uuid
+    # 1. Cria um usuário prévio com e-mail único
+    email = f"registered_{uuid.uuid4()}@user.com"
+    registered_user = User(email=email, name="Registered User", role="candidate", cpf=str(uuid.uuid4().int)[:11])
     db_session.add(registered_user)
     await db_session.commit()
 
-    # 2. Cria uma vaga
-    job_resp = await client.post("/api/v1/jobs", json=_job_payload())
+    # 2. Cria uma vaga usando recruiter_client
+    job_resp = await recruiter_client.post("/api/v1/jobs", json=_job_payload())
     job_id = job_resp.json()["id"]
 
-    # 3. Submete candidatura com o mesmo e-mail
+    # 3. Submete candidatura com o mesmo e-mail (não precisa de auth)
     profile_data = {"full_name": "Applicant Name", "email": email, "phone": "123"}
     data = {
         "job_id": job_id, "candidate_email": email,
@@ -41,7 +42,7 @@ async def test_submit_application_with_user_linkage(client: AsyncClient, db_sess
     }
     files = {"file": ("resume.pdf", b"%PDF-1.4 content", "application/pdf")}
 
-    resp = await client.post("/api/v1/applications/submit", data=data, files=files)
+    resp = await recruiter_client.post("/api/v1/applications/submit", data=data, files=files)
     assert resp.status_code == 200
     
     # 4. Verifica no banco se o user_id foi vinculado
@@ -54,23 +55,25 @@ async def test_submit_application_with_user_linkage(client: AsyncClient, db_sess
     assert app_db.candidate_email == email
 
 @pytest.mark.asyncio
-async def test_submit_application_duplicate_prevention(client: AsyncClient):
+async def test_submit_application_duplicate_prevention(recruiter_client: AsyncClient):
     """Garante bloqueio de múltiplas candidaturas do mesmo e-mail para a mesma vaga."""
-    job_resp = await client.post("/api/v1/jobs", json=_job_payload())
+    import uuid
+    job_resp = await recruiter_client.post("/api/v1/jobs", json=_job_payload())
     job_id = job_resp.json()["id"]
-    email = "one-timer@test.com"
+    email = f"one-timer_{uuid.uuid4()}@test.com"
 
+    valid_profile = {"full_name": "One Timer", "email": email, "phone": "999"}
     data = {
         "job_id": job_id, "candidate_email": email,
-        "profile_data": json.dumps({"name": "X"}), "score": 10
+        "profile_data": json.dumps(valid_profile), "score": 10
     }
-    files = {"file": ("1.pdf", b"pdf", "application/pdf")}
+    files = {"file": ("1.pdf", b"%PDF-1.4 content", "application/pdf")}
 
     # Primeira OK
-    r1 = await client.post("/api/v1/applications/submit", data=data, files=files)
+    r1 = await recruiter_client.post("/api/v1/applications/submit", data=data, files=files)
     assert r1.status_code == 200
 
     # Segunda FALHA
-    r2 = await client.post("/api/v1/applications/submit", data=data, files=files)
+    r2 = await recruiter_client.post("/api/v1/applications/submit", data=data, files=files)
     assert r2.status_code == 409
     assert "Você já se candidatou" in r2.json()["detail"]

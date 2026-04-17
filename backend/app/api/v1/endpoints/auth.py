@@ -3,9 +3,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.models.models import User
-from app.schemas.auth import UserRegister, UserLogin, UserRead
+from app.schemas.auth import UserRegister, UserLogin, UserRead, Token
 from datetime import date as py_date
-from app.services.auth import hash_password, verify_password, get_user_by_email, get_user_by_cpf
+from app.services.auth import (
+    hash_password, 
+    verify_password, 
+    get_user_by_email, 
+    get_user_by_cpf,
+    create_access_token
+)
 
 router = APIRouter()
 
@@ -54,9 +60,9 @@ async def register(user_in: UserRegister, db: AsyncSession = Depends(get_db)):
     
     return new_user
 
-@router.post("/login", response_model=UserRead)
+@router.post("/login", response_model=Token)
 async def login(credentials: UserLogin, db: AsyncSession = Depends(get_db)):
-    """Valida credenciais e retorna dados do usuário (NextAuth chamará este endpoint)."""
+    """Valida credenciais e retorna dados do usuário com token JWT."""
     user = await get_user_by_email(db, credentials.email)
     
     if not user or not user.hashed_password:
@@ -71,4 +77,13 @@ async def login(credentials: UserLogin, db: AsyncSession = Depends(get_db)):
             detail="Credenciais inválidas."
         )
     
-    return user
+    # Gera o token
+    access_token = create_access_token(
+        data={"email": user.email, "name": user.name}
+    )
+    
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user": user
+    }

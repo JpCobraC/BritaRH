@@ -1,8 +1,24 @@
+from datetime import datetime, timedelta, timezone
+from jose import jwt
 import bcrypt
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.models import RecruiterWhitelist, User, UserRole
+from app.core.config import settings
+
+
+def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
+    """Gera um token JWT para o usuário."""
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.now(timezone.utc) + expires_delta
+    else:
+        expire = datetime.now(timezone.utc) + timedelta(minutes=60)
+    
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, settings.backend_secret, algorithm="HS256")
+    return encoded_jwt
 
 
 def hash_password(password: str) -> str:

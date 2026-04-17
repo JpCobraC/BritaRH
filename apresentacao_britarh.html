@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BritaRH - Apresentação Técnica</title>
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono&display=swap"
+        rel="stylesheet">
+    <style>
+        /* === VIEWPORT FITTING: MANDATORY BASE STYLES === */
+        html,
+        body {
+            height: 100%;
+            overflow-x: hidden;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden;
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background: #121212;
+            color: #ffffff;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* === DESIGN SYSTEM: BOLD SIGNAL (BLUE ADAPTATION) === */
+        :root {
+            --bg-primary: #121212;
+            --bg-gradient: linear-gradient(135deg, #121212 0%, #1a1a1a 50%, #121212 100%);
+            --accent: #007bff;
+            --accent-glow: rgba(0, 123, 255, 0.3);
+            --text-on-accent: #000000;
+            --font-display: 'Archivo Black', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --title-size: clamp(2rem, 6vw, 4.5rem);
+            --h2-size: clamp(1.5rem, 4vw, 3rem);
+            --body-size: clamp(0.9rem, 1.8vw, 1.25rem);
+            --slide-padding: clamp(1.5rem, 5vw, 4rem);
+        }
+
+        .slide-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: var(--slide-padding);
+            z-index: 10;
+        }
+
+        .card {
+            background: var(--accent);
+            padding: clamp(1rem, 3vw, 2.5rem);
+            border-radius: 4px;
+            max-width: 900px;
+            box-shadow: 15px 15px 0px rgba(0, 123, 255, 0.1);
+        }
+
+        /* === HUD ELEMENTS === */
+        .slide-number {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 5vw, 4rem);
+            opacity: 0.1;
+            z-index: 1;
+        }
+
+        .nav-hint {
+            position: absolute;
+            bottom: 2rem;
+            right: 2rem;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            opacity: 0.4;
+            color: var(--accent);
+        }
+
+        /* === ANIMATIONS === */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .slide.visible .reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-1 {
+            transition-delay: 0.1s;
+        }
+
+        .reveal-2 {
+            transition-delay: 0.2s;
+        }
+
+        .reveal-3 {
+            transition-delay: 0.3s;
+        }
+
+        .reveal-4 {
+            transition-delay: 0.4s;
+        }
+
+        /* === TYPOGRAPHY === */
+        h1 {
+            font-family: var(--font-display);
+            font-size: var(--title-size);
+            text-transform: uppercase;
+            line-height: 0.95;
+        }
+
+        h2 {
+            font-family: var(--font-display);
+            font-size: var(--h2-size);
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            line-height: 1;
+        }
+
+        p {
+            font-size: var(--body-size);
+            line-height: 1.5;
+            color: #cccccc;
+        }
+
+        ul {
+            list-style: none;
+            margin-top: 2rem;
+        }
+
+        li {
+            font-size: var(--body-size);
+            margin-bottom: 1rem;
+            position: relative;
+            padding-left: 2rem;
+            color: #e0e0e0;
+        }
+
+        li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        code {
+            font-family: var(--font-mono);
+            background: #222;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--accent);
+            font-size: 0.9em;
+        }
+
+        .code-block {
+            background: #000;
+            padding: 1.5rem;
+            border-radius: 8px;
+            font-family: var(--font-mono);
+            font-size: 0.9em;
+            border-left: 4px solid var(--accent);
+            overflow: hidden;
+            margin: 1.5rem 0;
+            width: fit-content;
+            max-width: 100%;
+            color: #88ff88;
+        }
+
+        /* === SPECIAL LAYOUTS === */
+        .title-slide h1 {
+            color: #000;
+        }
+
+        .title-slide p {
+            color: #000;
+            margin-top: 1rem;
+            opacity: 0.8;
+            font-weight: 500;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        @media (max-width: 800px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+
+        /* === SEQUENCE DIAGRAM STYLES === */
+        .diag-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1rem;
+            position: relative;
+            margin-top: 2rem;
+            height: clamp(300px, 50vh, 600px);
+        }
+
+        .diag-pillar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .diag-box {
+            background: #1a1a1a;
+            border: 1px solid var(--accent);
+            padding: 0.5rem 1rem;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            text-align: center;
+            width: 90%;
+            z-index: 5;
+            box-shadow: 4px 4px 0px var(--accent-glow);
+            color: #fff;
+        }
+
+        .diag-line {
+            width: 1px;
+            height: 100%;
+            border-left: 1px dashed rgba(0, 123, 255, 0.3);
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            z-index: 1;
+        }
+
+        .diag-arrow {
+            position: absolute;
+            height: 2px;
+            background: var(--accent);
+            z-index: 10;
+        }
+
+        .diag-arrow::after {
+            content: '';
+            position: absolute;
+            right: -2px;
+            top: -4px;
+            border-left: 8px solid var(--accent);
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+        }
+
+        .diag-arrow.rev::after {
+            left: -2px;
+            right: auto;
+            border-right: 8px solid var(--accent);
+            border-left: none;
+        }
+
+        .diag-label {
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            white-space: nowrap;
+            color: var(--accent);
+            background: var(--bg-primary);
+            padding: 0 4px;
+        }
+
+        .diag-footer {
+            margin-top: 3rem;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.02);
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: #999;
+            border-radius: 4px;
+        }
+
+        /* Coverage Bar */
+        .cov-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background: rgba(0, 123, 255, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: 4px;
+            font-family: var(--font-mono);
+            font-weight: bold;
+            color: var(--accent);
+            margin: 0.5rem;
+        }
+
+        .cov-bar-off {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .cov-bar-on {
+            height: 100%;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent-glow);
+            border-radius: 4px;
+            transition: width 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        /* Navigation dots */
+        .nav-dots {
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border: 2px solid var(--accent);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .dot.active {
+            background: var(--accent);
+            transform: scale(1.4);
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: var(--accent);
+            z-index: 1000;
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <nav class="nav-dots" id="navDots"></nav>
+
+    <!-- SLIDE 1: CAPA -->
+    <section class="slide title-slide visible">
+        <div class="slide-number">01</div>
+        <div class="slide-content">
+            <div class="card reveal reveal-1">
+                <h1>BritaRH<br>ECOSYSTEM</h1>
+                <p>Modernização, Infraestrutura e Qualidade de Software</p>
+            </div>
+            <div class="nav-hint reveal reveal-3">use ↓ para navegar</div>
+        </div>
+    </section>
+
+    <!-- SLIDE 2: DOMÍNIO -->
+    <section class="slide">
+        <div class="slide-number">02</div>
+        <div class="slide-content">
+            <h2 class="reveal reveal-1">Recrutamento Estratégico</h2>
+            <div class="grid-2">
+                <p class="reveal reveal-2">
+                    O BritaRH atua como uma <strong>Ponte de Confiança</strong> entre a demanda técnica e o talento
+                    qualificado, focando no ecossistema de infraestrutura pesada.
+                </p>
+                <div class="card reveal reveal-3"
+                    style="background:#222; box-shadow:none; border:2px solid var(--accent);">
+                    <ul style="margin-top:0">
+                        <li><strong>Foco Vertical:</strong> Conexão precisa com o setor industrial.</li>
+                        <li><strong>Filtro de Qualidade:</strong> Otimização de tempo via IA Skill Assessment.</li>
+                        <li><strong>Compliance:</strong> Onboarding seguro com validação de credenciais.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 3: CLEAN ARCHITECTURE -->
+    <section class="slide">
+        <div class="slide-number">03</div>
+        <div class="slide-content">
+            <h2 class="reveal reveal-1">Domínio & Clean Arch</h2>
+            <div class="grid-2">
+                <div class="reveal reveal-2">
+                    <p>O coração do sistema é o <strong>Domínio</strong>, independente de banco de dados ou APIs.</p>
+                    <ul style="margin-top: 1rem">
+                        <li><strong>Model / Entidade:</strong> Representa a verdade do banco (SQLAlchemy).</li>
+                        <li><strong>Schema:</strong> Define o contrato da API e validação (Pydantic).</li>
+                        <li><strong>Regra de Negócio:</strong> "Vagas só aceitam currículos se estiverem ativas".</li>
+                    </ul>
+                </div>
+                <div class="card reveal reveal-3"
+                    style="background: rgba(0, 123, 255, 0.05); border: 1px solid var(--accent); color: #fff;">
+                    <p style="font-size: 0.8em; line-height: 1.6;">
+                        <code>Model</code> = <strong>Persistência</strong><br>
+                        <code>Schema</code> = <strong>Contrato/Validação</strong><br>
+                        <code>Service</code> = <strong>Domínio/Orquestração</strong>
+                    </p>
+                    <hr style="margin: 0.5rem 0; opacity: 0.2">
+                    <p style="font-size: 0.75em; color: #aaa;">Essa tríade garante que regras de negócio não se misturam
+                        com detalhes técnicos de infraestrutura.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 4: BANCO DE DADOS -->
+    <section class="slide">
+        <div class="slide-number">04</div>
+        <div class="slide-content">
+            <h2 class="reveal reveal-1">Infra: Persistência</h2>
+            <p class="reveal reveal-2">Utilizamos <strong>PostgreSQL 16</strong> com otimizações para busca em larga
+                escala.</p>
+            <div class="code-block reveal reveal-3">
+                Index("profile_data_gin", "profile_data", postgresql_using="gin")<br>
+                CheckConstraint("score >= 0 AND score <= 100")<br>
+                    updated_at: Mapped[datetime] (Auditoria Automática)
+            </div>
+            <p class="reveal reveal-4" style="font-size: 0.85em">Índices GIN permitem buscas ultra-rápidas em campos
+                JSONB de perfis.</p>
+        </div>
+    </section>
+
+    <!-- SLIDE 4: ENTIDADE CORE -->
+    <section class="slide">
+        <div class="slide-number">05</div>
+        <div class="slide-content">
+            <h2 class="reveal reveal-1">A Entidade: O Coração do BritaRH</h2>
+            <div class="grid-2">
+                <div class="reveal reveal-2">
+                    <p>No centro do sistema está a entidade <strong>Job (Vaga)</strong>. No DDD, uma entidade é definida
+                        por sua <strong>Identidade</strong>, não apenas seus atributos.</p>
+                    <ul style="margin-top: 1rem">
+                        <li><strong>Identidade Única:</strong> UUID persistente.</li>
+                        <li><strong>Estado:</strong> Transição entre <code>OPEN</code> e <code>CLOSED</code>.</li>
+                        <li><strong>Invariantes:</strong> Uma vaga só é válida se possuir no mínimo 5 questões técnicas.
+                        </li>
+                    </ul>
+                </div>
+                <div class="reveal reveal-3 code-block"
+                    style="font-size: 0.75rem; color: #fff; background: #000; border-left: 4px solid var(--accent)">
+                    <span style="color: #66d9ef">class</span> <span style="color: #a6e22e">Job</span>(Base):<br>
+                    &nbsp;&nbsp;__tablename__ = <span style="color: #e6db74">"jobs"</span><br>
+                    &nbsp;&nbsp;id: Mapped[UUID] = mapped_column(primary_key=<span
+                        style="color: #ae81ff">True</span>)<br>
+                    &nbsp;&nbsp;title: Mapped[str] = mapped_column(index=<span style="color: #ae81ff">True</span>)<br>
+                    &nbsp;&nbsp;status: Mapped[JobStatus] = mapped_column(default=JobStatus.OPEN)<br>
+                    &nbsp;&nbsp;<span style="color: #75715e"># Relacionamento Forte (Aggregate Root)</span><br>
+                    &nbsp;&nbsp;questions: Mapped[list[<span style="color: #e6db74">"Question"</span>]] =
+                    relationship(...)
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 5: UPLOAD MINIO -->
+    <section class="slide">
+        <div class="slide-number">06</div>
+        <div class="slide-content">
+            <h2 class="reveal reveal-1">Cloud Storage: MinIO</h2>
+            <p class="reveal reveal-2">Arquitetura compatível com S3 para gestão de currículos PDF.</p>
+            <ul class="reveal reveal-3">
+                <li>Upload em ambiente isolado via <code>storage_service</code></li>
+                <li>Geração de links seguros para recrutadores</li>
+                <li>Validação rigorosa de tipos (PDF Only) e tamanhos (Max 5MB)</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- SLIDE 6: SEGURANÇA DADOS -->
+    <section class="slide">
+        <div class="slide-number">07</div>
+        <div class="slide-content">
+            <h2 class="reveal reveal-1">Higienização de Dados</h2>
+            <p class="reveal reveal-2">Segurança começa na entrada. Implementamos normalização agressiva:</p>
+            <div class="code-block reveal reveal-3">
+                def get_user_by_cpf(db, cpf):<br>
+                &nbsp;&nbsp;clean_cpf = "".join(filter(str.isdigit, cpf))<br>
+                &nbsp;&nbsp;# Busca garantida sem máscaras
+            </div>
+            <p class="reveal reveal-4">Garantimos integridade referencial independente do input do usuário.</p>
+        </div>
+    </section>
+
+    <!-- SLIDE 7: AUTENTICAÇÃO -->
+    <section class="slide">
+        <div class="slide-number">08</div>
+        <div class="slide-content">
+            <h2 class="reveal reveal-1">Autenticação JWT & RBAC</h2>
+            <p class="reveal reveal-2">Controle de acesso granular baseado em funções (Roles).</p>
+            <ul class="reveal reveal-3">
+                <li><strong>Senhas:</strong> Hashing direto via <code>bcrypt</code></li>
+                <li><strong>Tokens:</strong> JWT com expiração configurável</li>
+                <li><strong>RBAC:</strong> Candidato vs Recrutador (Whitelist-backed)</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- SLIDE 8: TESTES UNITÁRIOS -->
+    <section class="slide">
+        <div class="slide-number">09</div>
+        <div class="slide-content">
+            <h2 class="reveal reveal-1">Qualidade: Testes Unitários</h2>
+            <p class="reveal reveal-2">Pilar de estabilidade baseado em <code>Pytest</code> e <code>Pydantic</code>.</p>
+            <div class="code-block reveal reveal-3">
+                def test_application_score_validation():<br>
+                &nbsp;&nbsp;with pytest.raises(ValidationError):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;ApplicationBase(score=101, ...)
+            </div>
+            <p class="reveal reveal-4">Regras de negócio validadas fora do banco de dados.</p>
+        </div>
+    </section>
+
+    <!-- SLIDE 9: TESTES INTEGRAÇÃO -->
+    <section class="slide">
+        <div class="slide-number">10</div>
+        <div class="slide-content">
+            <h2 class="reveal reveal-1">Testes de Integração</h2>
+            <p class="reveal reveal-2">Simulação de ambiente real com isolamento total.</p>
+            <ul class="reveal reveal-3">
+                <li>Bancos temporários (Setup/Teardown automático)</li>
+                <li>Mock de MinIO e External APIs</li>
+                <li>Validação de fluxos E2E (Linkage de User_ID)</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- SLIDE 10: DOCUMENTAÇÃO -->
+    <section class="slide">
+        <div class="slide-number">11</div>
+        <div class="slide-content">
+            <h2 class="reveal reveal-1">API Documentation</h2>
+            <p class="reveal reveal-2">Caminho final para integração: <strong>Swagger UI</strong> automático.</p>
+            <p class="reveal reveal-3">Acesse <code>/docs</code> para testar endpoints, visualizar schemas OpenAPI e
+                contratos de dados em tempo real.</p>
+            <div class="card reveal reveal-4"
+                style="background:#222; color:var(--accent); margin-top:1rem; border:1px dashed var(--accent)">
+                GET /jobs | POST /submit | PATCH /recruiter
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 12: FLUXO LINEAR -->
+    <section class="slide">
+        <div class="slide-number">12</div>
+        <div class="slide-content" style="justify-content: flex-start; padding-top: 6rem;">
+            <h2 class="reveal reveal-1">O Fluxo de Execução Linear</h2>
+
+            <div class="diag-container">
+                <!-- Pillars -->
+                <div class="diag-pillar">
+                    <div class="diag-box reveal reveal-1">Cliente</div>
+                    <div class="diag-line"></div>
+                </div>
+                <div class="diag-pillar">
+                    <div class="diag-box reveal reveal-2">Rota API</div>
+                    <div class="diag-line"></div>
+                </div>
+                <div class="diag-pillar">
+                    <div class="diag-box reveal reveal-3">Repositório</div>
+                    <div class="diag-line"></div>
+                </div>
+                <div class="diag-pillar">
+                    <div class="diag-box reveal reveal-4">Caso de Uso</div>
+                    <div class="diag-line"></div>
+                </div>
+                <div class="diag-pillar">
+                    <div class="diag-box reveal reveal-4">Banco de Dados</div>
+                    <div class="diag-line"></div>
+                </div>
+
+                <!-- Arrows -->
+                <!-- Cliente -> Rota API -->
+                <div class="diag-arrow reveal reveal-2" style="top: 80px; left: 10%; width: 10%;">
+                    <span class="diag-label">POST /submit</span>
+                </div>
+
+                <!-- Rota API -> Repositório -->
+                <div class="diag-arrow reveal reveal-3" style="top: 110px; left: 30%; width: 20%;">
+                    <span class="diag-label">Instancia</span>
+                </div>
+
+                <!-- Rota API -> Caso de Uso -->
+                <div class="diag-arrow reveal reveal-4" style="top: 140px; left: 30%; width: 40%;">
+                    <span class="diag-label">Instancia (injeta repo)</span>
+                </div>
+
+                <!-- Rota API -> Caso de Uso -->
+                <div class="diag-arrow reveal reveal-4" style="top: 170px; left: 30%; width: 40%;">
+                    <span class="diag-label">execute()</span>
+                </div>
+
+                <!-- Caso de Uso -> Banco de Dados -->
+                <div class="diag-arrow reveal reveal-4" style="top: 200px; left: 70%; width: 20%;">
+                    <span class="diag-label">save()</span>
+                </div>
+
+                <!-- Rota API -> Banco de Dados -->
+                <div class="diag-arrow reveal reveal-4" style="top: 230px; left: 30%; width: 60%;">
+                    <span class="diag-label">db.commit()</span>
+                </div>
+
+                <!-- Rota API -> Cliente -->
+                <div class="diag-arrow rev reveal reveal-4" style="top: 260px; left: 10%; width: 20%;">
+                    <span class="diag-label">Retorno da Candidatura</span>
+                </div>
+            </div>
+
+            <div class="diag-footer reveal reveal-4">
+                O código executa uma coreografia exata de composição Just-In-Time. Ao invés de usar Singletons
+                complexos, as dependências são instanciadas e conectadas (Repo + Use Case) a cada requisição, garantindo
+                isolamento total do estado.
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 13: MÉTRICAS DE QUALIDADE -->
+    <section class="slide">
+        <div class="slide-number">13</div>
+        <div class="slide-content">
+            <h2 class="reveal reveal-1">Métricas de Qualidade</h2>
+
+            <div class="grid-2">
+                <div class="reveal reveal-2">
+                    <h3 class="accent" style="margin-bottom: 1rem;">Cobertura Real (Pytest-Cov)</h3>
+                    <div class="cov-badge">35 Testes Sólidos</div>
+                    <div class="cov-badge">94% Cobertura Total</div>
+
+                    <div style="margin-top:1.5rem">
+                        <div
+                            style="display:flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 4px">
+                            <span>Cobertura Global (Backend)</span>
+                            <span>94%</span>
+                        </div>
+                        <div class="cov-bar-off">
+                            <div class="cov-bar-on" style="width: 94%"></div>
+                        </div>
+
+                        <div
+                            style="display:flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 4px; margin-top: 1rem;">
+                            <span>Contratos & Schemas (Pydantic V2)</span>
+                            <span>100%</span>
+                        </div>
+                        <div class="cov-bar-off">
+                            <div class="cov-bar-on" style="width: 100%; background: #2ecc71;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="reveal reveal-3">
+                    <h3 class="accent" style="margin-bottom: 1rem;">Estratégia de QA</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: 1rem; display: flex; align-items: flex-start;">
+                            <span style="color:var(--accent); margin-right: 0.5rem;">⚡</span>
+                            <div><strong>Isolation:</strong> BD PostgreSQL efêmero por suíte (Zero side-effects).</div>
+                        </li>
+                        <li style="margin-bottom: 1rem; display: flex; align-items: flex-start;">
+                            <span style="color:var(--accent); margin-right: 0.5rem;">⚡</span>
+                            <div><strong>Real Auth Flow:</strong> Testes via JWT real com expiração e RBAC.</div>
+                        </li>
+                        <li style="display: flex; align-items: flex-start;">
+                            <span style="color:var(--accent); margin-right: 0.5rem;">⚡</span>
+                            <div><strong>Async Aware:</strong> Cobertura validada em contextos de concorrência.</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 14: CONCLUSÃO -->
+    <section class="slide">
+        <div class="slide-number">14</div>
+        <div class="slide-content" style="text-align:center; align-items:center">
+            <h1 class="reveal reveal-1">BritaRH 2.0</h1>
+            <p class="reveal reveal-2">Escalabilidade, Segurança e Precisão.</p>
+            <div class="card reveal reveal-3" style="margin-top: 2rem">
+                <h2 style="color:black; margin-bottom:0">PRONTO PARA O PLAY</h2>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        class SlidePresentation {
+            constructor() {
+                this.slides = document.querySelectorAll('.slide');
+                this.navDots = document.getElementById('navDots');
+                this.progressBar = document.getElementById('progressBar');
+                this.init();
+            }
+
+            init() {
+                // Generate dots
+                this.slides.forEach((_, i) => {
+                    const dot = document.createElement('div');
+                    dot.className = 'dot' + (i === 0 ? ' active' : '');
+                    dot.addEventListener('click', () => {
+                        this.slides[i].scrollIntoView({ behavior: 'smooth' });
+                    });
+                    this.navDots.appendChild(dot);
+                });
+
+                // Intersection Observer for visibility and animations
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            this.updateHUD(entry.target);
+                        } else {
+                            entry.target.classList.remove('visible');
+                        }
+                    });
+                }, { threshold: 0.5 });
+
+                this.slides.forEach(slide => observer.observe(slide));
+
+                // Keyboard Nav
+                document.addEventListener('keydown', (e) => {
+                    const nextKeys = ['ArrowDown', 'ArrowRight', ' ', 'PageDown'];
+                    const prevKeys = ['ArrowUp', 'ArrowLeft', 'PageUp'];
+
+                    if (nextKeys.includes(e.key)) {
+                        this.navigate(1);
+                        e.preventDefault();
+                    } else if (prevKeys.includes(e.key)) {
+                        this.navigate(-1);
+                        e.preventDefault();
+                    }
+                });
+            }
+
+            updateHUD(activeSlide) {
+                const index = Array.from(this.slides).indexOf(activeSlide);
+                // Update dots
+                document.querySelectorAll('.dot').forEach((dot, i) => {
+                    dot.classList.toggle('active', i === index);
+                });
+                // Update progress bar
+                const progress = ((index + 1) / this.slides.length) * 100;
+                this.progressBar.style.width = `${progress}%`;
+            }
+
+            navigate(direction) {
+                const currentVisible = Array.from(this.slides).findIndex(s => s.classList.contains('visible'));
+                const next = Math.min(Math.max(0, currentVisible + direction), this.slides.length - 1);
+                this.slides[next].scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        new SlidePresentation();
+    </script>
+</body>
+
+</html>

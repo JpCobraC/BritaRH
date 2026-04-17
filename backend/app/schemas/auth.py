@@ -1,5 +1,5 @@
 from datetime import date
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, ConfigDict
 from app.models.models import UserRole
 
 class UserRegister(BaseModel):
@@ -15,10 +15,20 @@ class UserLogin(BaseModel):
     password: str
 
 class UserRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    
     email: EmailStr
     name: str
     role: UserRole
     picture: str | None = None
 
-    class Config:
-        from_attributes = True
+class Token(BaseModel):
+    """Schema para retorno de token de acesso."""
+    access_token: str
+    token_type: str
+    user: UserRead
+
+class TokenData(BaseModel):
+    """Schema para dados contidos no payload do token."""
+    email: str | None = None
+    name: str | None = None
