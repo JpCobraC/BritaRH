@@ -73,6 +73,10 @@ export default function AuthPage() {
           <p className="text-slate-500 mt-1">
             {mode === "login" ? "Acesse sua conta" : "Cadastre-se para encontrar vagas"}
           </p>
+          <Link href="/vagas" className="inline-flex items-center gap-1 mt-4 text-sm font-medium text-primary hover:text-primary/80 transition-colors bg-primary/5 px-4 py-2 rounded-lg">
+            <span className="material-symbols-outlined text-[18px]">search</span>
+            Explorar vagas sem cadastro
+          </Link>
         </div>
 
         {/* Tab Switcher */}

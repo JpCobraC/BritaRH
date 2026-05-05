@@ -1,7 +1,7 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { useEffect } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -67,11 +67,28 @@ export default function VagasPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [locationFilter, setLocationFilter] = useState("Todas as cidades");
+
   useEffect(() => {
     if (session?.user?.role === "recruiter") {
       router.push("/dashboard");
     }
   }, [session, router]);
+
+  const filteredVagas = useMemo(() => {
+    return vagas.filter((vaga) => {
+      const matchesSearch = 
+        vaga.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        vaga.descricao.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      const matchesLocation = 
+        locationFilter === "Todas as cidades" || 
+        vaga.local === locationFilter;
+
+      return matchesSearch && matchesLocation;
+    });
+  }, [searchTerm, locationFilter]);
 
   if (status === "loading") {
     return <div className="min-h-screen flex items-center justify-center">Gerando oportunidades...</div>;
@@ -85,7 +102,7 @@ export default function VagasPage() {
           <div className="max-w-2xl">
             <div className="inline-flex items-center gap-2 bg-primary/10 text-primary text-xs font-semibold px-3 py-1 rounded-full mb-4">
               <span className="material-symbols-outlined text-sm">work</span>
-              {vagas.length} vagas abertas
+              {filteredVagas.length} vagas encontradas
             </div>
             <h1 className="text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight mb-3">
               Vagas BritaRH Mineração
@@ -102,12 +119,18 @@ export default function VagasPage() {
               <input
                 type="text"
                 placeholder="Buscar vagas por cargo, área..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm"
               />
             </div>
             <div className="relative">
               <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-base">location_on</span>
-              <select className="pl-9 pr-8 py-3 border border-slate-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm text-slate-600 appearance-none cursor-pointer">
+              <select 
+                value={locationFilter}
+                onChange={(e) => setLocationFilter(e.target.value)}
+                className="pl-9 pr-8 py-3 border border-slate-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm text-slate-600 appearance-none cursor-pointer"
+              >
                 <option>Todas as cidades</option>
                 <option>Belo Horizonte, MG</option>
                 <option>Contagem, MG</option>
@@ -121,7 +144,12 @@ export default function VagasPage() {
       {/* Cards */}
       <div className="max-w-6xl mx-auto px-6 py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {vagas.map((vaga) => (
+          {filteredVagas.length === 0 ? (
+            <div className="col-span-full py-12 text-center text-slate-500">
+              Nenhuma vaga encontrada com os filtros atuais.
+            </div>
+          ) : (
+            filteredVagas.map((vaga) => (
             <div
               key={vaga.id}
               className="bg-white rounded-2xl border border-slate-100 p-6 hover:shadow-lg hover:border-primary/20 transition-all group"
@@ -172,7 +200,7 @@ export default function VagasPage() {
                 <span className="material-symbols-outlined text-base">arrow_forward</span>
               </Link>
             </div>
-          ))}
+          )))}
         </div>
       </div>
     </div>
