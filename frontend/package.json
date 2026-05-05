@@ -9,12 +9,14 @@
     "lint": "next lint",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "generate:api": "openapi-typescript ./openapi.json -o src/lib/api/schema.d.ts"
   },
   "dependencies": {
     "jose": "^6.2.2",
     "next": "14.2.5",
     "next-auth": "^5.0.0-beta.19",
+    "openapi-fetch": "^0.17.0",
     "react": "^18",
     "react-dom": "^18",
     "zod": "^3.23.8"
@@ -32,6 +34,7 @@
     "eslint": "^8",
     "eslint-config-next": "14.2.5",
     "jsdom": "^24.1.0",
+    "openapi-typescript": "^7.13.0",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "typescript": "^5",
