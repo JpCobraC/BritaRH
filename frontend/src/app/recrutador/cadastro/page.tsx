@@ -25,25 +25,26 @@ export default function RecruiterRegisterPage() {
     const name = formData.get("name") as string;
     const cpf = formData.get("cpf") as string;
     const birth_date = formData.get("birth_date") as string;
+    const company_name = formData.get("company_name") as string;
 
     try {
-      // 1. Registro no Backend
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
+      // Cadastro via API Backend
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+      const res = await fetch(`${apiUrl}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          email, 
-          password, 
-          name, 
-          cpf, 
-          birth_date,
-          role: "recruiter" // Forçado para recrutador
-        }),
+        body: JSON.stringify({ email, password, name, cpf, birth_date, role: "recruiter", company_name }),
       });
 
       if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.detail || "Erro ao cadastrar recrutador");
+        let errorMsg = "Erro ao cadastrar recrutador. Verifique seus dados.";
+        try {
+          const data = await res.json();
+          errorMsg = data.detail || errorMsg;
+        } catch {
+          // Fallback se a API não retornar JSON válido
+        }
+        throw new Error(errorMsg);
       }
 
       // 2. Login automático

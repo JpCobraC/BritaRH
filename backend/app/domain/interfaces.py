@@ -1,6 +1,6 @@
 import uuid
 from abc import ABC, abstractmethod
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from .entities import Application, Job, RecruiterWhitelist, User
 
@@ -15,11 +15,15 @@ class IJobRepository(ABC):
         pass
 
     @abstractmethod
-    async def list_open(self, skip: int = 0, limit: int = 100) -> List[Job]:
+    async def list_open(self, skip: int = 0, limit: int = 100) -> Tuple[int, List[Job]]:
         pass
 
     @abstractmethod
     async def update(self, job: Job) -> Job:
+        pass
+
+    @abstractmethod
+    async def delete(self, job_id: uuid.UUID) -> None:
         pass
 
 
@@ -34,6 +38,14 @@ class IApplicationRepository(ABC):
 
     @abstractmethod
     async def has_user_applied(self, user_id: uuid.UUID, job_id: uuid.UUID) -> bool:
+        pass
+
+    @abstractmethod
+    async def has_email_applied(self, email: str, job_id: uuid.UUID) -> bool:
+        pass
+
+    @abstractmethod
+    async def list_by_job_id(self, job_id: uuid.UUID, skip: int = 0, limit: int = 100) -> Tuple[int, List[Application]]:
         pass
 
 

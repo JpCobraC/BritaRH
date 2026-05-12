@@ -60,9 +60,25 @@ class Job:
     id: uuid.UUID = field(default_factory=uuid.uuid4)
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+    deleted_at: Optional[datetime] = None
 
     def is_open(self) -> bool:
-        return self.status == JobStatus.OPEN
+        return self.status == JobStatus.OPEN and self.deleted_at is None
+
+    def close(self):
+        self.status = JobStatus.CLOSED
+
+    def soft_delete(self):
+        self.deleted_at = datetime.utcnow()
+
+    def can_modify_questions(self, has_applicants: bool) -> bool:
+        """Regra de negócio: não é possível alterar questões se já houver candidatos."""
+        return not has_applicants
+
+    def add_question(self, question: Question):
+        # We assume can_modify_questions was called in the usecase because checking DB isn't possible here without making domain depend on DB.
+        self.questions.append(question)
+
 
 
 @dataclass

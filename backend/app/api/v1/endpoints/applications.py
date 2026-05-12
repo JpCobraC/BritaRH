@@ -1,16 +1,13 @@
-import json
 import uuid
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
+from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, HTTPException, UploadFile, status
 from pydantic import EmailStr
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.database import get_db
-from app.models.models import Application, Job, User
-from app.schemas.application import ApplicationRead, ApplicationProfile
-from app.services.storage import storage_service
+from app.api import deps
+from app.schemas.application import ApplicationRead
+from app.usecases.application_usecases import SubmitApplicationUseCase
+from app.services.email import send_confirmation_email
 
 router = APIRouter()
 
@@ -21,7 +18,8 @@ async def submit_application(
     candidate_email: Annotated[EmailStr, Form(...)],
     profile_data: Annotated[str, Form(...)],
     score: Annotated[int, Form(...)],
-    db: Annotated[AsyncSession, Depends(get_db)],
+    usecase: Annotated[SubmitApplicationUseCase, Depends(deps.get_submit_application_usecase)],
+    background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
     message: Annotated[str | None, Form()] = None,
 ):
@@ -50,70 +48,45 @@ async def submit_application(
             detail=f"O currículo deve ter no máximo 5MB. Tamanho enviado: {file_size / (1024 * 1024):.2f}MB"
         )
 
-    # 2. Verifica se a vaga existe
-    job = await db.get(Job, job_id)
-    if not job:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Vaga não encontrada."
-        )
-
-    # 3. Verifica duplicidade (E-mail + Vaga)
-    query = select(Application).where(
-        Application.job_id == job_id,
-        Application.candidate_email == candidate_email
-    )
-    result = await db.execute(query)
-    if result.scalar_one_or_none():
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail="Você já se candidatou para esta vaga."
-        )
-
-    # 4. Validar dados de perfil com Pydantic
-    try:
-        profile_obj = ApplicationProfile.model_validate_json(profile_data)
-        profile_json = profile_obj.model_dump()
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail=f"Dados de perfil inválidos: {str(e)}"
-        )
-
-    # 5. Upload para MinIO
     file_content = await file.read()
+    
     try:
-        object_key = storage_service.upload_file(
+        new_app = await usecase.execute(
+            job_id=job_id,
+            candidate_email=candidate_email,
+            profile_data_json=profile_data,
+            score=score,
             file_content=file_content,
             filename=file.filename or f"resume_{uuid.uuid4()}.pdf",
-            content_type="application/pdf"
+            message=message
         )
-    except Exception as e:
-        # TODO: Logging real aqui
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Falha ao salvar currículo: {str(e)}"
+        
+        # Envia e-mail de confirmação em background
+        # Usamos job_id para o título pois não temos o title da vaga retornado,
+        # mas na vida real buscaríamos o title (ou ele viria no ApplicationRead).
+        job_title = f"Vaga {new_app.job_id}"
+        candidate_name = new_app.profile_data.get("name", "Candidato") if isinstance(new_app.profile_data, dict) else "Candidato"
+        background_tasks.add_task(
+            send_confirmation_email,
+            candidate_name=candidate_name,
+            candidate_email=new_app.candidate_email,
+            job_title=job_title
         )
-
-    # 6. Salva no Banco de Dados
-    # Tenta encontrar o usuário pelo e-mail para vincular a candidatura
-    user_query = select(User).where(User.email == candidate_email)
-    user_result = await db.execute(user_query)
-    found_user = user_result.scalar_one_or_none()
-    user_id = found_user.id if found_user else None
-
-    new_app = Application(
-        job_id=job_id,
-        user_id=user_id,
-        candidate_email=candidate_email,
-        profile_data=profile_json,
-        score=score,
-        message=message,
-        resume_url=object_key
-    )
-    
-    db.add(new_app)
-    await db.commit()
-    await db.refresh(new_app)
-    
-    return new_app
+        
+        return new_app
+    except ValueError as e:
+        # Erros de validação (ex: duplicidade, vaga não existe, JSON inválido)
+        # O Usecase poderia lançar exceções customizadas para mapear os status codes com precisão,
+        # Mas vamos simplificar usando 400 Bad Request / 409 Conflict onde aplicável
+        err_msg = str(e)
+        if "já se candidatou" in err_msg:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=err_msg)
+        if "Vaga não encontrada" in err_msg:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=err_msg)
+        if "perfil inválido" in err_msg:
+            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=err_msg)
+        
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=err_msg)
+    except RuntimeError as e:
+        # Erros de infraestrutura (MinIO, etc)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { useState, useEffect } from "react";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { UserIcon, GoogleIcon, BriefcaseIcon } from "@/components/icons";
 import Link from "next/link";
 import { maskCPF, maskDate } from "@/utils/masks";
@@ -14,6 +15,26 @@ export default function AuthPage() {
   const [error, setError] = useState("");
   const [cpf, setCpf] = useState("");
   const [birthDate, setBirthDate] = useState("");
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === "authenticated" && session?.user) {
+      if ((session.user as any).role === "recruiter") {
+        router.push("/dashboard");
+      } else {
+        router.push("/vagas");
+      }
+    }
+  }, [session, status, router]);
+
+  if (status === "loading" || status === "authenticated") {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="w-8 h-8 rounded-full border-4 border-primary border-t-transparent animate-spin"></div>
+      </div>
+    );
+  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -30,15 +51,22 @@ export default function AuthPage() {
     try {
       if (mode === "register") {
         // Fluxo de Cadastro via API Backend (Candidate por padrão)
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+        const res = await fetch(`${apiUrl}/auth/register`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, password, name, cpf, birth_date, role: "candidate" }),
         });
 
         if (!res.ok) {
-          const data = await res.json();
-          throw new Error(data.detail || "Erro ao cadastrar");
+          let errorMsg = "Erro ao cadastrar. Verifique seus dados.";
+          try {
+            const data = await res.json();
+            errorMsg = data.detail || errorMsg;
+          } catch {
+            // Se falhar o parse (ex: 500 Internal Server Error em HTML), mantém erro genérico
+          }
+          throw new Error(errorMsg);
         }
       }
 
@@ -53,7 +81,15 @@ export default function AuthPage() {
         throw new Error("E-mail ou senha inválidos.");
       }
 
-      window.location.href = "/vagas";
+      // Se for o login do recrutador de teste (ou se conseguíssemos ler a role do result), redirecionamos
+      // Como o NextAuth reload limpa o state, e queremos ir para o lugar certo, vamos recarregar na raiz
+      // e o middleware ou a página que decidir para onde vai. Mas por enquanto vamos para a dashboard
+      // se for o email de recrutador conhecido, senão /vagas.
+      if (email === "recrutador@britarh.com.br") {
+        window.location.href = "/dashboard";
+      } else {
+        window.location.href = "/vagas";
+      }
     } catch (err: any) {
       setError(err.message);
       setLoading(false);

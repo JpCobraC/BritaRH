@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession, signOut } from "next-auth/react";
 
 const navItems = [
   { href: "/admin", label: "Painel", icon: "dashboard" },
@@ -11,6 +12,7 @@ const navItems = [
 
 export default function RecruiterSidebar() {
   const pathname = usePathname();
+  const { data: session } = useSession();
 
   return (
     <aside className="w-64 bg-primary text-white flex flex-col shrink-0">
@@ -50,12 +52,16 @@ export default function RecruiterSidebar() {
             <span className="material-symbols-outlined text-white">person</span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold truncate">Ricardo Silva</p>
-            <p className="text-xs text-white/60 truncate">Gestor de RH</p>
+            <p className="text-sm font-semibold truncate">{session?.user?.name || "Recrutador"}</p>
+            <p className="text-xs text-white/60 truncate">{session?.user?.email || "RH"}</p>
           </div>
-          <span className="material-symbols-outlined text-white/60 cursor-pointer hover:text-white">
+          <button 
+            onClick={() => signOut({ callbackUrl: '/' })}
+            className="material-symbols-outlined text-white/60 cursor-pointer hover:text-white transition-colors"
+            title="Sair"
+          >
             logout
-          </span>
+          </button>
         </div>
       </div>
     </aside>

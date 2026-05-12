@@ -53,7 +53,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   jwt: {
     // Custom JWT encoding to allow standard HS256 and shared secret with FastAPI
     async encode({ token, secret: _secret }) {
-      return await new SignJWT(token as any)
+      if (!token) return "";
+      // Remove iat e exp que o NextAuth já pode ter injetado para evitar conflito com o jose
+      const { iat, exp, jti, ...payload } = token as any;
+      return await new SignJWT(payload)
         .setProtectedHeader({ alg: "HS256" })
         .setIssuedAt()
         .setExpirationTime("30d")

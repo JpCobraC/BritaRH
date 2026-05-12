@@ -114,25 +114,7 @@ export default function RecruiterDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex">
-      {/* Sidebar Simulado */}
-      <aside className="w-64 bg-white border-r border-slate-200 hidden lg:flex flex-col">
-        <div className="p-6 border-b border-slate-100">
-          <h2 className="text-xl font-black text-primary">BritaRH</h2>
-          <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mt-1">Recrutador</p>
-        </div>
-        <nav className="flex-1 p-4 space-y-2">
-          <button className="w-full flex items-center gap-3 px-4 py-3 bg-primary/10 text-primary rounded-xl font-bold transition-all">
-            <span className="material-symbols-outlined">dashboard</span>
-            Dashboard
-          </button>
-          <Link href="/" className="w-full flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 rounded-xl transition-all font-medium">
-            <span className="material-symbols-outlined">logout</span>
-            Sair
-          </Link>
-        </nav>
-      </aside>
-
+    <div className="min-h-screen bg-slate-50 flex flex-col">
       {/* Main Content */}
       <main className="flex-1 p-8 overflow-y-auto">
         <header className="flex justify-between items-center mb-8">

@@ -3,7 +3,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any
 
-from sqlalchemy import ForeignKey, String, Text, func, UUID, Date, CheckConstraint, Index
+from sqlalchemy import ForeignKey, String, Text, func, UUID, Date, DateTime, CheckConstraint, Index
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -39,8 +39,10 @@ class Job(Base):
     updated_at: Mapped[datetime] = mapped_column(
         server_default=func.now(), onupdate=func.now()
     )
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
     # Relacionamentos
+
     questions: Mapped[list["Question"]] = relationship(back_populates="job", cascade="all, delete-orphan")
     applications: Mapped[list["Application"]] = relationship(back_populates="job", cascade="all, delete-orphan")
 
