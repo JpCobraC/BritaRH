@@ -8,6 +8,7 @@ from app.api.v1 import (
     recruiter,
     applications,
     auth,
+    storage,
 )
 from app.core.config import settings
 
@@ -42,4 +43,5 @@ app.include_router(health.router, prefix="/api/v1", tags=["health"])
 app.include_router(jobs.router, prefix="/api/v1/jobs", tags=["Jobs"])
 app.include_router(recruiter.router, prefix="/api/v1/recruiter", tags=["Recruiter Dashboard"])
 app.include_router(applications.router, prefix="/api/v1/applications", tags=["Candidate Applications"])
+app.include_router(storage.router, prefix="/api/v1/storage", tags=["Storage"])
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["Auth"])

@@ -3,6 +3,11 @@ import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 import { SignJWT, jwtVerify } from "jose";
 
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL ||
+  process.env.API_BASE_URL ||
+  "http://localhost:8000";
+
 const secret = new TextEncoder().encode(
   process.env.BACKEND_SECRET || "shared-jwt-secret-between-frontend-and-backend"
 );
@@ -23,21 +28,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (!credentials?.email || !credentials?.password) return null;
 
         try {
-          const res = await fetch(`${process.env.API_BASE_URL}/api/v1/auth/login`, {
+          const res = await fetch(`${API_BASE_URL}/api/v1/auth/login`, {
             method: "POST",
             body: JSON.stringify(credentials),
             headers: { "Content-Type": "application/json" },
           });
 
-          const user = await res.json();
+          const data = await res.json();
+          const backendUser = data?.user;
 
-          if (res.ok && user) {
+          if (res.ok && backendUser) {
             return {
-              id: user.email,
-              name: user.name,
-              email: user.email,
-              image: user.picture,
-              role: user.role,
+              id: backendUser.email,
+              name: backendUser.name,
+              email: backendUser.email,
+              image: backendUser.picture,
+              role: backendUser.role,
+              accessToken: data.access_token,
             };
           }
         } catch (error) {
@@ -81,6 +88,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.name = user.name;
         token.picture = user.image;
         token.role = (user as any).role;
+        token.accessToken = (user as any).accessToken;
       }
       return token;
     },
@@ -90,6 +98,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.name = token.name as string;
         session.user.image = token.picture as string;
         (session.user as any).role = token.role as string;
+        (session as any).accessToken = token.accessToken as string;
       }
       return session;
     },

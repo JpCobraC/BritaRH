@@ -28,6 +28,8 @@ interface Application {
 export default function RecruiterDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+  const apiV1Url = `${apiBaseUrl}/api/v1`;
   const [jobs, setJobs] = useState<JobRecruiter[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedJob, setSelectedJob] = useState<JobRecruiter | null>(null);
@@ -46,13 +48,13 @@ export default function RecruiterDashboard() {
 
   const fetchJobs = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/recruiter/jobs`, {
+      const res = await fetch(`${apiV1Url}/recruiter/jobs`, {
         headers: {
           Authorization: `Bearer ${session?.accessToken}`,
         },
       });
       if (res.ok) {
-        const data = await res.ok ? await res.json() : [];
+        const data = await res.json();
         setJobs(data);
       }
     } catch (error) {
@@ -65,7 +67,7 @@ export default function RecruiterDashboard() {
   const toggleJobStatus = async (jobId: string, currentStatus: string) => {
     const newStatus = currentStatus === "open" ? "closed" : "open";
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/jobs/${jobId}`, {
+      const res = await fetch(`${apiV1Url}/jobs/${jobId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -89,7 +91,7 @@ export default function RecruiterDashboard() {
     setLoadingApps(true);
     setApplications([]);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/recruiter/jobs/${job.id}/applications`, {
+      const res = await fetch(`${apiV1Url}/recruiter/jobs/${job.id}/applications`, {
         headers: {
           Authorization: `Bearer ${session?.accessToken}`,
         },
@@ -226,7 +228,7 @@ export default function RecruiterDashboard() {
                           
                           <div className="flex items-center gap-2 mt-4 pt-3 border-t border-slate-50">
                             <a 
-                              href={`${process.env.NEXT_PUBLIC_API_URL}/storage/download/${app.resume_url}`}
+                              href={`${apiV1Url}/storage/download/${app.resume_url}`}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="flex-1 flex items-center justify-center gap-2 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-[10px] font-bold transition-all"

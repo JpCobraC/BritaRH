@@ -29,8 +29,8 @@ export default function RecruiterRegisterPage() {
 
     try {
       // Cadastro via API Backend
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
-      const res = await fetch(`${apiUrl}/auth/register`, {
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const res = await fetch(`${apiBaseUrl}/api/v1/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password, name, cpf, birth_date, role: "recruiter", company_name }),
