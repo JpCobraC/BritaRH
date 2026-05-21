@@ -4,19 +4,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BritaRH - Apresentação Técnica</title>
+    <title>BritaRH - Arquitetura de Software</title>
     <!-- Fonts -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
+        /* === DESIGN SYSTEM: FUTURISTIC SLATE & NEON === */
+        :root {
+            --bg-dark: #070a13;
+            --bg-card: rgba(13, 20, 38, 0.7);
+            --bg-glass: rgba(13, 20, 38, 0.4);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(99, 102, 241, 0.2);
+            --primary: #6366f1;
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            --secondary: #06b6d4;
+            --secondary-gradient: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            --accent: #10b981;
+            --accent-glow: rgba(16, 185, 129, 0.15);
+            --purple: #8b5cf6;
+            --error: #f43f5e;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --font-heading: 'Outfit', sans-serif;
+            --font-body: 'Plus Jakarta Sans', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --title-size: clamp(2rem, 5.5vw, 4rem);
+            --h2-size: clamp(1.5rem, 3.8vw, 2.5rem);
+            --body-size: clamp(0.9rem, 1.6vw, 1.15rem);
+            --slide-padding: clamp(1.2rem, 4vw, 3rem);
+        }
+
         /* === VIEWPORT FITTING: MANDATORY BASE STYLES === */
         html,
         body {
             height: 100%;
-            overflow-x: hidden;
-            scroll-snap-type: y mandatory;
-            scroll-behavior: smooth;
+            overflow: hidden;
+            background-color: var(--bg-dark);
+            margin: 0;
+            padding: 0;
+            color: var(--text-main);
+            font-family: var(--font-body);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         * {
@@ -25,314 +54,142 @@
             box-sizing: border-box;
         }
 
+        /* Interactive Grid & Glow Backgrounds */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: 
+                radial-gradient(rgba(99, 102, 241, 0.08) 1.5px, transparent 1.5px), 
+                radial-gradient(rgba(6, 182, 212, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .radial-glow {
+            position: fixed;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, rgba(7, 10, 19, 0) 70%);
+            top: -200px;
+            right: -200px;
+            z-index: 1;
+            pointer-events: none;
+            filter: blur(80px);
+        }
+
+        .radial-glow-2 {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.06) 0%, rgba(7, 10, 19, 0) 70%);
+            bottom: -150px;
+            left: -150px;
+            z-index: 1;
+            pointer-events: none;
+            filter: blur(60px);
+        }
+
+        /* === SLIDE CONTAINER === */
+        .presentation-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            z-index: 5;
+        }
+
         .slide {
             width: 100vw;
             height: 100vh;
             height: 100dvh;
-            overflow: hidden;
-            scroll-snap-align: start;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            background: #121212;
-            color: #ffffff;
-            font-family: 'Space Grotesk', sans-serif;
-        }
-
-        /* === DESIGN SYSTEM: BOLD SIGNAL (BLUE ADAPTATION) === */
-        :root {
-            --bg-primary: #121212;
-            --bg-gradient: linear-gradient(135deg, #121212 0%, #1a1a1a 50%, #121212 100%);
-            --accent: #007bff;
-            --accent-glow: rgba(0, 123, 255, 0.3);
-            --text-on-accent: #000000;
-            --font-display: 'Archivo Black', sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
-            --title-size: clamp(2rem, 6vw, 4.5rem);
-            --h2-size: clamp(1.5rem, 4vw, 3rem);
-            --body-size: clamp(0.9rem, 1.8vw, 1.25rem);
-            --slide-padding: clamp(1.5rem, 5vw, 4rem);
-        }
-
-        .slide-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: var(--slide-padding);
-            z-index: 10;
-        }
-
-        .card {
-            background: var(--accent);
-            padding: clamp(1rem, 3vw, 2.5rem);
-            border-radius: 4px;
-            max-width: 900px;
-            box-shadow: 15px 15px 0px rgba(0, 123, 255, 0.1);
-        }
-
-        /* === HUD ELEMENTS === */
-        .slide-number {
             position: absolute;
-            top: 2rem;
-            left: 2rem;
-            font-family: var(--font-display);
-            font-size: clamp(2rem, 5vw, 4rem);
-            opacity: 0.1;
-            z-index: 1;
-        }
-
-        .nav-hint {
-            position: absolute;
-            bottom: 2rem;
-            right: 2rem;
-            font-family: var(--font-mono);
-            font-size: 0.8rem;
-            opacity: 0.4;
-            color: var(--accent);
-        }
-
-        /* === ANIMATIONS === */
-        .reveal {
+            top: 0;
+            left: 0;
             opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: var(--slide-padding);
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+            overflow: hidden;
         }
 
-        .slide.visible .reveal {
+        .slide.active {
             opacity: 1;
-            transform: translateY(0);
-        }
-
-        .reveal-1 {
-            transition-delay: 0.1s;
-        }
-
-        .reveal-2 {
-            transition-delay: 0.2s;
-        }
-
-        .reveal-3 {
-            transition-delay: 0.3s;
-        }
-
-        .reveal-4 {
-            transition-delay: 0.4s;
+            visibility: visible;
         }
 
         /* === TYPOGRAPHY === */
+        h1, h2, h3, h4 {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
         h1 {
-            font-family: var(--font-display);
             font-size: var(--title-size);
-            text-transform: uppercase;
-            line-height: 0.95;
+            line-height: 1.1;
+            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #6366f1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
         }
 
         h2 {
-            font-family: var(--font-display);
             font-size: var(--h2-size);
-            color: var(--accent);
+            line-height: 1.2;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        h2 span.layer-tag {
+            font-size: 0.85rem;
+            font-family: var(--font-mono);
+            font-weight: 700;
             text-transform: uppercase;
-            margin-bottom: 2rem;
-            line-height: 1;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            letter-spacing: 0.05em;
+            vertical-align: middle;
         }
 
         p {
             font-size: var(--body-size);
-            line-height: 1.5;
-            color: #cccccc;
-        }
-
-        ul {
-            list-style: none;
-            margin-top: 2rem;
-        }
-
-        li {
-            font-size: var(--body-size);
-            margin-bottom: 1rem;
-            position: relative;
-            padding-left: 2rem;
-            color: #e0e0e0;
-        }
-
-        li::before {
-            content: "→";
-            position: absolute;
-            left: 0;
-            color: var(--accent);
-            font-weight: bold;
-        }
-
-        code {
-            font-family: var(--font-mono);
-            background: #222;
-            padding: 2px 6px;
-            border-radius: 4px;
-            color: var(--accent);
-            font-size: 0.9em;
-        }
-
-        .code-block {
-            background: #000;
-            padding: 1.5rem;
-            border-radius: 8px;
-            font-family: var(--font-mono);
-            font-size: 0.9em;
-            border-left: 4px solid var(--accent);
-            overflow: hidden;
-            margin: 1.5rem 0;
-            width: fit-content;
-            max-width: 100%;
-            color: #88ff88;
-        }
-
-        /* === SPECIAL LAYOUTS === */
-        .title-slide h1 {
-            color: #000;
-        }
-
-        .title-slide p {
-            color: #000;
-            margin-top: 1rem;
-            opacity: 0.8;
-            font-weight: 500;
-        }
-
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: center;
-        }
-
-        @media (max-width: 800px) {
-            .grid-2 {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-        }
-
-        /* === SEQUENCE DIAGRAM STYLES === */
-        .diag-container {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 1rem;
-            position: relative;
-            margin-top: 2rem;
-            height: clamp(300px, 50vh, 600px);
-        }
-
-        .diag-pillar {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-        }
-
-        .diag-box {
-            background: #1a1a1a;
-            border: 1px solid var(--accent);
-            padding: 0.5rem 1rem;
-            font-family: var(--font-mono);
-            font-size: 0.85rem;
-            text-align: center;
-            width: 90%;
-            z-index: 5;
-            box-shadow: 4px 4px 0px var(--accent-glow);
-            color: #fff;
-        }
-
-        .diag-line {
-            width: 1px;
-            height: 100%;
-            border-left: 1px dashed rgba(0, 123, 255, 0.3);
-            position: absolute;
-            top: 40px;
-            left: 50%;
-            z-index: 1;
-        }
-
-        .diag-arrow {
-            position: absolute;
-            height: 2px;
-            background: var(--accent);
-            z-index: 10;
-        }
-
-        .diag-arrow::after {
-            content: '';
-            position: absolute;
-            right: -2px;
-            top: -4px;
-            border-left: 8px solid var(--accent);
-            border-top: 5px solid transparent;
-            border-bottom: 5px solid transparent;
-        }
-
-        .diag-arrow.rev::after {
-            left: -2px;
-            right: auto;
-            border-right: 8px solid var(--accent);
-            border-left: none;
-        }
-
-        .diag-label {
-            position: absolute;
-            bottom: 4px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-family: var(--font-mono);
-            font-size: 0.75rem;
-            white-space: nowrap;
-            color: var(--accent);
-            background: var(--bg-primary);
-            padding: 0 4px;
-        }
-
-        .diag-footer {
-            margin-top: 3rem;
-            padding: 1.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(255, 255, 255, 0.02);
-            font-size: 0.85rem;
             line-height: 1.6;
-            color: #999;
-            border-radius: 4px;
+            color: var(--text-muted);
         }
 
-        /* Coverage Bar */
-        .cov-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.5rem 1rem;
-            background: rgba(0, 123, 255, 0.1);
-            border: 1px solid var(--accent);
-            border-radius: 4px;
-            font-family: var(--font-mono);
-            font-weight: bold;
-            color: var(--accent);
-            margin: 0.5rem;
+        strong {
+            color: var(--text-main);
+            font-weight: 600;
         }
 
-        .cov-bar-off {
+        /* === HUD ELEMENTS === */
+        .progress-bar-container {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 1rem 0;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.03);
+            z-index: 1000;
         }
 
-        .cov-bar-on {
+        .progress-bar {
             height: 100%;
-            background: var(--accent);
-            box-shadow: 0 0 10px var(--accent-glow);
-            border-radius: 4px;
-            transition: width 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            box-shadow: 0 0 12px var(--primary);
+            transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* Navigation dots */
         .nav-dots {
             position: fixed;
             right: 2rem;
@@ -340,447 +197,1520 @@
             transform: translateY(-50%);
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 0.75rem;
             z-index: 100;
         }
 
-        .dot {
-            width: 10px;
-            height: 10px;
-            border: 2px solid var(--accent);
-            border-radius: 50%;
+        .dot-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 1rem;
             cursor: pointer;
-            transition: 0.3s;
         }
 
-        .dot.active {
-            background: var(--accent);
-            transform: scale(1.4);
+        .dot-label {
+            font-size: 0.75rem;
+            font-family: var(--font-heading);
+            font-weight: 600;
+            color: var(--text-muted);
+            opacity: 0;
+            transform: translateX(10px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+            white-space: nowrap;
         }
 
-        .progress-bar {
-            position: fixed;
+        .dot-wrapper:hover .dot-label {
+            opacity: 1;
+            transform: translateX(0);
+            color: var(--primary);
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            background: transparent;
+        }
+
+        .dot-wrapper.active .dot {
+            border-color: var(--primary);
+            background: var(--primary);
+            box-shadow: 0 0 8px var(--primary);
+            transform: scale(1.25);
+        }
+
+        .dot-wrapper.active .dot-label {
+            opacity: 1;
+            transform: translateX(0);
+            color: var(--text-main);
+        }
+
+        .footer-hud {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+            z-index: 10;
+        }
+
+        .slide-counter {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .slide-counter span {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .hud-navigation {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .hud-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: var(--font-heading);
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .hud-btn:hover {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: var(--primary);
+            color: var(--text-main);
+            box-shadow: 0 0 8px rgba(99, 102, 241, 0.15);
+        }
+
+        /* Keyboard Nav Tip */
+        .kbd-tip {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* === STRUCTURAL LAYOUTS === */
+        .slide-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 2rem 0;
+            z-index: 10;
+            overflow-y: auto;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .grid-equal {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2.5rem;
+            align-items: stretch;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 1024px) {
+            .grid-2, .grid-equal, .grid-3 {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+        /* === PREMIUM COMPONENTS === */
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
             top: 0;
             left: 0;
-            height: 3px;
-            background: var(--accent);
-            z-index: 1000;
-            transition: width 0.3s;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--border-glow), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(99, 102, 241, 0.25);
+            box-shadow: 0 15px 35px -10px rgba(99, 102, 241, 0.1);
+        }
+
+        .glass-card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .highlight-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(6, 182, 212, 0.05) 100%);
+            border: 1px solid rgba(99, 102, 241, 0.25);
+            border-radius: 12px;
+            padding: 2.2rem;
+            box-shadow: 0 10px 35px -10px rgba(99, 102, 241, 0.15);
+        }
+
+        /* Clean List Styles */
+        ul.styled-list {
+            list-style: none;
+            margin-top: 1.5rem;
+        }
+
+        ul.styled-list li {
+            font-size: var(--body-size);
+            margin-bottom: 1rem;
+            position: relative;
+            padding-left: 2rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        ul.styled-list li strong {
+            color: var(--text-main);
+        }
+
+        ul.styled-list li::before {
+            content: "✦";
+            position: absolute;
+            left: 0.25rem;
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 0.9em;
+            text-shadow: 0 0 8px var(--primary);
+        }
+
+        ul.styled-list li.secondary-bullet::before {
+            color: var(--secondary);
+            text-shadow: 0 0 8px var(--secondary);
+        }
+
+        /* === INTERACTIVE TABS === */
+        .tab-system {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            min-height: 380px;
+        }
+
+        .tab-headers {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 0.5rem 1.2rem;
+            font-family: var(--font-heading);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            background: rgba(99, 102, 241, 0.08);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -0.6rem;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--primary);
+            box-shadow: 0 0 8px var(--primary);
+        }
+
+        .tab-contents {
+            flex: 1;
+            position: relative;
+        }
+
+        .tab-panel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tab-panel.active {
+            position: relative;
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* === CODE STYLES === */
+        pre {
+            background: #090c15;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.25rem;
+            overflow-x: auto;
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+            line-height: 1.5;
+            color: #e2e8f0;
+            flex: 1;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.8);
+        }
+
+        code .keyword { color: #f472b6; font-weight: 600; }
+        code .function { color: #60a5fa; }
+        code .string { color: #34d399; }
+        code .comment { color: #64748b; font-style: italic; }
+        code .decorator { color: #fbbf24; }
+        code .type { color: #a78bfa; }
+        code .number { color: #f59e0b; }
+
+        .code-title {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .code-title::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--secondary);
+            border-radius: 50%;
+            box-shadow: 0 0 6px var(--secondary);
+        }
+
+        /* === INTERACTIVE SEQUENCE DIAGRAM === */
+        .diag-wrapper {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: center;
+        }
+
+        .sequence-nodes {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .seq-node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            cursor: pointer;
+            z-index: 5;
+            transition: all 0.3s ease;
+        }
+
+        .seq-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #111827;
+            border: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        .seq-name {
+            font-size: 0.75rem;
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: all 0.3s ease;
+        }
+
+        .seq-line-connector {
+            position: absolute;
+            top: 25px;
+            left: 7%;
+            width: 86%;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.06);
+            z-index: 1;
+        }
+
+        .seq-line-progress {
+            position: absolute;
+            top: 25px;
+            left: 7%;
+            width: 0%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            box-shadow: 0 0 8px var(--primary);
+            z-index: 2;
+            transition: width 0.5s ease;
+        }
+
+        /* Active/Hover states for nodes */
+        .seq-node:hover .seq-circle {
+            border-color: var(--secondary);
+            color: var(--text-main);
+            transform: scale(1.1);
+        }
+
+        .seq-node.active .seq-circle {
+            border-color: var(--primary);
+            background: var(--primary-gradient);
+            color: #ffffff;
+            transform: scale(1.2);
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .seq-node.active .seq-name {
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        .seq-detail-panel {
+            min-height: 140px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .seq-detail-title {
+            font-family: var(--font-heading);
+            font-size: 1.1rem;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .seq-detail-text {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: var(--text-muted);
+        }
+
+        /* === METRICS DASHBOARD === */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-family: var(--font-heading);
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1;
+            margin-bottom: 0.25rem;
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .cov-bar-wrapper {
+            margin: 1.5rem 0;
+        }
+
+        .cov-label-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .cov-bar-bg {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .cov-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.3);
+            width: 0%;
+            transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* === ANIMATIONS AND LAYOUT TWEAKS === */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(15px);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .slide.active .fade-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .delay-1 { transition-delay: 0.1s; }
+        .delay-2 { transition-delay: 0.2s; }
+        .delay-3 { transition-delay: 0.3s; }
+        .delay-4 { transition-delay: 0.4s; }
+
+        /* Cover Specific */
+        .cover-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            justify-content: center;
+            height: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .badge-gradient {
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.15) 0%, rgba(6, 182, 212, 0.15) 100%);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            color: var(--secondary);
+            padding: 0.4rem 1.2rem;
+            border-radius: 9999px;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.1);
         }
     </style>
 </head>
 
 <body>
-    <div class="progress-bar" id="progressBar"></div>
+    <!-- Background Grid & Glows -->
+    <div class="bg-grid"></div>
+    <div class="radial-glow"></div>
+    <div class="radial-glow-2"></div>
+
+    <!-- Top Progress Bar -->
+    <div class="progress-bar-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- Side Navigation Dots -->
     <nav class="nav-dots" id="navDots"></nav>
 
-    <!-- SLIDE 1: CAPA -->
-    <section class="slide title-slide visible">
-        <div class="slide-number">01</div>
-        <div class="slide-content">
-            <div class="card reveal reveal-1">
-                <h1>BritaRH<br>ECOSYSTEM</h1>
-                <p>Modernização, Infraestrutura e Qualidade de Software</p>
-            </div>
-            <div class="nav-hint reveal reveal-3">use ↓ para navegar</div>
-        </div>
-    </section>
+    <!-- MAIN PRESENTATION WRAPPER -->
+    <main class="presentation-container">
 
-    <!-- SLIDE 2: DOMÍNIO -->
-    <section class="slide">
-        <div class="slide-number">02</div>
-        <div class="slide-content">
-            <h2 class="reveal reveal-1">Recrutamento Estratégico</h2>
-            <div class="grid-2">
-                <p class="reveal reveal-2">
-                    O BritaRH atua como uma <strong>Ponte de Confiança</strong> entre a demanda técnica e o talento
-                    qualificado, focando no ecossistema de infraestrutura pesada.
-                </p>
-                <div class="card reveal reveal-3"
-                    style="background:#222; box-shadow:none; border:2px solid var(--accent);">
-                    <ul style="margin-top:0">
-                        <li><strong>Foco Vertical:</strong> Conexão precisa com o setor industrial.</li>
-                        <li><strong>Filtro de Qualidade:</strong> Otimização de tempo via IA Skill Assessment.</li>
-                        <li><strong>Compliance:</strong> Onboarding seguro com validação de credenciais.</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- SLIDE 3: CLEAN ARCHITECTURE -->
-    <section class="slide">
-        <div class="slide-number">03</div>
-        <div class="slide-content">
-            <h2 class="reveal reveal-1">Domínio & Clean Arch</h2>
-            <div class="grid-2">
-                <div class="reveal reveal-2">
-                    <p>O coração do sistema é o <strong>Domínio</strong>, independente de banco de dados ou APIs.</p>
-                    <ul style="margin-top: 1rem">
-                        <li><strong>Model / Entidade:</strong> Representa a verdade do banco (SQLAlchemy).</li>
-                        <li><strong>Schema:</strong> Define o contrato da API e validação (Pydantic).</li>
-                        <li><strong>Regra de Negócio:</strong> "Vagas só aceitam currículos se estiverem ativas".</li>
-                    </ul>
-                </div>
-                <div class="card reveal reveal-3"
-                    style="background: rgba(0, 123, 255, 0.05); border: 1px solid var(--accent); color: #fff;">
-                    <p style="font-size: 0.8em; line-height: 1.6;">
-                        <code>Model</code> = <strong>Persistência</strong><br>
-                        <code>Schema</code> = <strong>Contrato/Validação</strong><br>
-                        <code>Service</code> = <strong>Domínio/Orquestração</strong>
+        <!-- SLIDE 1: COVER (CAPA) -->
+        <section class="slide active" id="slide-1">
+            <div></div> <!-- Spacer -->
+            <div class="slide-body">
+                <div class="cover-content">
+                    <div class="badge-gradient fade-in">ARQUITETURA & ECOSSISTEMA</div>
+                    <h1 class="fade-in delay-1">BritaRH 2.0</h1>
+                    <p class="fade-in delay-2" style="font-size: 1.3rem; margin-bottom: 2.5rem; max-width: 600px;">
+                        Mapeamento detalhado da arquitetura desacoplada: do Domínio à Apresentação e Testes Integrados.
                     </p>
-                    <hr style="margin: 0.5rem 0; opacity: 0.2">
-                    <p style="font-size: 0.75em; color: #aaa;">Essa tríade garante que regras de negócio não se misturam
-                        com detalhes técnicos de infraestrutura.</p>
+                    <div class="fade-in delay-3" style="display: flex; gap: 1rem;">
+                        <button class="hud-btn" onclick="appPresentation.next()">
+                            Iniciar Apresentação
+                            <span>→</span>
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- SLIDE 4: BANCO DE DADOS -->
-    <section class="slide">
-        <div class="slide-number">04</div>
-        <div class="slide-content">
-            <h2 class="reveal reveal-1">Infra: Persistência</h2>
-            <p class="reveal reveal-2">Utilizamos <strong>PostgreSQL 16</strong> com otimizações para busca em larga
-                escala.</p>
-            <div class="code-block reveal reveal-3">
-                Index("profile_data_gin", "profile_data", postgresql_using="gin")<br>
-                CheckConstraint("score >= 0 AND score <= 100")<br>
-                    updated_at: Mapped[datetime] (Auditoria Automática)
-            </div>
-            <p class="reveal reveal-4" style="font-size: 0.85em">Índices GIN permitem buscas ultra-rápidas em campos
-                JSONB de perfis.</p>
-        </div>
-    </section>
-
-    <!-- SLIDE 4: ENTIDADE CORE -->
-    <section class="slide">
-        <div class="slide-number">05</div>
-        <div class="slide-content">
-            <h2 class="reveal reveal-1">A Entidade: O Coração do BritaRH</h2>
-            <div class="grid-2">
-                <div class="reveal reveal-2">
-                    <p>No centro do sistema está a entidade <strong>Job (Vaga)</strong>. No DDD, uma entidade é definida
-                        por sua <strong>Identidade</strong>, não apenas seus atributos.</p>
-                    <ul style="margin-top: 1rem">
-                        <li><strong>Identidade Única:</strong> UUID persistente.</li>
-                        <li><strong>Estado:</strong> Transição entre <code>OPEN</code> e <code>CLOSED</code>.</li>
-                        <li><strong>Invariantes:</strong> Uma vaga só é válida se possuir no mínimo 5 questões técnicas.
-                        </li>
-                    </ul>
-                </div>
-                <div class="reveal reveal-3 code-block"
-                    style="font-size: 0.75rem; color: #fff; background: #000; border-left: 4px solid var(--accent)">
-                    <span style="color: #66d9ef">class</span> <span style="color: #a6e22e">Job</span>(Base):<br>
-                    &nbsp;&nbsp;__tablename__ = <span style="color: #e6db74">"jobs"</span><br>
-                    &nbsp;&nbsp;id: Mapped[UUID] = mapped_column(primary_key=<span
-                        style="color: #ae81ff">True</span>)<br>
-                    &nbsp;&nbsp;title: Mapped[str] = mapped_column(index=<span style="color: #ae81ff">True</span>)<br>
-                    &nbsp;&nbsp;status: Mapped[JobStatus] = mapped_column(default=JobStatus.OPEN)<br>
-                    &nbsp;&nbsp;<span style="color: #75715e"># Relacionamento Forte (Aggregate Root)</span><br>
-                    &nbsp;&nbsp;questions: Mapped[list[<span style="color: #e6db74">"Question"</span>]] =
-                    relationship(...)
+            <div class="footer-hud">
+                <div class="slide-counter">SLIDE <span>01</span> / 12</div>
+                <div class="kbd-tip">Use as teclas ← e → ou Espaço para navegar</div>
+                <div class="hud-navigation">
+                    <button class="hud-btn" disabled>Anterior</button>
+                    <button class="hud-btn" onclick="appPresentation.next()">Próximo</button>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- SLIDE 5: UPLOAD MINIO -->
-    <section class="slide">
-        <div class="slide-number">06</div>
-        <div class="slide-content">
-            <h2 class="reveal reveal-1">Cloud Storage: MinIO</h2>
-            <p class="reveal reveal-2">Arquitetura compatível com S3 para gestão de currículos PDF.</p>
-            <ul class="reveal reveal-3">
-                <li>Upload em ambiente isolado via <code>storage_service</code></li>
-                <li>Geração de links seguros para recrutadores</li>
-                <li>Validação rigorosa de tipos (PDF Only) e tamanhos (Max 5MB)</li>
-            </ul>
-        </div>
-    </section>
-
-    <!-- SLIDE 6: SEGURANÇA DADOS -->
-    <section class="slide">
-        <div class="slide-number">07</div>
-        <div class="slide-content">
-            <h2 class="reveal reveal-1">Higienização de Dados</h2>
-            <p class="reveal reveal-2">Segurança começa na entrada. Implementamos normalização agressiva:</p>
-            <div class="code-block reveal reveal-3">
-                def get_user_by_cpf(db, cpf):<br>
-                &nbsp;&nbsp;clean_cpf = "".join(filter(str.isdigit, cpf))<br>
-                &nbsp;&nbsp;# Busca garantida sem máscaras
-            </div>
-            <p class="reveal reveal-4">Garantimos integridade referencial independente do input do usuário.</p>
-        </div>
-    </section>
-
-    <!-- SLIDE 7: AUTENTICAÇÃO -->
-    <section class="slide">
-        <div class="slide-number">08</div>
-        <div class="slide-content">
-            <h2 class="reveal reveal-1">Autenticação JWT & RBAC</h2>
-            <p class="reveal reveal-2">Controle de acesso granular baseado em funções (Roles).</p>
-            <ul class="reveal reveal-3">
-                <li><strong>Senhas:</strong> Hashing direto via <code>bcrypt</code></li>
-                <li><strong>Tokens:</strong> JWT com expiração configurável</li>
-                <li><strong>RBAC:</strong> Candidato vs Recrutador (Whitelist-backed)</li>
-            </ul>
-        </div>
-    </section>
-
-    <!-- SLIDE 8: TESTES UNITÁRIOS -->
-    <section class="slide">
-        <div class="slide-number">09</div>
-        <div class="slide-content">
-            <h2 class="reveal reveal-1">Qualidade: Testes Unitários</h2>
-            <p class="reveal reveal-2">Pilar de estabilidade baseado em <code>Pytest</code> e <code>Pydantic</code>.</p>
-            <div class="code-block reveal reveal-3">
-                def test_application_score_validation():<br>
-                &nbsp;&nbsp;with pytest.raises(ValidationError):<br>
-                &nbsp;&nbsp;&nbsp;&nbsp;ApplicationBase(score=101, ...)
-            </div>
-            <p class="reveal reveal-4">Regras de negócio validadas fora do banco de dados.</p>
-        </div>
-    </section>
-
-    <!-- SLIDE 9: TESTES INTEGRAÇÃO -->
-    <section class="slide">
-        <div class="slide-number">10</div>
-        <div class="slide-content">
-            <h2 class="reveal reveal-1">Testes de Integração</h2>
-            <p class="reveal reveal-2">Simulação de ambiente real com isolamento total.</p>
-            <ul class="reveal reveal-3">
-                <li>Bancos temporários (Setup/Teardown automático)</li>
-                <li>Mock de MinIO e External APIs</li>
-                <li>Validação de fluxos E2E (Linkage de User_ID)</li>
-            </ul>
-        </div>
-    </section>
-
-    <!-- SLIDE 10: DOCUMENTAÇÃO -->
-    <section class="slide">
-        <div class="slide-number">11</div>
-        <div class="slide-content">
-            <h2 class="reveal reveal-1">API Documentation</h2>
-            <p class="reveal reveal-2">Caminho final para integração: <strong>Swagger UI</strong> automático.</p>
-            <p class="reveal reveal-3">Acesse <code>/docs</code> para testar endpoints, visualizar schemas OpenAPI e
-                contratos de dados em tempo real.</p>
-            <div class="card reveal reveal-4"
-                style="background:#222; color:var(--accent); margin-top:1rem; border:1px dashed var(--accent)">
-                GET /jobs | POST /submit | PATCH /recruiter
-            </div>
-        </div>
-    </section>
-
-    <!-- SLIDE 12: FLUXO LINEAR -->
-    <section class="slide">
-        <div class="slide-number">12</div>
-        <div class="slide-content" style="justify-content: flex-start; padding-top: 6rem;">
-            <h2 class="reveal reveal-1">O Fluxo de Execução Linear</h2>
-
-            <div class="diag-container">
-                <!-- Pillars -->
-                <div class="diag-pillar">
-                    <div class="diag-box reveal reveal-1">Cliente</div>
-                    <div class="diag-line"></div>
-                </div>
-                <div class="diag-pillar">
-                    <div class="diag-box reveal reveal-2">Rota API</div>
-                    <div class="diag-line"></div>
-                </div>
-                <div class="diag-pillar">
-                    <div class="diag-box reveal reveal-3">Repositório</div>
-                    <div class="diag-line"></div>
-                </div>
-                <div class="diag-pillar">
-                    <div class="diag-box reveal reveal-4">Caso de Uso</div>
-                    <div class="diag-line"></div>
-                </div>
-                <div class="diag-pillar">
-                    <div class="diag-box reveal reveal-4">Banco de Dados</div>
-                    <div class="diag-line"></div>
-                </div>
-
-                <!-- Arrows -->
-                <!-- Cliente -> Rota API -->
-                <div class="diag-arrow reveal reveal-2" style="top: 80px; left: 10%; width: 10%;">
-                    <span class="diag-label">POST /submit</span>
-                </div>
-
-                <!-- Rota API -> Repositório -->
-                <div class="diag-arrow reveal reveal-3" style="top: 110px; left: 30%; width: 20%;">
-                    <span class="diag-label">Instancia</span>
-                </div>
-
-                <!-- Rota API -> Caso de Uso -->
-                <div class="diag-arrow reveal reveal-4" style="top: 140px; left: 30%; width: 40%;">
-                    <span class="diag-label">Instancia (injeta repo)</span>
-                </div>
-
-                <!-- Rota API -> Caso de Uso -->
-                <div class="diag-arrow reveal reveal-4" style="top: 170px; left: 30%; width: 40%;">
-                    <span class="diag-label">execute()</span>
-                </div>
-
-                <!-- Caso de Uso -> Banco de Dados -->
-                <div class="diag-arrow reveal reveal-4" style="top: 200px; left: 70%; width: 20%;">
-                    <span class="diag-label">save()</span>
-                </div>
-
-                <!-- Rota API -> Banco de Dados -->
-                <div class="diag-arrow reveal reveal-4" style="top: 230px; left: 30%; width: 60%;">
-                    <span class="diag-label">db.commit()</span>
-                </div>
-
-                <!-- Rota API -> Cliente -->
-                <div class="diag-arrow rev reveal reveal-4" style="top: 260px; left: 10%; width: 20%;">
-                    <span class="diag-label">Retorno da Candidatura</span>
-                </div>
-            </div>
-
-            <div class="diag-footer reveal reveal-4">
-                O código executa uma coreografia exata de composição Just-In-Time. Ao invés de usar Singletons
-                complexos, as dependências são instanciadas e conectadas (Repo + Use Case) a cada requisição, garantindo
-                isolamento total do estado.
-            </div>
-        </div>
-    </section>
-
-    <!-- SLIDE 13: MÉTRICAS DE QUALIDADE -->
-    <section class="slide">
-        <div class="slide-number">13</div>
-        <div class="slide-content">
-            <h2 class="reveal reveal-1">Métricas de Qualidade</h2>
-
-            <div class="grid-2">
-                <div class="reveal reveal-2">
-                    <h3 class="accent" style="margin-bottom: 1rem;">Cobertura Real (Pytest-Cov)</h3>
-                    <div class="cov-badge">35 Testes Sólidos</div>
-                    <div class="cov-badge">94% Cobertura Total</div>
-
-                    <div style="margin-top:1.5rem">
-                        <div
-                            style="display:flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 4px">
-                            <span>Cobertura Global (Backend)</span>
-                            <span>94%</span>
+        <!-- SLIDE 2: VISÃO GERAL DE ARQUITETURA -->
+        <section class="slide" id="slide-2">
+            <h2 class="fade-in">
+                Visão Geral: Arquitetura Limpa
+                <span class="layer-tag" style="background: rgba(99, 102, 241, 0.15); color: var(--primary);">Clean Arch</span>
+            </h2>
+            <div class="slide-body">
+                <div class="grid-2">
+                    <div class="fade-in delay-1">
+                        <p style="margin-bottom: 1.5rem; font-size: 1.1rem;">
+                            O ecossistema do <strong>BritaRH</strong> é estruturado com base no desacoplamento de responsabilidades, garantindo facilidade de manutenção e testabilidade.
+                        </p>
+                        <p style="margin-bottom: 1.5rem;">
+                            As camadas são rigorosamente definidas de forma que a lógica de negócios central permaneça imune a mudanças tecnológicas (banco de dados, frameworks, UI).
+                        </p>
+                        <div class="glass-card" style="margin-top: 1rem;">
+                            <h4 style="color: var(--secondary); margin-bottom: 0.5rem;">A Regra da Dependência</h4>
+                            <p style="font-size: 0.9rem;">
+                                Dependências de código apontam apenas <strong>para dentro</strong>. O Domínio não conhece a Infraestrutura nem o Banco. A Apresentação consome a Aplicação, que consome o Domínio.
+                            </p>
                         </div>
-                        <div class="cov-bar-off">
-                            <div class="cov-bar-on" style="width: 94%"></div>
-                        </div>
+                    </div>
+                    <div class="glass-card fade-in delay-2">
+                        <h3 style="margin-bottom: 1rem; color: var(--primary);">Fluxo de Camadas</h3>
+                        <ul class="styled-list" style="margin-top: 0;">
+                            <li>
+                                <strong>Domínio:</strong> Regras críticas e fundamentais do negócio.
+                            </li>
+                            <li class="secondary-bullet">
+                                <strong>Aplicação (Casos de Uso):</strong> Fluxos e orquestrações de dados.
+                            </li>
+                            <li style="--primary: var(--purple);">
+                                <strong>Infraestrutura:</strong> Adaptadores de banco (SQLAlchemy), gateways (MinIO), HTTP.
+                            </li>
+                            <li style="--primary: var(--accent);">
+                                <strong>Apresentação:</strong> Componentes visuais Next.js, hooks customizados e views.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-hud">
+                <div class="slide-counter">SLIDE <span>02</span> / 12</div>
+                <div class="kbd-tip">Camadas limpas</div>
+                <div class="hud-navigation">
+                    <button class="hud-btn" onclick="appPresentation.prev()">Anterior</button>
+                    <button class="hud-btn" onclick="appPresentation.next()">Próximo</button>
+                </div>
+            </div>
+        </section>
 
-                        <div
-                            style="display:flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 4px; margin-top: 1rem;">
-                            <span>Contratos & Schemas (Pydantic V2)</span>
-                            <span>100%</span>
-                        </div>
-                        <div class="cov-bar-off">
-                            <div class="cov-bar-on" style="width: 100%; background: #2ecc71;"></div>
+        <!-- SLIDE 3: DOMÍNIO - ENTIDADES E VALUE OBJECTS -->
+        <section class="slide" id="slide-3">
+            <h2 class="fade-in">
+                Domínio: Entidades & Value Objects
+                <span class="layer-tag" style="background: rgba(16, 185, 129, 0.15); color: var(--accent);">Domínio</span>
+            </h2>
+            <div class="slide-body">
+                <div class="grid-2">
+                    <div class="fade-in delay-1">
+                        <p style="margin-bottom: 1.25rem;">
+                            A camada de <strong>Domínio</strong> representa as regras de verdade conceitual da plataforma. É modelada com objetos puros do Python, livre de frameworks de persistência ORM.
+                        </p>
+                        <ul class="styled-list" style="margin-top: 0.5rem;">
+                            <li>
+                                <strong>Entidade:</strong> Objeto com identidade única através do tempo.
+                                <br><small>Ex: O objeto <code>Job</code> (Vaga) possui ID único (UUID), estado e invariantes internas.</small>
+                            </li>
+                            <li>
+                                <strong>Value Object:</strong> Objeto imutável definido unicamente por seus atributos.
+                                <br><small>Ex: <code>CPF</code> e <code>Email</code> com validação estrutural no construtor.</small>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="glass-card fade-in delay-2" style="padding: 1.5rem; display: flex; flex-direction: column;">
+                        <div class="tab-system">
+                            <div class="tab-headers">
+                                <button class="tab-btn active" onclick="switchTab(this, 'dom-ent')">Entidade (Job)</button>
+                                <button class="tab-btn" onclick="switchTab(this, 'dom-vo')">Value Object (CPF)</button>
+                            </div>
+                            <div class="tab-contents">
+                                <div id="dom-ent" class="tab-panel active">
+                                    <div class="code-title">backend/app/domain/entities.py</div>
+                                    <pre><code><span class="decorator">@dataclass</span>
+<span class="keyword">class</span> <span class="type">Job</span>:
+    title: <span class="type">str</span>
+    area: <span class="type">str</span>
+    status: <span class="type">JobStatus</span> = <span class="type">JobStatus</span>.OPEN
+    questions: <span class="type">List</span>[<span class="type">Question</span>] = field(default_factory=list)
+    id: <span class="type">uuid.UUID</span> = field(default_factory=uuid.uuid4)
+    
+    <span class="keyword">def</span> <span class="function">close</span>(self):
+        self.status = <span class="type">JobStatus</span>.CLOSED
+        
+    <span class="keyword">def</span> <span class="function">can_modify_questions</span>(self, has_applicants: <span class="type">bool</span>) -> <span class="type">bool</span>:
+        <span class="comment"># Invariante: não altera questões se houver candidatos</span>
+        <span class="keyword">return not</span> has_applicants</code></pre>
+                                </div>
+                                <div id="dom-vo" class="tab-panel">
+                                    <div class="code-title">backend/app/domain/value_objects.py</div>
+                                    <pre><code><span class="decorator">@dataclass</span>(<span class="decorator">frozen</span>=<span class="keyword">True</span>)
+<span class="keyword">class</span> <span class="type">CPF</span>:
+    value: <span class="type">str</span>
+    
+    <span class="keyword">def</span> <span class="function">__post_init__</span>(self):
+        clean = <span class="string">""</span>.join(filter(<span class="type">str</span>.isdigit, self.value))
+        <span class="keyword">if</span> <span class="type">len</span>(clean) != <span class="number">11</span>:
+            <span class="keyword">raise</span> <span class="type">ValueError</span>(<span class="string">"CPF inválido"</span>)
+        object.__setattr__(self, <span class="string">'value'</span>, clean)
+        
+    <span class="keyword">def</span> <span class="function">formatted</span>(self) -> <span class="type">str</span>:
+        <span class="keyword">return</span> <span class="string">f"{self.value[:3]}.{self.value[3:6]}..."</span></code></pre>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="reveal reveal-3">
-                    <h3 class="accent" style="margin-bottom: 1rem;">Estratégia de QA</h3>
-                    <ul style="list-style: none; padding: 0;">
-                        <li style="margin-bottom: 1rem; display: flex; align-items: flex-start;">
-                            <span style="color:var(--accent); margin-right: 0.5rem;">⚡</span>
-                            <div><strong>Isolation:</strong> BD PostgreSQL efêmero por suíte (Zero side-effects).</div>
-                        </li>
-                        <li style="margin-bottom: 1rem; display: flex; align-items: flex-start;">
-                            <span style="color:var(--accent); margin-right: 0.5rem;">⚡</span>
-                            <div><strong>Real Auth Flow:</strong> Testes via JWT real com expiração e RBAC.</div>
-                        </li>
-                        <li style="display: flex; align-items: flex-start;">
-                            <span style="color:var(--accent); margin-right: 0.5rem;">⚡</span>
-                            <div><strong>Async Aware:</strong> Cobertura validada em contextos de concorrência.</div>
-                        </li>
-                    </ul>
+            </div>
+            <div class="footer-hud">
+                <div class="slide-counter">SLIDE <span>03</span> / 12</div>
+                <div class="kbd-tip">Modelo de domínio rico</div>
+                <div class="hud-navigation">
+                    <button class="hud-btn" onclick="appPresentation.prev()">Anterior</button>
+                    <button class="hud-btn" onclick="appPresentation.next()">Próximo</button>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- SLIDE 14: CONCLUSÃO -->
-    <section class="slide">
-        <div class="slide-number">14</div>
-        <div class="slide-content" style="text-align:center; align-items:center">
-            <h1 class="reveal reveal-1">BritaRH 2.0</h1>
-            <p class="reveal reveal-2">Escalabilidade, Segurança e Precisão.</p>
-            <div class="card reveal reveal-3" style="margin-top: 2rem">
-                <h2 style="color:black; margin-bottom:0">PRONTO PARA O PLAY</h2>
+        <!-- SLIDE 4: DOMÍNIO - ERROS E REPOSITÓRIOS -->
+        <section class="slide" id="slide-4">
+            <h2 class="fade-in">
+                Domínio: Erros & Repositórios (Contratos)
+                <span class="layer-tag" style="background: rgba(16, 185, 129, 0.15); color: var(--accent);">Domínio</span>
+            </h2>
+            <div class="slide-body">
+                <div class="grid-2">
+                    <div class="fade-in delay-1">
+                        <p style="margin-bottom: 1.25rem;">
+                            Para blindar as regras de negócios de contaminações externas, o Domínio define suas próprias **Exceções** e **Contratos de Persistência** (Interfaces de Repositório).
+                        </p>
+                        <ul class="styled-list" style="margin-top: 0.5rem;">
+                            <li>
+                                <strong>Erros de Domínio:</strong> Exceções específicas que impedem regras inválidas no negócio. Lançadas pela Entidade ou Caso de Uso e convertidas na camada HTTP em códigos apropriados.
+                            </li>
+                            <li>
+                                <strong>Interfaces (Portas):</strong> Classes abstratas (`IJobRepository`) que declaram os métodos necessários, sem vazamento de detalhes técnicos como SQL ou sessões de banco.
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="glass-card fade-in delay-2" style="padding: 1.5rem; display: flex; flex-direction: column;">
+                        <div class="tab-system">
+                            <div class="tab-headers">
+                                <button class="tab-btn active" onclick="switchTab(this, 'dom-errors')">Erros do Domínio</button>
+                                <button class="tab-btn" onclick="switchTab(this, 'dom-repo-interface')">Interface Repositório</button>
+                            </div>
+                            <div class="tab-contents">
+                                <div id="dom-errors" class="tab-panel active">
+                                    <div class="code-title">backend/app/domain/exceptions.py</div>
+                                    <pre><code><span class="keyword">class</span> <span class="type">DomainException</span>(<span class="type">Exception</span>):
+    <span class="comment">"""Base para todos os erros de negócio"""</span>
+    <span class="keyword">pass</span>
+
+<span class="keyword">class</span> <span class="type">JobClosedException</span>(<span class="type">DomainException</span>):
+    <span class="keyword">def</span> <span class="function">__init__</span>(self, job_id: <span class="type">uuid.UUID</span>):
+        super().__init__(<span class="string">f"A vaga {job_id} está fechada e não aceita candidaturas."</span>)
+
+<span class="keyword">class</span> <span class="type">AlreadyAppliedException</span>(<span class="type">DomainException</span>):
+    <span class="keyword">def</span> <span class="function">__init__</span>(self, email: <span class="type">str</span>):
+        super().__init__(<span class="string">f"O email {email} já está inscrito nesta vaga."</span>)</code></pre>
+                                </div>
+                                <div id="dom-repo-interface" class="tab-panel">
+                                    <div class="code-title">backend/app/domain/interfaces.py</div>
+                                    <pre><code><span class="keyword">from</span> abc <span class="keyword">import</span> ABC, abstractmethod
+
+<span class="keyword">class</span> <span class="type">IJobRepository</span>(ABC):
+    <span class="decorator">@abstractmethod</span>
+    <span class="keyword">async def</span> <span class="function">create</span>(self, job: Job) -> Job: <span class="keyword">pass</span>
+
+    <span class="decorator">@abstractmethod</span>
+    <span class="keyword">async def</span> <span class="function">get_by_id</span>(self, job_id: uuid.UUID) -> Optional[Job]: <span class="keyword">pass</span>
+
+    <span class="decorator">@abstractmethod</span>
+    <span class="keyword">async def</span> <span class="function">update</span>(self, job: Job) -> Job: <span class="keyword">pass</span></code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </section>
+            <div class="footer-hud">
+                <div class="slide-counter">SLIDE <span>04</span> / 12</div>
+                <div class="kbd-tip">Camada pura e abstrata</div>
+                <div class="hud-navigation">
+                    <button class="hud-btn" onclick="appPresentation.prev()">Anterior</button>
+                    <button class="hud-btn" onclick="appPresentation.next()">Próximo</button>
+                </div>
+            </div>
+        </section>
 
+        <!-- SLIDE 5: APLICAÇÃO - CASOS DE USO -->
+        <section class="slide" id="slide-5">
+            <h2 class="fade-in">
+                Aplicação: Casos de Uso (Use Cases)
+                <span class="layer-tag" style="background: rgba(6, 182, 212, 0.15); color: var(--secondary);">Aplicação</span>
+            </h2>
+            <div class="slide-body">
+                <div class="grid-2">
+                    <div class="fade-in delay-1">
+                        <p style="margin-bottom: 1.25rem;">
+                            A camada de **Aplicação** orquestra o fluxo de dados vindos da parte de fora e direciona a execução das regras de negócio.
+                        </p>
+                        <ul class="styled-list" style="margin-top: 0.5rem;">
+                            <li>
+                                <strong>Independência:</strong> O Caso de Uso depende apenas das portas/interfaces e entidades do Domínio.
+                            </li>
+                            <li>
+                                <strong>Responsabilidade Única:</strong> Cada classe executa uma ação de negócio discreta (ex: `CreateJobUseCase`).
+                            </li>
+                            <li>
+                                <strong>Transações:</strong> Coordena operações atômicas envolvendo múltiplos repositórios.
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="glass-card fade-in delay-2" style="padding: 1.5rem; display: flex; flex-direction: column;">
+                        <div class="tab-system">
+                            <div class="tab-headers">
+                                <button class="tab-btn active" onclick="switchTab(this, 'app-usecase')">CreateJobUseCase</button>
+                                <button class="tab-btn" onclick="switchTab(this, 'app-questions')">UpdateQuestionsUseCase</button>
+                            </div>
+                            <div class="tab-contents">
+                                <div id="app-usecase" class="tab-panel active">
+                                    <div class="code-title">backend/app/usecases/job_usecases.py</div>
+                                    <pre><code><span class="keyword">class</span> <span class="type">CreateJobUseCase</span>:
+    <span class="keyword">def</span> <span class="function">__init__</span>(self, job_repository: IJobRepository):
+        self.job_repository = job_repository
+
+    <span class="keyword">async def</span> <span class="function">execute</span>(self, job_in: JobCreate) -> DomainJob:
+        <span class="comment"># Instancia e constrói a entidade pura</span>
+        domain_job = DomainJob(
+            title=job_in.title,
+            area=job_in.area,
+            description=job_in.description,
+        )
+        <span class="comment"># Adiciona as questões encapsuladas</span>
+        <span class="keyword">for</span> q <span class="keyword">in</span> job_in.questions:
+            domain_job.add_question(
+                DomainQuestion(text=q.text, options=q.options, correct_index=q.correct_index)
+            )
+        <span class="comment"># Persiste através da abstração (repo)</span>
+        <span class="keyword">return await</span> self.job_repository.create(domain_job)</code></pre>
+                                </div>
+                                <div id="app-questions" class="tab-panel">
+                                    <div class="code-title">backend/app/usecases/job_usecases.py</div>
+                                    <pre><code><span class="keyword">class</span> <span class="type">UpdateJobQuestionsUseCase</span>:
+    <span class="keyword">def</span> <span class="function">__init__</span>(self, job_repo: IJobRepository, app_repo: IApplicationRepository):
+        self.job_repo = job_repo
+        self.app_repo = app_repo
+
+    <span class="keyword">async def</span> <span class="function">execute</span>(self, job_id: UUID, questions: List[QuestionIn]) -> DomainJob:
+        job = <span class="keyword">await</span> self.job_repo.get_by_id(job_id)
+        <span class="keyword">if not</span> job: <span class="keyword">raise</span> JobNotFoundException()
+        
+        <span class="comment"># Verifica invariantes antes de alterar</span>
+        has_applicants = <span class="keyword">await</span> self.app_repo.count_by_job_id(job_id) > <span class="number">0</span>
+        <span class="keyword">if not</span> job.can_modify_questions(has_applicants):
+            <span class="keyword">raise</span> DomainException(<span class="string">"Já existem candidatos para esta vaga."</span>)
+            
+        <span class="comment"># Executa modificações e salva</span>
+        job.update_questions(questions)
+        <span class="keyword">return await</span> self.job_repo.update(job)</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-hud">
+                <div class="slide-counter">SLIDE <span>05</span> / 12</div>
+                <div class="kbd-tip">Camada de Orquestração</div>
+                <div class="hud-navigation">
+                    <button class="hud-btn" onclick="appPresentation.prev()">Anterior</button>
+                    <button class="hud-btn" onclick="appPresentation.next()">Próximo</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 6: INFRAESTRUTURA - HTTP E DI -->
+        <section class="slide" id="slide-6">
+            <h2 class="fade-in">
+                Infraestrutura: HTTP & Injeção de Dependências
+                <span class="layer-tag" style="background: rgba(139, 92, 246, 0.15); color: var(--purple);">Infra</span>
+            </h2>
+            <div class="slide-body">
+                <div class="grid-2">
+                    <div class="fade-in delay-1">
+                        <p style="margin-bottom: 1.25rem;">
+                            A camada de **Infraestrutura** conecta os detalhes do mundo externo (frameworks, libs, conexões físicas) com as regras de negócio puras da aplicação.
+                        </p>
+                        <ul class="styled-list" style="margin-top: 0.5rem;">
+                            <li>
+                                <strong>Framework HTTP:</strong> FastAPI atua como controlador de borda, mapeando rotas REST, realizando validações Pydantic e gerindo erros globais.
+                            </li>
+                            <li>
+                                <strong>Injeção de Dependências (DI):</strong> Implementado através de `Depends` do FastAPI, instanciando os adaptadores concretos e injetando nos Casos de Uso.
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="glass-card fade-in delay-2" style="padding: 1.5rem; display: flex; flex-direction: column;">
+                        <div class="tab-system">
+                            <div class="tab-headers">
+                                <button class="tab-btn active" onclick="switchTab(this, 'infra-endpoint')">HTTP Endpoint (FastAPI)</button>
+                                <button class="tab-btn" onclick="switchTab(this, 'infra-di')">DI Provider (deps.py)</button>
+                            </div>
+                            <div class="tab-contents">
+                                <div id="infra-endpoint" class="tab-panel active">
+                                    <div class="code-title">backend/app/api/v1/jobs.py</div>
+                                    <pre><code><span class="decorator">@router.post</span>(<span class="string">"/"</span>, response_model=JobRead)
+<span class="keyword">async def</span> <span class="function">create_job</span>(
+    job_in: JobCreate,
+    usecase: CreateJobUseCase = Depends(get_create_job_usecase)
+):
+    <span class="keyword">try</span>:
+        <span class="comment"># Executa o caso de uso injetado dinamicamente</span>
+        <span class="keyword">return await</span> usecase.execute(job_in)
+    <span class="keyword">except</span> DomainException <span class="keyword">as</span> e:
+        <span class="keyword">raise</span> HTTPException(status_code=<span class="number">422</span>, detail=<span class="type">str</span>(e))</code></pre>
+                                </div>
+                                <div id="infra-di" class="tab-panel">
+                                    <div class="code-title">backend/app/api/deps.py</div>
+                                    <pre><code><span class="keyword">async def</span> <span class="function">get_job_repository</span>(
+    db: Annotated[AsyncSession, Depends(get_db)]
+) -> JobRepository:
+    <span class="keyword">return</span> JobRepository(db) <span class="comment"># Injeta sessão assíncrona do SQL</span>
+
+<span class="keyword">async def</span> <span class="function">get_create_job_usecase</span>(
+    repo: Annotated[JobRepository, Depends(get_job_repository)]
+) -> CreateJobUseCase:
+    <span class="keyword">return</span> CreateJobUseCase(repo) <span class="comment"># Injeta repositório no Caso de Uso</span></code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-hud">
+                <div class="slide-counter">SLIDE <span>06</span> / 12</div>
+                <div class="kbd-tip">FastAPI & Depends</div>
+                <div class="hud-navigation">
+                    <button class="hud-btn" onclick="appPresentation.prev()">Anterior</button>
+                    <button class="hud-btn" onclick="appPresentation.next()">Próximo</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 7: INFRAESTRUTURA - REPOSITÓRIOS E STORAGE -->
+        <section class="slide" id="slide-7">
+            <h2 class="fade-in">
+                Infraestrutura: Repositórios & Storage
+                <span class="layer-tag" style="background: rgba(139, 92, 246, 0.15); color: var(--purple);">Infra</span>
+            </h2>
+            <div class="slide-body">
+                <div class="grid-2">
+                    <div class="fade-in delay-1">
+                        <p style="margin-bottom: 1.25rem;">
+                            A persistência de dados e o armazenamento de objetos binários são implementados através de gateways concretos na infraestrutura.
+                        </p>
+                        <ul class="styled-list" style="margin-top: 0.5rem;">
+                            <li>
+                                <strong>Persistência ORM:</strong> SQLAlchemy assíncrono. Mapeia dados físicos e converte para entidades puras de domínio no retorno.
+                            </li>
+                            <li>
+                                <strong>Storage (MinIO / S3):</strong> Gerenciamento de arquivos e PDFs de currículos em nuvem privada, gerando URLs assinadas temporárias para segurança.
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="glass-card fade-in delay-2" style="padding: 1.5rem; display: flex; flex-direction: column;">
+                        <div class="tab-system">
+                            <div class="tab-headers">
+                                <button class="tab-btn active" onclick="switchTab(this, 'infra-rep-impl')">SQLAlchemy Repo</button>
+                                <button class="tab-btn" onclick="switchTab(this, 'infra-storage-impl')">MinIO Storage</button>
+                            </div>
+                            <div class="tab-contents">
+                                <div id="infra-rep-impl" class="tab-panel active">
+                                    <div class="code-title">backend/app/adapters/repositories/job_repository.py</div>
+                                    <pre><code><span class="keyword">class</span> <span class="type">JobRepository</span>(IJobRepository):
+    <span class="keyword">def</span> <span class="function">__init__</span>(self, session: AsyncSession):
+        self.session = session
+        
+    <span class="keyword">async def</span> <span class="function">get_by_id</span>(self, job_id: uuid.UUID) -> Optional[DomainJob]:
+        stmt = select(ModelJob).options(selectinload(ModelJob.questions)).where(
+            ModelJob.id == job_id,
+            ModelJob.deleted_at.is_(None)
+        )
+        result = <span class="keyword">await</span> self.session.execute(stmt)
+        model = result.scalar_one_or_none()
+        <span class="keyword">if not</span> model: <span class="keyword">return None</span>
+        <span class="keyword">return</span> self._to_domain(model) <span class="comment"># Mapeia DB -> Domínio</span></code></pre>
+                                </div>
+                                <div id="infra-storage-impl" class="tab-panel">
+                                    <div class="code-title">backend/app/services/storage.py</div>
+                                    <pre><code><span class="keyword">class</span> <span class="type">MinioStorageService</span>(IStorageGateway):
+    <span class="keyword">def</span> <span class="function">upload_file</span>(self, content: bytes, filename: str, content_type: str) -> str:
+        <span class="comment"># Conecta ao cliente S3/MinIO e realiza o upload seguro</span>
+        self.client.put_object(
+            self.bucket_name,
+            object_name=filename,
+            data=io.BytesIO(content),
+            length=len(content),
+            content_type=content_type
+        )
+        <span class="keyword">return</span> <span class="string">f"https://{self.endpoint}/{self.bucket_name}/{filename}"</span></code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-hud">
+                <div class="slide-counter">SLIDE <span>07</span> / 12</div>
+                <div class="kbd-tip">Adaptadores de Persistência</div>
+                <div class="hud-navigation">
+                    <button class="hud-btn" onclick="appPresentation.prev()">Anterior</button>
+                    <button class="hud-btn" onclick="appPresentation.next()">Próximo</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 8: APRESENTAÇÃO - COMPONENTES E UI -->
+        <section class="slide" id="slide-8">
+            <h2 class="fade-in">
+                Apresentação: Componentes & Interface
+                <span class="layer-tag" style="background: rgba(16, 185, 129, 0.15); color: var(--accent);">Frontend</span>
+            </h2>
+            <div class="slide-body">
+                <div class="grid-2">
+                    <div class="fade-in delay-1">
+                        <p style="margin-bottom: 1.25rem;">
+                            A interface do **BritaRH** é desenvolvida com **Next.js (App Router)** e estilizada com **Tailwind CSS**. A camada de apresentação é focada em usabilidade e interatividade fluida.
+                        </p>
+                        <ul class="styled-list" style="margin-top: 0.5rem;">
+                            <li>
+                                <strong>Client Components ("use client"):</strong> Componentes que gerenciam interações complexas do DOM, como o editor interativo de testes do recrutador.
+                            </li>
+                            <li>
+                                <strong>QuestionBuilder:</strong> Componente reativo encarregado de gerenciar dinamicamente formulários de questões, verificando as regras mínimas (5) e máximas (20) diretamente no cliente.
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="glass-card fade-in delay-2" style="padding: 1.5rem; display: flex; flex-direction: column;">
+                        <div class="code-title">frontend/src/components/QuestionBuilder.tsx</div>
+                        <pre style="max-height: 300px;"><code><span class="string">"use client"</span>;
+<span class="keyword">export default function</span> <span class="function">QuestionBuilder</span>({ onSubmit }: Props) {
+  <span class="keyword">const</span> [questions, setQuestions] = useState&lt;Question[]&gt;([]);
+  <span class="keyword">const</span> [error, setError] = useState(<span class="keyword">false</span>);
+
+  <span class="keyword">const</span> addQuestion = () =&gt; {
+    <span class="keyword">if</span> (questions.length &gt;= <span class="number">20</span>) <span class="keyword">return</span>;
+    setQuestions([...questions, emptyQuestion()]);
+  };
+
+  <span class="keyword">const</span> handleSubmit = () =&gt; {
+    <span class="keyword">if</span> (questions.length &lt; <span class="number">5</span>) {
+      setError(<span class="keyword">true</span>);
+      <span class="keyword">return</span>;
+    }
+    onSubmit(questions);
+  };
+  
+  <span class="comment">// Renderização dos blocos e inputs...</span>
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-hud">
+                <div class="slide-counter">SLIDE <span>08</span> / 12</div>
+                <div class="kbd-tip">UI Componentizada</div>
+                <div class="hud-navigation">
+                    <button class="hud-btn" onclick="appPresentation.prev()">Anterior</button>
+                    <button class="hud-btn" onclick="appPresentation.next()">Próximo</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 9: APRESENTAÇÃO - HOOKS CUSTOMIZADOS -->
+        <section class="slide" id="slide-9">
+            <h2 class="fade-in">
+                Apresentação: Hooks Customizados
+                <span class="layer-tag" style="background: rgba(16, 185, 129, 0.15); color: var(--accent);">Frontend</span>
+            </h2>
+            <div class="slide-body">
+                <div class="grid-2">
+                    <div class="fade-in delay-1">
+                        <p style="margin-bottom: 1.25rem;">
+                            Os **Hooks Customizados** do React servem para encapsular a lógica de estado, chamadas externas de API e validação, separando a lógica de negócios visual da estrutura HTML.
+                        </p>
+                        <ul class="styled-list" style="margin-top: 0.5rem;">
+                            <li>
+                                <strong>useAuth:</strong> Encapsula o controle de acesso JWT, o login e a diferenciação de perfis (Candidato vs Recrutador - RBAC) via cookies/NextAuth.
+                            </li>
+                            <li>
+                                <strong>useJobMutation:</strong> Abstrai o ciclo de vida de requisição HTTP (loading, error, success) para salvar ou modificar vagas, isolando chamadas assíncronas do Axios/Fetch.
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="glass-card fade-in delay-2" style="padding: 1.5rem; display: flex; flex-direction: column;">
+                        <div class="code-title">frontend/src/hooks/useJobMutation.ts</div>
+                        <pre><code><span class="keyword">export function</span> <span class="function">useJobMutation</span>() {
+  <span class="keyword">const</span> [loading, setLoading] = useState(<span class="keyword">false</span>);
+  <span class="keyword">const</span> [error, setError] = useState&lt;string | null&gt;(<span class="keyword">null</span>);
+
+  <span class="keyword">const</span> createJob = <span class="keyword">async</span> (data: JobInput) =&gt; {
+    setLoading(<span class="keyword">true</span>); setError(<span class="keyword">null</span>);
+    <span class="keyword">try</span> {
+      <span class="keyword">const</span> response = <span class="keyword">await</span> apiClient.post(<span class="string">"/jobs"</span>, data);
+      <span class="keyword">return</span> response.data;
+    } <span class="keyword">catch</span> (err: any) {
+      setError(err.response?.data?.detail || <span class="string">"Erro ao criar vaga"</span>);
+      <span class="keyword">throw</span> err;
+    } <span class="keyword">finally</span> {
+      setLoading(<span class="keyword">false</span>);
+    }
+  };
+  <span class="keyword">return</span> { createJob, loading, error };
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-hud">
+                <div class="slide-counter">SLIDE <span>09</span> / 12</div>
+                <div class="kbd-tip">React Custom Hooks</div>
+                <div class="hud-navigation">
+                    <button class="hud-btn" onclick="appPresentation.prev()">Anterior</button>
+                    <button class="hud-btn" onclick="appPresentation.next()">Próximo</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 10: TESTES - UNITÁRIOS -->
+        <section class="slide" id="slide-10">
+            <h2 class="fade-in">
+                Qualidade: Testes Unitários
+                <span class="layer-tag" style="background: rgba(16, 185, 129, 0.15); color: var(--accent);">Garantia de Qualidade</span>
+            </h2>
+            <div class="slide-body">
+                <div class="grid-2">
+                    <div class="fade-in delay-1">
+                        <p style="margin-bottom: 1.25rem;">
+                            Testes Unitários garantem a estabilidade de regras de lógica puras. São executados de forma isolada, rápida e sem necessidade de infraestrutura de banco de dados ou redes.
+                        </p>
+                        <ul class="styled-list" style="margin-top: 0.5rem;">
+                            <li>
+                                <strong>Backend (Pytest):</strong> Focado em validar as invariantes e métodos das entidades de domínio, como limites de notas ou formatação estrutural de e-mails e CPFs.
+                            </li>
+                            <li>
+                                <strong>Frontend (Vitest):</strong> Validação ágil de utilitários locais, máscaras, normalizadores e fluxos isolados no cliente TypeScript.
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="glass-card fade-in delay-2" style="padding: 1.5rem; display: flex; flex-direction: column;">
+                        <div class="tab-system">
+                            <div class="tab-headers">
+                                <button class="tab-btn active" onclick="switchTab(this, 'test-unit-py')">Backend (Pytest)</button>
+                                <button class="tab-btn" onclick="switchTab(this, 'test-unit-ts')">Frontend (Vitest)</button>
+                            </div>
+                            <div class="tab-contents">
+                                <div id="test-unit-py" class="tab-panel active">
+                                    <div class="code-title">backend/tests/domain/test_application.py</div>
+                                    <pre><code><span class="keyword">def</span> <span class="function">test_application_score_validation</span>():
+    <span class="comment"># Invariante: score deve estar entre 0 e 100</span>
+    <span class="keyword">with</span> pytest.raises(ValueError):
+        Application(
+            job_id=uuid.uuid4(),
+            candidate_email=<span class="string">"test@brita.com"</span>,
+            profile_data={},
+            score=<span class="number">105</span>, <span class="comment"># Inválido!</span>
+            resume_url=<span class="string">"http://minio/doc.pdf"</span>
+        )</code></pre>
+                                </div>
+                                <div id="test-unit-ts" class="tab-panel">
+                                    <div class="code-title">frontend/src/__tests__/masks.test.ts</div>
+                                    <pre><code><span class="keyword">import</span> { describe, it, expect } <span class="keyword">from</span> <span class="string">"vitest"</span>;
+<span class="keyword">import</span> { formatCPF } <span class="keyword">from</span> <span class="string">"../utils/masks"</span>;
+
+describe(<span class="string">"Formatação de CPF"</span>, () =&gt; {
+  it(<span class="string">"deve formatar números brutos com pontos e traço"</span>, () =&gt; {
+    expect(formatCPF(<span class="string">"12345678901"</span>)).toBe(<span class="string">"123.456.789-01"</span>);
+  });
+
+  it(<span class="string">"deve retornar vazio se não houver dados"</span>, () =&gt; {
+    expect(formatCPF(<span class="string">""</span>)).toBe(<span class="string">""</span>);
+  });
+});</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-hud">
+                <div class="slide-counter">SLIDE <span>10</span> / 12</div>
+                <div class="kbd-tip">Vitest & Pytest</div>
+                <div class="hud-navigation">
+                    <button class="hud-btn" onclick="appPresentation.prev()">Anterior</button>
+                    <button class="hud-btn" onclick="appPresentation.next()">Próximo</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 11: TESTES - INTEGRAÇÃO E REACT TESTING LIBRARY -->
+        <section class="slide" id="slide-11">
+            <h2 class="fade-in">
+                Qualidade: Integração & React Testing Library
+                <span class="layer-tag" style="background: rgba(16, 185, 129, 0.15); color: var(--accent);">Garantia de Qualidade</span>
+            </h2>
+            <div class="slide-body">
+                <div class="grid-2">
+                    <div class="fade-in delay-1">
+                        <p style="margin-bottom: 1.25rem;">
+                            Testes de **Integração** e **Interface** asseguram o funcionamento harmônico entre múltiplos componentes, APIs reais e renderizações dinâmicas do navegador.
+                        </p>
+                        <ul class="styled-list" style="margin-top: 0.5rem;">
+                            <li>
+                                <strong>Integração Backend:</strong> Executa a rota HTTP do FastAPI até o banco de dados PostgreSQL real (via container de teste isolado ou sqlite efêmero), testando o fluxo transacional E2E.
+                            </li>
+                            <li>
+                                <strong>React Testing Library (RTL):</strong> Testa a interface simulando eventos reais de mouse e teclado (como adicionar e preencher questões, disparar avisos de limite).
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="glass-card fade-in delay-2" style="padding: 1.5rem; display: flex; flex-direction: column;">
+                        <div class="tab-system">
+                            <div class="tab-headers">
+                                <button class="tab-btn active" onclick="switchTab(this, 'test-int-py')">Integração (Backend)</button>
+                                <button class="tab-btn" onclick="switchTab(this, 'test-rtl-ts')">React Testing Library</button>
+                            </div>
+                            <div class="tab-contents">
+                                <div id="test-int-py" class="tab-panel active">
+                                    <div class="code-title">backend/tests/integration/test_jobs_api.py</div>
+                                    <pre><code><span class="keyword">async def</span> <span class="function">test_create_job_integration</span>(client: AsyncClient, db_session: AsyncSession):
+    <span class="comment"># Envia POST HTTP real para o app FastAPI rodando em testes</span>
+    response = <span class="keyword">await</span> client.post(<span class="string">"/api/v1/jobs/"</span>, json={
+        <span class="string">"title"</span>: <span class="string">"Engenheiro de Produção"</span>,
+        <span class="string">"area"</span>: <span class="string">"Industrial"</span>,
+        <span class="string">"questions"</span>: [question_dict] * <span class="number">5</span>
+    })
+    assert response.status_code == <span class="number">200</span>
+    data = response.json()
+    <span class="comment"># Valida que persistiu de fato no banco físico</span>
+    db_job = <span class="keyword">await</span> db_session.get(ModelJob, data[<span class="string">"id"</span>])
+    assert db_job is <span class="keyword">not None</span></code></pre>
+                                </div>
+                                <div id="test-rtl-ts" class="tab-panel">
+                                    <div class="code-title">frontend/src/__tests__/QuestionBuilder.test.tsx</div>
+                                    <pre><code><span class="keyword">import</span> { render, screen, fireEvent } <span class="keyword">from</span> <span class="string">"@testing-library/react"</span>;
+
+it(<span class="string">"avisa se tentar submeter menos de 5 questões"</span>, () =&gt; {
+  render(&lt;QuestionBuilder initialQuestions={<span class="number">3</span>} /&gt;);
+  
+  <span class="keyword">const</span> submitBtn = screen.getByRole(<span class="string">"button"</span>, { name: <span class="regexp">/publicar/i</span> });
+  fireEvent.click(submitBtn);
+  
+  <span class="comment"># Valida renderização da mensagem na tela</span>
+  expect(screen.getByText(<span class="regexp">/mínimo.*5/i</span>)).toBeInTheDocument();
+});</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-hud">
+                <div class="slide-counter">SLIDE <span>11</span> / 12</div>
+                <div class="kbd-tip">RTL & Integração</div>
+                <div class="hud-navigation">
+                    <button class="hud-btn" onclick="appPresentation.prev()">Anterior</button>
+                    <button class="hud-btn" onclick="appPresentation.next()">Próximo</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 12: FLUXO DE EXECUÇÃO INTERATIVO -->
+        <section class="slide" id="slide-12">
+            <h2 class="fade-in">
+                Fluxo Linear de Execução (Request Life Cycle)
+                <span class="layer-tag" style="background: rgba(6, 182, 212, 0.15); color: var(--secondary);">Integração Ponta a Ponta</span>
+            </h2>
+            <div class="slide-body">
+                <div class="diag-wrapper">
+                    <p class="fade-in delay-1" style="text-align: center; margin-bottom: 1.5rem; max-width: 800px; margin-left: auto; margin-right: auto;">
+                        Clique em cada etapa do fluxo abaixo para visualizar como os dados e as camadas interagem no ecossistema BritaRH.
+                    </p>
+                    
+                    <div class="sequence-nodes fade-in delay-2">
+                        <div class="seq-line-connector"></div>
+                        <div class="seq-line-progress" id="seqLineProgress"></div>
+                        
+                        <div class="seq-node active" onclick="activateSeqNode(0, 'Component UI', 'A interação começa na tela de vagas, onde o recrutador insere dados e clica em publicar no React.')">
+                            <div class="seq-circle">1</div>
+                            <span class="seq-name">UI</span>
+                        </div>
+                        <div class="seq-node" onclick="activateSeqNode(1, 'Custom Hook', 'O formulário delega os dados locais para o hook useJobMutation que gerencia o estado e as chamadas assíncronas do cliente.')">
+                            <div class="seq-circle">2</div>
+                            <span class="seq-name">Hook</span>
+                        </div>
+                        <div class="seq-node" onclick="activateSeqNode(2, 'HTTP Route', 'A chamada chega ao endpoint do FastAPI que valida o contrato de dados usando schemas do Pydantic V2.')">
+                            <div class="seq-circle">3</div>
+                            <span class="seq-name">API</span>
+                        </div>
+                        <div class="seq-node" onclick="activateSeqNode(3, 'Dependency Injection', 'O FastAPI Depends injeta as instâncias corretas (SQL Repo, Storage Gateway) de forma desacoplada no caso de uso.')">
+                            <div class="seq-circle">4</div>
+                            <span class="seq-name">D.I.</span>
+                        </div>
+                        <div class="seq-node" onclick="activateSeqNode(4, 'Use Case', 'A classe de caso de uso (ex: CreateJobUseCase) orquestra a lógica pura de negócios, instanciando e validando as entidades de domínio.')">
+                            <div class="seq-circle">5</div>
+                            <span class="seq-name">Usecase</span>
+                        </div>
+                        <div class="seq-node" onclick="activateSeqNode(5, 'Repository (ORM)', 'O repositório concreto recebe a entidade pura de domínio e a converte em modelo do SQLAlchemy para gravar no PostgreSQL.')">
+                            <div class="seq-circle">6</div>
+                            <span class="seq-name">Repo</span>
+                        </div>
+                        <div class="seq-node" onclick="activateSeqNode(6, 'Database / Storage', 'Os dados são salvos definitivamente no Postgres e quaisquer PDFs anexados são enviados com upload seguro ao MinIO.')">
+                            <div class="seq-circle">7</div>
+                            <span class="seq-name">Infra</span>
+                        </div>
+                    </div>
+                    
+                    <div class="seq-detail-panel glass-card fade-in delay-3">
+                        <div class="seq-detail-title" id="seqDetailTitle">Component UI</div>
+                        <div class="seq-detail-text" id="seqDetailText">
+                            A interação começa na tela de vagas, onde o recrutador insere dados e clica em publicar no React.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-hud">
+                <div class="slide-counter">SLIDE <span>12</span> / 12</div>
+                <div class="kbd-tip">Arquitetura Desacoplada</div>
+                <div class="hud-navigation">
+                    <button class="hud-btn" onclick="appPresentation.prev()">Anterior</button>
+                    <button class="hud-btn" onclick="appPresentation.restart()">Recomeçar</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- JS Presentation Class -->
     <script>
-        class SlidePresentation {
+        class Presentation {
             constructor() {
                 this.slides = document.querySelectorAll('.slide');
-                this.navDots = document.getElementById('navDots');
-                this.progressBar = document.getElementById('progressBar');
+                this.dots = [];
+                this.currentIndex = 0;
                 this.init();
             }
 
             init() {
-                // Generate dots
-                this.slides.forEach((_, i) => {
+                // Generate navigation indicators on the right
+                const navDots = document.getElementById('navDots');
+                const slideLabels = [
+                    "Capa",
+                    "Arquitetura Limpa",
+                    "Domínio: Entidades",
+                    "Domínio: Contratos",
+                    "Aplicação: Casos de Uso",
+                    "Infra: HTTP & D.I.",
+                    "Infra: Repo & Storage",
+                    "Frontend: UI Components",
+                    "Frontend: Custom Hooks",
+                    "Qualidade: Testes Unitários",
+                    "Qualidade: Integração & RTL",
+                    "Request Life Cycle"
+                ];
+
+                this.slides.forEach((slide, i) => {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'dot-wrapper' + (i === 0 ? ' active' : '');
+                    
+                    const label = document.createElement('span');
+                    label.className = 'dot-label';
+                    label.innerText = slideLabels[i] || `Slide ${i + 1}`;
+                    
                     const dot = document.createElement('div');
-                    dot.className = 'dot' + (i === 0 ? ' active' : '');
-                    dot.addEventListener('click', () => {
-                        this.slides[i].scrollIntoView({ behavior: 'smooth' });
-                    });
-                    this.navDots.appendChild(dot);
+                    dot.className = 'dot';
+
+                    wrapper.appendChild(label);
+                    wrapper.appendChild(dot);
+                    
+                    wrapper.addEventListener('click', () => this.goTo(i));
+                    navDots.appendChild(wrapper);
+                    this.dots.push(wrapper);
                 });
 
-                // Intersection Observer for visibility and animations
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add('visible');
-                            this.updateHUD(entry.target);
-                        } else {
-                            entry.target.classList.remove('visible');
-                        }
-                    });
-                }, { threshold: 0.5 });
-
-                this.slides.forEach(slide => observer.observe(slide));
-
-                // Keyboard Nav
+                // Set up global keys for slide navigation
                 document.addEventListener('keydown', (e) => {
-                    const nextKeys = ['ArrowDown', 'ArrowRight', ' ', 'PageDown'];
-                    const prevKeys = ['ArrowUp', 'ArrowLeft', 'PageUp'];
-
-                    if (nextKeys.includes(e.key)) {
-                        this.navigate(1);
+                    if (e.key === 'ArrowRight' || e.key === ' ') {
+                        this.next();
                         e.preventDefault();
-                    } else if (prevKeys.includes(e.key)) {
-                        this.navigate(-1);
+                    } else if (e.key === 'ArrowLeft') {
+                        this.prev();
                         e.preventDefault();
                     }
                 });
+
+                this.updateHUD();
             }
 
-            updateHUD(activeSlide) {
-                const index = Array.from(this.slides).indexOf(activeSlide);
-                // Update dots
-                document.querySelectorAll('.dot').forEach((dot, i) => {
-                    dot.classList.toggle('active', i === index);
-                });
-                // Update progress bar
-                const progress = ((index + 1) / this.slides.length) * 100;
-                this.progressBar.style.width = `${progress}%`;
+            goTo(index) {
+                if (index < 0 || index >= this.slides.length) return;
+                
+                // Hide current slide
+                this.slides[this.currentIndex].classList.remove('active');
+                this.dots[this.currentIndex].classList.remove('active');
+                
+                // Show new slide
+                this.currentIndex = index;
+                this.slides[this.currentIndex].classList.add('active');
+                this.dots[this.currentIndex].classList.add('active');
+                
+                this.updateHUD();
             }
 
-            navigate(direction) {
-                const currentVisible = Array.from(this.slides).findIndex(s => s.classList.contains('visible'));
-                const next = Math.min(Math.max(0, currentVisible + direction), this.slides.length - 1);
-                this.slides[next].scrollIntoView({ behavior: 'smooth' });
+            next() {
+                if (this.currentIndex < this.slides.length - 1) {
+                    this.goTo(this.currentIndex + 1);
+                }
+            }
+
+            prev() {
+                if (this.currentIndex > 0) {
+                    this.goTo(this.currentIndex - 1);
+                }
+            }
+
+            restart() {
+                this.goTo(0);
+            }
+
+            updateHUD() {
+                // Update top progress bar
+                const progressBar = document.getElementById('progressBar');
+                const progress = (this.currentIndex / (this.slides.length - 1)) * 100;
+                progressBar.style.width = `${progress}%`;
+
+                // Update text counters
+                const counter = this.slides[this.currentIndex].querySelector('.slide-counter span');
+                if (counter) {
+                    counter.innerText = String(this.currentIndex + 1).padStart(2, '0');
+                }
             }
         }
 
-        new SlidePresentation();
+        // Global functions for Tab switching within slides
+        function switchTab(btn, targetPanelId) {
+            const container = btn.closest('.tab-system');
+            
+            // Toggle active header button
+            container.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            // Toggle active panel content
+            container.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            const targetPanel = container.querySelector(`#${targetPanelId}`);
+            if (targetPanel) {
+                targetPanel.classList.add('active');
+            }
+        }
+
+        // Global functions for interactive request flow chart
+        function activateSeqNode(nodeIndex, title, text) {
+            const nodes = document.querySelectorAll('.seq-node');
+            nodes.forEach((n, idx) => {
+                n.classList.toggle('active', idx === nodeIndex);
+            });
+
+            // Adjust connector progress bar width
+            const progress = document.getElementById('seqLineProgress');
+            const percent = (nodeIndex / (nodes.length - 1)) * 100;
+            progress.style.width = `${percent}%`;
+
+            // Update explanation text
+            document.getElementById('seqDetailTitle').innerText = title;
+            document.getElementById('seqDetailText').innerText = text;
+        }
+
+        let appPresentation;
+        window.addEventListener('DOMContentLoaded', () => {
+            appPresentation = new Presentation();
+        });
     </script>
 </body>
 
