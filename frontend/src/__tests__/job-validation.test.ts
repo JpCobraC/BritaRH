@@ -7,7 +7,8 @@
  * Estado TDD: RED — vai falhar até que lib/validations/job.ts exista.
  */
 
-// @ts-expect-error — módulo ainda não existe (RED phase)
+import { describe, it, expect } from "vitest";
+
 import { jobSchema, questionsSchema } from "@/lib/validations/job";
 
 describe("jobSchema — campos obrigatórios", () => {
