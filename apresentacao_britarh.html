@@ -136,6 +136,7 @@
             line-height: 1.1;
             background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #6366f1 100%);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 1.5rem;
         }
@@ -1617,12 +1618,6 @@ describe(<span class="string">"Fluxo de Vagas integrado"</span>, () =&gt; {
                     
                     const label = document.createElement('span');
                     label.className = 'dot-label';
-                    label.innerText = slideLabels[i] || `Slide ${i + 1}`;
-                    
-                    const dot = document.createElement('div');
-                    dot.className = 'dot';
-
-                    wrapper.appendChild(label);abel.className = 'dot-label';
                     label.innerText = slideLabels[i] || `Slide ${i + 1}`;
                     
                     const dot = document.createElement('div');
