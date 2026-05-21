@@ -1,62 +1,102 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useRouter, useParams } from "next/navigation";
 import StepIndicator from "@/components/ui/StepIndicator";
 import ProgressBar from "@/components/ui/ProgressBar";
-
-const perguntas = [
-  {
-    id: 1,
-    texto: "Qual equipamento NÃO é comumente usado em operações de britagem?",
-    alternativas: [
-      "Britador de mandíbula",
-      "Britador cônico",
-      "Torno mecânico",
-      "Britador de impacto",
-    ],
-    correta: 2,
-  },
-  {
-    id: 2,
-    texto: "Em operações de mineração, o que significa EPI?",
-    alternativas: [
-      "Equipamento de Produção Industrial",
-      "Equipamento de Proteção Individual",
-      "Estação de Processamento Integrado",
-      "Equipamento de Perfuração Industrial",
-    ],
-    correta: 1,
-  },
-  {
-    id: 3,
-    texto: "Qual a finalidade principal da peneira vibratória numa planta de britagem?",
-    alternativas: [
-      "Reduzir o tamanho das rochas",
-      "Separar diferentes granulometrias do material",
-      "Transportar material entre estágios",
-      "Lavar o material antes do processamento",
-    ],
-    correta: 1,
-  },
-];
+import { useApplicationWizard } from "@/presentation/contexts/ApplicationWizardContext";
+import { useJobDetails } from "@/presentation/hooks/useJobDetails";
 
 export default function TestePage() {
   const router = useRouter();
   const params = useParams();
   const vagaId = params.vagaId as string;
 
+  const { job, loading, error } = useJobDetails(vagaId);
+  const { answers, updateAnswers } = useApplicationWizard();
+  
   const [currentQ, setCurrentQ] = useState(0);
-  const [respostas, setRespostas] = useState<(number | null)[]>(Array(perguntas.length).fill(null));
 
-  const pergunta = perguntas[currentQ];
-  const progress = ((currentQ + 1) / perguntas.length) * 100;
+  const questions = useMemo(() => {
+    return job?.questions || [];
+  }, [job]);
+
+  const currentAnswers = useMemo(() => {
+    const padded = [...answers];
+    while (padded.length < questions.length) {
+      padded.push(null);
+    }
+    return padded;
+  }, [answers, questions.length]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center gap-3 bg-background-light">
+        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-slate-600 font-medium">Carregando teste de conhecimento...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-background-light px-6 text-center">
+        <span className="material-symbols-outlined text-red-500 text-5xl">error</span>
+        <h2 className="text-xl font-bold text-slate-800">Ops, algo deu errado!</h2>
+        <p className="text-slate-600 max-w-md">{error}</p>
+        <button 
+          onClick={() => router.push(`/candidatura/${vagaId}/perfil`)}
+          className="mt-2 px-6 py-2.5 bg-primary text-white font-semibold rounded-xl hover:bg-primary/90 transition-all shadow-sm"
+        >
+          Voltar ao Perfil
+        </button>
+      </div>
+    );
+  }
+
+  if (questions.length === 0) {
+    return (
+      <div className="min-h-screen bg-background-light flex flex-col items-center justify-center p-6 text-center">
+        <div className="max-w-md bg-white rounded-2xl border border-slate-100 shadow-sm p-8 animate-fadeIn">
+          <div className="size-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <span className="material-symbols-outlined text-primary text-3xl">task_alt</span>
+          </div>
+          <h1 className="text-xl font-bold text-slate-900 mb-2">Sem Teste de Conhecimento</h1>
+          <p className="text-slate-500 text-sm mb-8 leading-relaxed">
+            Esta vaga não exige um teste de conhecimentos específicos. Você pode prosseguir diretamente para o envio do seu currículo.
+          </p>
+          <div className="flex gap-3 justify-center">
+            <button
+              onClick={() => router.push(`/candidatura/${vagaId}/perfil`)}
+              className="px-6 py-3 border border-slate-200 text-slate-600 font-semibold rounded-xl hover:bg-slate-50 transition-all text-sm"
+            >
+              Voltar ao Perfil
+            </button>
+            <button
+              onClick={() => router.push(`/candidatura/${vagaId}/curriculo`)}
+              className="px-6 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary/90 transition-all text-sm shadow-md shadow-primary/20"
+            >
+              Continuar para Currículo
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const pergunta = questions[currentQ];
+  const progress = ((currentQ + 1) / questions.length) * 100;
 
   function selecionar(idx: number) {
-    const novas = [...respostas];
+    const novas = [...currentAnswers];
     novas[currentQ] = idx;
-    setRespostas(novas);
+    
+    const correctIndices = questions.map((q) => q.correctIndex);
+    updateAnswers(novas, questions.length, correctIndices);
   }
+
+  // As opções podem ser enviadas como array de strings
+  const alternativas = pergunta.options;
 
   return (
     <div className="min-h-screen bg-background-light">
@@ -66,7 +106,7 @@ export default function TestePage() {
           <div className="shrink-0">
             <p className="text-xs text-slate-500 font-medium">Questão</p>
             <h2 className="text-base font-bold text-slate-900">
-              {currentQ + 1} de {perguntas.length}
+              {currentQ + 1} de {questions.length}
             </h2>
           </div>
           <div className="flex-1">
@@ -93,13 +133,13 @@ export default function TestePage() {
 
           <div className="bg-slate-50 rounded-xl p-5 mb-6">
             <p className="text-base font-semibold text-slate-900 leading-relaxed">
-              {pergunta.texto}
+              {pergunta.text}
             </p>
           </div>
 
           <div className="space-y-3">
-            {pergunta.alternativas.map((alt, idx) => {
-              const selected = respostas[currentQ] === idx;
+            {alternativas.map((alt, idx) => {
+              const selected = currentAnswers[currentQ] === idx;
               return (
                 <button
                   key={idx}
@@ -131,7 +171,7 @@ export default function TestePage() {
                 if (currentQ > 0) setCurrentQ(currentQ - 1);
                 else router.push(`/candidatura/${vagaId}/perfil`);
               }}
-              className="flex items-center gap-2 px-6 py-3 border border-slate-200 text-slate-600 font-semibold rounded-xl hover:bg-slate-50 transition-all"
+              className="flex items-center gap-2 px-6 py-3 border border-slate-200 text-slate-600 font-semibold rounded-xl hover:bg-slate-50 transition-all text-sm"
             >
               <span className="material-symbols-outlined text-base">arrow_back</span>
               Anterior
@@ -139,15 +179,16 @@ export default function TestePage() {
 
             <button
               onClick={() => {
-                if (currentQ < perguntas.length - 1) {
+                if (currentQ < questions.length - 1) {
                   setCurrentQ(currentQ + 1);
                 } else {
                   router.push(`/candidatura/${vagaId}/curriculo`);
                 }
               }}
-              className="flex items-center gap-2 px-8 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary/90 transition-all shadow-md shadow-primary/20 disabled:opacity-50"
+              disabled={currentAnswers[currentQ] === null}
+              className="flex items-center gap-2 px-8 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary/90 transition-all shadow-md shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
             >
-              {currentQ < perguntas.length - 1 ? "Próxima" : "Finalizar Teste"}
+              {currentQ < questions.length - 1 ? "Próxima" : "Finalizar Teste"}
               <span className="material-symbols-outlined text-base">arrow_forward</span>
             </button>
           </div>
