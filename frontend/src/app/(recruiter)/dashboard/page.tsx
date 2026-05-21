@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -36,17 +36,7 @@ export default function RecruiterDashboard() {
   const [applications, setApplications] = useState<Application[]>([]);
   const [loadingApps, setLoadingApps] = useState(false);
 
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/");
-    } else if (session?.user?.role !== "recruiter") {
-      router.push("/vagas");
-    } else {
-      fetchJobs();
-    }
-  }, [session, status, router]);
-
-  const fetchJobs = async () => {
+  const fetchJobs = useCallback(async () => {
     try {
       const res = await fetch(`${apiV1Url}/recruiter/jobs`, {
         headers: {
@@ -62,7 +52,17 @@ export default function RecruiterDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [apiV1Url, session?.accessToken]);
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/");
+    } else if (session?.user?.role !== "recruiter") {
+      router.push("/vagas");
+    } else {
+      fetchJobs();
+    }
+  }, [session, status, router, fetchJobs]);
 
   const toggleJobStatus = async (jobId: string, currentStatus: string) => {
     const newStatus = currentStatus === "open" ? "closed" : "open";

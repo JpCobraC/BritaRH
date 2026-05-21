@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Job } from "../../domain/entities/Job";
 import { ApiJobRepository } from "../../data/repositories/ApiJobRepository";
 import { GetJobDetailsUseCase } from "../../domain/usecases/GetJobDetailsUseCase";
@@ -8,7 +8,7 @@ export function useJobDetails(jobId: string) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchJobDetails = async () => {
+  const fetchJobDetails = useCallback(async () => {
     if (!jobId) return;
     setLoading(true);
     setError(null);
@@ -23,11 +23,11 @@ export function useJobDetails(jobId: string) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [jobId]);
 
   useEffect(() => {
     fetchJobDetails();
-  }, [jobId]);
+  }, [fetchJobDetails]);
 
   return {
     job,
