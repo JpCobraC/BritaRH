@@ -91,8 +91,8 @@ export default function TestePage() {
     const novas = [...currentAnswers];
     novas[currentQ] = idx;
     
-    const correctIndices = questions.map((q) => q.correctIndex);
-    updateAnswers(novas, questions.length, correctIndices);
+    const score = job ? job.calculateScore(novas) : 0;
+    updateAnswers(novas, score);
   }
 
   // As opções podem ser enviadas como array de strings

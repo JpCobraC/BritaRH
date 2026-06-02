@@ -22,7 +22,7 @@ export class ApiJobRepository implements IJobRepository {
         return { items: [], total: 0 };
       }
 
-      const items: Job[] = (response.data.items || []).map((item: any) => ({
+      const items: Job[] = (response.data.items || []).map((item: any) => new Job({
         id: item.id,
         title: item.title,
         area: item.area,
@@ -62,14 +62,14 @@ export class ApiJobRepository implements IJobRepository {
       }
 
       const rawJob = response.data;
-      const questions: Question[] = (rawJob.questions || []).map((q: any) => ({
+      const questions: Question[] = (rawJob.questions || []).map((q: any) => new Question({
         id: q.id,
         text: q.text,
         options: q.options as [string, string, string, string],
         correctIndex: q.correct_index,
       }));
 
-      return {
+      return new Job({
         id: rawJob.id,
         title: rawJob.title,
         area: rawJob.area,
@@ -82,7 +82,7 @@ export class ApiJobRepository implements IJobRepository {
         status: rawJob.status as any,
         questions,
         createdAt: rawJob.created_at,
-      };
+      });
     } catch (err) {
       console.error(`Error fetching job details for ${id}:`, err);
       return null;

@@ -7,23 +7,18 @@ export class SubmitApplicationUseCase {
   async execute(
     jobId: string,
     candidateEmail: string,
-    profileData: ApplicationProfile,
+    profileData: {
+      fullName: string;
+      email: string;
+      phone: string;
+      linkedinUrl?: string;
+      portfolioUrl?: string;
+      summary?: string;
+    },
     score: number,
     file: File,
     message?: string
   ): Promise<Application> {
-    if (!jobId) {
-      throw new Error("O ID da vaga é obrigatório.");
-    }
-    if (!candidateEmail) {
-      throw new Error("O e-mail do candidato é obrigatório.");
-    }
-    if (!profileData.fullName || profileData.fullName.length < 3) {
-      throw new Error("O nome completo deve conter pelo menos 3 caracteres.");
-    }
-    if (!profileData.phone) {
-      throw new Error("O telefone é obrigatório.");
-    }
     if (!file) {
       throw new Error("O arquivo do currículo é obrigatório.");
     }
@@ -34,13 +29,30 @@ export class SubmitApplicationUseCase {
       throw new Error("O currículo deve ter no máximo 5MB.");
     }
 
-    return this.applicationRepository.submitApplication(
+    const profile = new ApplicationProfile({
+      fullName: profileData.fullName,
+      email: profileData.email,
+      phone: profileData.phone,
+      linkedinUrl: profileData.linkedinUrl,
+      portfolioUrl: profileData.portfolioUrl,
+      summary: profileData.summary,
+    });
+
+    const application = new Application({
       jobId,
       candidateEmail,
-      profileData,
+      profileData: profile,
       score,
+      message,
+    });
+
+    return this.applicationRepository.submitApplication(
+      application.jobId,
+      application.candidateEmail,
+      application.profileData,
+      application.score,
       file,
-      message
+      application.message
     );
   }
 }

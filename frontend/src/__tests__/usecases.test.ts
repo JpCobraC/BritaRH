@@ -5,12 +5,12 @@ import { SubmitApplicationUseCase } from "../domain/usecases/SubmitApplicationUs
 import { IJobRepository } from "../domain/repositories/IJobRepository";
 import { IApplicationRepository } from "../domain/repositories/IApplicationRepository";
 import { Job } from "../domain/entities/Job";
-import { ApplicationProfile } from "../domain/entities/Application";
+import { Application, ApplicationProfile } from "../domain/entities/Application";
 
 describe("GetJobsUseCase", () => {
   it("should call listOpenJobs on repository", async () => {
     const mockJobs: Job[] = [
-      { id: "1", title: "Job 1", area: "Area 1", status: "open", contractType: "CLT", schedule: "Fulltime", workplace: "Remote", requirements: "", assignments: "" }
+      new Job({ id: "1", title: "Job 1", area: "Area 1", status: "open", contractType: "CLT", schedule: "Fulltime", workplace: "Remote", requirements: "", assignments: "" })
     ];
     const mockRepo: IJobRepository = {
       listOpenJobs: vi.fn().mockResolvedValue({ items: mockJobs, total: 1 }),
@@ -28,7 +28,7 @@ describe("GetJobsUseCase", () => {
 
 describe("GetJobDetailsUseCase", () => {
   it("should call getJobById on repository", async () => {
-    const mockJob: Job = {
+    const mockJob: Job = new Job({
       id: "vaga-123",
       title: "Job 1",
       area: "Area 1",
@@ -38,7 +38,7 @@ describe("GetJobDetailsUseCase", () => {
       workplace: "Remote",
       requirements: "",
       assignments: "",
-    };
+    });
     const mockRepo: IJobRepository = {
       listOpenJobs: vi.fn(),
       getJobById: vi.fn().mockResolvedValue(mockJob),
@@ -62,7 +62,7 @@ describe("GetJobDetailsUseCase", () => {
 });
 
 describe("SubmitApplicationUseCase", () => {
-  const profile: ApplicationProfile = {
+  const profile = {
     fullName: "Jane Doe",
     email: "jane@doe.com",
     phone: "(31) 99999-9999",
@@ -77,13 +77,22 @@ describe("SubmitApplicationUseCase", () => {
   it("should validate and submit successfully", async () => {
     const mockFile = createMockFile("curriculo.pdf", 1024, "application/pdf");
     const mockRepo: IApplicationRepository = {
-      submitApplication: vi.fn().mockResolvedValue({ id: "app-123" }),
+      submitApplication: vi.fn().mockResolvedValue(
+        new Application({
+          id: "app-123",
+          jobId: "vaga-123",
+          candidateEmail: "jane@doe.com",
+          profileData: new ApplicationProfile(profile),
+          score: 80,
+          message: "Hello!"
+        })
+      ),
     };
 
     const usecase = new SubmitApplicationUseCase(mockRepo);
     const result = await usecase.execute("vaga-123", "jane@doe.com", profile, 80, mockFile, "Hello!");
 
-    expect(mockRepo.submitApplication).toHaveBeenCalledWith("vaga-123", "jane@doe.com", profile, 80, mockFile, "Hello!");
+    expect(mockRepo.submitApplication).toHaveBeenCalledWith("vaga-123", "jane@doe.com", expect.any(ApplicationProfile), 80, mockFile, "Hello!");
     expect(result.id).toBe("app-123");
   });
 

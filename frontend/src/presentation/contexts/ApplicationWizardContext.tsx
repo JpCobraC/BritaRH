@@ -29,7 +29,7 @@ export interface ApplicationWizardContextType {
   submitSuccess: boolean;
   
   updateProfile: (profile: Partial<WizardProfile>) => void;
-  updateAnswers: (answers: (number | null)[], totalQuestions: number, correctIndices: number[]) => void;
+  updateAnswers: (answers: (number | null)[], score: number) => void;
   updateResume: (file: File | null, message: string) => void;
   submitCandidacy: () => Promise<void>;
   resetWizard: () => void;
@@ -113,22 +113,10 @@ export function ApplicationWizardProvider({
 
   const updateAnswers = (
     newAnswers: (number | null)[],
-    totalQuestions: number,
-    correctIndices: number[]
+    score: number
   ) => {
     setAnswers(newAnswers);
-    
-    // Calcula a pontuação percentual (0 a 100)
-    if (totalQuestions > 0 && correctIndices.length === totalQuestions) {
-      let correctCount = 0;
-      newAnswers.forEach((ans, idx) => {
-        if (ans !== null && ans === correctIndices[idx]) {
-          correctCount++;
-        }
-      });
-      const finalScore = Math.round((correctCount / totalQuestions) * 100);
-      setScore(finalScore);
-    }
+    setScore(score);
   };
 
   const updateResume = (file: File | null, msg: string) => {
@@ -150,14 +138,14 @@ export function ApplicationWizardProvider({
       const applicationRepository = new ApiApplicationRepository();
       const usecase = new SubmitApplicationUseCase(applicationRepository);
       
-      const appProfile: ApplicationProfile = {
+      const appProfile = new ApplicationProfile({
         fullName: profile.fullName,
         email: profile.email,
         phone: profile.phone,
         linkedinUrl: profile.linkedinUrl || undefined,
         portfolioUrl: profile.portfolioUrl || undefined,
         summary: `Cidade: ${profile.cidade || "Não informada"}. Experiência: ${profile.experiencia || "Não informada"}. Disponibilidade: ${profile.disponibilidade || "Não informada"}. Pretensão salarial: ${profile.pretensao || "Não informada"}.`,
-      };
+      });
 
       await usecase.execute(
         vagaId,

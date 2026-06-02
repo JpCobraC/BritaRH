@@ -57,22 +57,24 @@ export class ApiApplicationRepository implements IApplicationRepository {
 
     const data = await response.json();
 
-    return {
+    const profile = new ApplicationProfile({
+      fullName: data.profile_data?.full_name || "",
+      email: data.profile_data?.email || "",
+      phone: data.profile_data?.phone || "",
+      linkedinUrl: data.profile_data?.linkedin_url,
+      portfolioUrl: data.profile_data?.portfolio_url,
+      summary: data.profile_data?.summary,
+    });
+
+    return new Application({
       id: data.id,
       jobId: data.job_id,
       candidateEmail: data.candidate_email,
-      profileData: {
-        fullName: data.profile_data?.full_name || "",
-        email: data.profile_data?.email || "",
-        phone: data.profile_data?.phone || "",
-        linkedinUrl: data.profile_data?.linkedin_url,
-        portfolioUrl: data.profile_data?.portfolio_url,
-        summary: data.profile_data?.summary,
-      },
+      profileData: profile,
       score: data.score,
       message: data.message,
       resumeUrl: data.resume_url,
       createdAt: data.created_at,
-    };
+    });
   }
 }
