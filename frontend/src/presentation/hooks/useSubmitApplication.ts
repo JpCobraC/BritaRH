@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { ApplicationProfile } from "../../domain/entities/Application";
 import { ApiApplicationRepository } from "../../data/repositories/ApiApplicationRepository";
 import { SubmitApplicationUseCase } from "../../domain/usecases/SubmitApplicationUseCase";
 
@@ -11,7 +10,14 @@ export function useSubmitApplication() {
   const submit = async (
     jobId: string,
     candidateEmail: string,
-    profileData: ApplicationProfile,
+    profileData: {
+      fullName: string;
+      email: string;
+      phone: string;
+      linkedinUrl?: string;
+      portfolioUrl?: string;
+      summary?: string;
+    },
     score: number,
     file: File,
     message?: string

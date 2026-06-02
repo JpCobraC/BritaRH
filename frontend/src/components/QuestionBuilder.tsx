@@ -46,10 +46,7 @@ const buildInitial = (n: number): QuestionData[] =>
 /* =========================================================
    COMPONENTE
    ========================================================= */
-export default function QuestionBuilder({
-  initialQuestions = 0,
-  onSubmit,
-}: QuestionBuilderProps) {
+export function useQuestionBuilder(initialQuestions: number, onSubmit?: (questions: QuestionData[]) => void) {
   const [questions, setQuestions] = useState<QuestionData[]>(
     buildInitial(initialQuestions)
   );
@@ -58,18 +55,15 @@ export default function QuestionBuilder({
   const atMax = questions.length >= 20;
   const MIN = 5;
 
-  /* ----- Adicionar questão ----- */
   const addQuestion = () => {
     if (atMax) return;
     setQuestions((prev) => [...prev, emptyQuestion()]);
   };
 
-  /* ----- Remover questão ----- */
   const removeQuestion = (index: number) => {
     setQuestions((prev) => prev.filter((_, i) => i !== index));
   };
 
-  /* ----- Atualizar campo ----- */
   const updateField = (
     index: number,
     field: keyof QuestionData,
@@ -91,7 +85,6 @@ export default function QuestionBuilder({
     );
   };
 
-  /* ----- Submit ----- */
   const handleSubmit = () => {
     if (questions.length < MIN) {
       setMinError(true);
@@ -100,6 +93,33 @@ export default function QuestionBuilder({
     setMinError(false);
     onSubmit?.(questions);
   };
+
+  return {
+    questions,
+    minError,
+    atMax,
+    addQuestion,
+    removeQuestion,
+    updateField,
+    updateOption,
+    handleSubmit,
+  };
+}
+
+export default function QuestionBuilder({
+  initialQuestions = 0,
+  onSubmit,
+}: QuestionBuilderProps) {
+  const {
+    questions,
+    minError,
+    atMax,
+    addQuestion,
+    removeQuestion,
+    updateField,
+    updateOption,
+    handleSubmit,
+  } = useQuestionBuilder(initialQuestions, onSubmit);
 
   /* =========================================================
      RENDER

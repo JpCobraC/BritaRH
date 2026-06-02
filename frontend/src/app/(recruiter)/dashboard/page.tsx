@@ -67,6 +67,17 @@ export default function RecruiterDashboard() {
 
   const toggleJobStatus = async (jobId: string, currentStatus: string) => {
     const newStatus = currentStatus === "open" ? "closed" : "open";
+    
+    // Save previous state for potential rollback
+    const previousJobs = [...jobs];
+    const previousSelectedJob = selectedJob ? { ...selectedJob } : null;
+
+    // Optimistic Update
+    setJobs(prevJobs => prevJobs.map(j => j.id === jobId ? { ...j, status: newStatus as any } : j));
+    if (selectedJob?.id === jobId) {
+      setSelectedJob(prevSelected => prevSelected ? { ...prevSelected, status: newStatus as any } : null);
+    }
+
     try {
       const res = await fetch(`${apiV1Url}/jobs/${jobId}`, {
         method: "PATCH",
@@ -76,14 +87,14 @@ export default function RecruiterDashboard() {
         },
         body: JSON.stringify({ status: newStatus }),
       });
-      if (res.ok) {
-        setJobs(jobs.map(j => j.id === jobId ? { ...j, status: newStatus as any } : j));
-        if (selectedJob?.id === jobId) {
-          setSelectedJob({ ...selectedJob, status: newStatus as any });
-        }
+      if (!res.ok) {
+        throw new Error("Failed to update status on server");
       }
     } catch (error) {
-      console.error("Error updating job status:", error);
+      console.error("Error updating job status, rolling back:", error);
+      // Rollback to previous state on error
+      setJobs(previousJobs);
+      setSelectedJob(previousSelectedJob);
     }
   };
 
