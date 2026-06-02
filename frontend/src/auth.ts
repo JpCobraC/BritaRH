@@ -3,10 +3,11 @@ import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 import { SignJWT, jwtVerify } from "jose";
 
-const API_BASE_URL =
+const rawUrl =
   process.env.NEXT_PUBLIC_API_URL ||
   process.env.API_BASE_URL ||
   "http://localhost:8000";
+const API_BASE_URL = rawUrl.replace(/\/api\/v1\/?$/, "");
 
 const secret = new TextEncoder().encode(
   process.env.BACKEND_SECRET || "shared-jwt-secret-between-frontend-and-backend"

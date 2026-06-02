@@ -51,7 +51,8 @@ export default function AuthPage() {
     try {
       if (mode === "register") {
         // Fluxo de Cadastro via API Backend (Candidate por padrão)
-        const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+        const rawUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+        const apiBaseUrl = rawUrl.replace(/\/api\/v1\/?$/, "");
         const res = await fetch(`${apiBaseUrl}/api/v1/auth/register`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },

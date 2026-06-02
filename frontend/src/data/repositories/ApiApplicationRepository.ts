@@ -5,7 +5,8 @@ export class ApiApplicationRepository implements IApplicationRepository {
   private apiBaseUrl: string;
 
   constructor() {
-    this.apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+    const rawUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+    this.apiBaseUrl = rawUrl.endsWith("/api/v1") ? rawUrl : `${rawUrl}/api/v1`;
   }
 
   async submitApplication(

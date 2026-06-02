@@ -28,7 +28,8 @@ interface Application {
 export default function RecruiterDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+  const rawUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+  const apiBaseUrl = rawUrl.replace(/\/api\/v1\/?$/, "");
   const apiV1Url = `${apiBaseUrl}/api/v1`;
   const [jobs, setJobs] = useState<JobRecruiter[]>([]);
   const [loading, setLoading] = useState(true);
