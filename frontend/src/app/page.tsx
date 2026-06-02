@@ -238,15 +238,7 @@ export default function AuthPage() {
               Google
             </button>
 
-            <div className="mt-6 text-center pt-2">
-              <Link
-                href="/recrutador/cadastro"
-                className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-green-600 transition-colors py-2 px-4 rounded-lg bg-slate-50 hover:bg-green-50/50"
-              >
-                <BriefcaseIcon className="w-4 h-4" />
-                <span>É um recrutador? <strong>Cadastre-se aqui</strong></span>
-              </Link>
-            </div>
+
           </div>
         </div>
       </div>

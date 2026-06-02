@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.models.models import User
+from sqlalchemy import select
+from app.models.models import User, RecruiterWhitelist, UserRole
 from app.schemas.auth import UserRegister, UserLogin, UserRead, Token
 from datetime import date as py_date
 from app.services.auth import (
@@ -18,6 +19,19 @@ router = APIRouter()
 @router.post("/register", response_model=UserRead, status_code=status.HTTP_201_CREATED)
 async def register(user_in: UserRegister, db: AsyncSession = Depends(get_db)):
     """Cria um novo usuário com senha hashed, validação de CPF e idade."""
+    # 0. Se for recrutador, exige presença e ativação na whitelist
+    if user_in.role == UserRole.RECRUITER:
+        stmt_wl = select(RecruiterWhitelist).where(
+            RecruiterWhitelist.email == user_in.email,
+            RecruiterWhitelist.is_active == True
+        )
+        result_wl = await db.execute(stmt_wl)
+        if not result_wl.scalar_one_or_none():
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Este e-mail não está autorizado para cadastro de recrutador."
+            )
+
     # 1. Verifica E-mail
     existing_user_email = await get_user_by_email(db, user_in.email)
     if existing_user_email:
