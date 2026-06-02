@@ -1,5 +1,5 @@
 import uuid
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from app.domain.entities import Job as DomainJob, Question as DomainQuestion
 from app.domain.interfaces import IJobRepository, IApplicationRepository

@@ -10,14 +10,16 @@ from app.core.config import settings
 
 class StorageService:
     def __init__(self):
+        endpoint_url = settings.minio_endpoint_url
+        use_ssl = endpoint_url.startswith("https://")
         self.s3 = boto3.client(
             "s3",
-            endpoint_url=settings.minio_endpoint_url,
+            endpoint_url=endpoint_url,
             aws_access_key_id=settings.minio_root_user,
             aws_secret_access_key=settings.minio_root_password,
             config=Config(signature_version="s3v4"),
             region_name="us-east-1",
-            use_ssl=False,
+            use_ssl=use_ssl,
         )
         self.bucket = settings.minio_bucket_curriculos
 

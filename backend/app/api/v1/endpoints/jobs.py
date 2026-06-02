@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status, Header
 
 from app.api import deps
 from app.schemas.job import JobCreate, JobRead, JobSimple, JobUpdate, JobQuestionsUpdate
-from app.schemas.application import ApplicationOut
+from app.schemas.application import ApplicationRead
 from app.schemas.pagination import PaginatedResponse
 from app.schemas.user import User
 from app.usecases.job_usecases import (
@@ -101,7 +101,7 @@ async def delete_job(
         raise HTTPException(status_code=404, detail="Vaga não encontrada")
 
 
-@router.get("/{job_id}/applications", response_model=PaginatedResponse[ApplicationOut])
+@router.get("/{job_id}/applications", response_model=PaginatedResponse[ApplicationRead])
 async def list_job_applications(
     job_id: uuid.UUID,
     usecase: Annotated[ListApplicationsUseCase, Depends(deps.get_list_applications_usecase)],
