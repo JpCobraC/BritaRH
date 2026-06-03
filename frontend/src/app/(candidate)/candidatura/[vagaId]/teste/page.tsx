@@ -33,7 +33,7 @@ export default function TestePage() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-3 bg-background-light">
         <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-        <p className="text-slate-600 font-medium">Carregando teste de conhecimento...</p>
+        <p className="text-slate-600 font-medium">Carregando questionário...</p>
       </div>
     );
   }
@@ -61,9 +61,9 @@ export default function TestePage() {
           <div className="size-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
             <span className="material-symbols-outlined text-primary text-3xl">task_alt</span>
           </div>
-          <h1 className="text-xl font-bold text-slate-900 mb-2">Sem Teste de Conhecimento</h1>
+          <h1 className="text-xl font-bold text-slate-900 mb-2">Sem Questionário</h1>
           <p className="text-slate-500 text-sm mb-8 leading-relaxed">
-            Esta vaga não exige um teste de conhecimentos específicos. Você pode prosseguir diretamente para o envio do seu currículo.
+            Esta vaga não exige um questionário específico. Você pode prosseguir diretamente para o envio do seu currículo.
           </p>
           <div className="flex gap-3 justify-center">
             <button
@@ -126,7 +126,7 @@ export default function TestePage() {
               <span className="material-symbols-outlined text-primary">quiz</span>
             </div>
             <div>
-              <h1 className="text-xl font-bold text-slate-900">Teste de Conhecimento</h1>
+              <h1 className="text-xl font-bold text-slate-900">Questionário</h1>
               <p className="text-sm text-slate-500">Selecione a alternativa correta</p>
             </div>
           </div>
@@ -188,7 +188,7 @@ export default function TestePage() {
               disabled={currentAnswers[currentQ] === null}
               className="flex items-center gap-2 px-8 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary/90 transition-all shadow-md shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
             >
-              {currentQ < questions.length - 1 ? "Próxima" : "Finalizar Teste"}
+              {currentQ < questions.length - 1 ? "Próxima" : "Finalizar Questionário"}
               <span className="material-symbols-outlined text-base">arrow_forward</span>
             </button>
           </div>

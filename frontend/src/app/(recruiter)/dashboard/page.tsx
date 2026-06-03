@@ -248,10 +248,13 @@ export default function RecruiterDashboard() {
                               <span className="material-symbols-outlined text-sm">description</span>
                               Currículo
                             </a>
-                            <button className="flex-1 flex items-center justify-center gap-2 py-2 bg-primary/5 hover:bg-primary/10 text-primary rounded-xl text-[10px] font-bold transition-all">
+                            <a
+                              href={`mailto:${app.candidate_email}?subject=${encodeURIComponent(`BritaRH – Vaga: ${selectedJob.title}`)}&body=${encodeURIComponent(`Olá, ${app.profile_data?.full_name || ''}!\n\nEntramos em contato a respeito da sua candidatura para a vaga de ${selectedJob.title} na BritaRH Mineração.\n\nAguardamos seu retorno.\n\nAtenciosamente,\nEquipe BritaRH`)}`}
+                              className="flex-1 flex items-center justify-center gap-2 py-2 bg-primary/5 hover:bg-primary/10 text-primary rounded-xl text-[10px] font-bold transition-all"
+                            >
                               <span className="material-symbols-outlined text-sm">send</span>
                               Contatar
-                            </button>
+                            </a>
                           </div>
                         </div>
                       ))

@@ -4,7 +4,7 @@ interface StepIndicatorProps {
 
 const steps = [
   { number: 1, label: "Perfil" },
-  { number: 2, label: "Teste" },
+  { number: 2, label: "Questionário" },
   { number: 3, label: "Currículo" },
 ];
 

@@ -24,8 +24,12 @@ export default function RecruiterRegisterPage() {
     const password = formData.get("password") as string;
     const name = formData.get("name") as string;
     const cpf = formData.get("cpf") as string;
-    const birth_date = formData.get("birth_date") as string;
+    const rawBirthDate = formData.get("birth_date") as string;
     const company_name = formData.get("company_name") as string;
+
+    // Converte "DD/MM/AAAA" para "AAAA-MM-DD" para o Pydantic do backend
+    const parts = rawBirthDate.split("/");
+    const birth_date = parts.length === 3 ? `${parts[2]}-${parts[1]}-${parts[0]}` : rawBirthDate;
 
     try {
       // Cadastro via API Backend
@@ -41,7 +45,15 @@ export default function RecruiterRegisterPage() {
         let errorMsg = "Erro ao cadastrar recrutador. Verifique seus dados.";
         try {
           const data = await res.json();
-          errorMsg = data.detail || errorMsg;
+          if (data && data.detail) {
+            if (typeof data.detail === "string") {
+              errorMsg = data.detail;
+            } else if (Array.isArray(data.detail)) {
+              errorMsg = data.detail.map((err: any) => err.msg || JSON.stringify(err)).join(", ");
+            } else if (typeof data.detail === "object") {
+              errorMsg = JSON.stringify(data.detail);
+            }
+          }
         } catch {
           // Fallback se a API não retornar JSON válido
         }

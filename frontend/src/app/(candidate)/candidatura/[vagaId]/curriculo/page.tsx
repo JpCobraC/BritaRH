@@ -169,7 +169,7 @@ export default function CurriculoPage() {
               className="flex items-center gap-2 px-6 py-3 border border-slate-200 text-slate-600 font-semibold rounded-xl hover:bg-slate-50 transition-all text-sm disabled:opacity-50"
             >
               <span className="material-symbols-outlined text-base">arrow_back</span>
-              Voltar ao Teste
+              Voltar ao Questionário
             </button>
 
             <button

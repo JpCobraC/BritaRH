@@ -189,7 +189,7 @@ export default function PerfilPage() {
               onClick={handleNext}
               className="flex items-center gap-2 px-8 py-3.5 bg-primary text-white font-semibold rounded-xl hover:bg-primary/90 transition-all shadow-md shadow-primary/20"
             >
-              Próximo: Teste de Conhecimento
+              Próximo: Questionário
               <span className="material-symbols-outlined text-base">arrow_forward</span>
             </button>
           </div>

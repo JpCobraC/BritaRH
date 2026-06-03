@@ -44,7 +44,8 @@ async def test_job_list_filtering(recruiter_client: AsyncClient):
     
     # 4. Lista vagas
     list_resp = await recruiter_client.get("/api/v1/jobs")
-    jobs = list_resp.json()
+    jobs_data = list_resp.json()
+    jobs = jobs_data["items"]
     
     titles = [j["title"] for j in jobs]
     assert "Aberta" in titles

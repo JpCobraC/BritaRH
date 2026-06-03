@@ -46,7 +46,14 @@ export default function AuthPage() {
     const password = formData.get("password") as string;
     const name = formData.get("name") as string;
     const cpf = formData.get("cpf") as string;
-    const birth_date = formData.get("birth_date") as string;
+    const rawBirthDate = formData.get("birth_date") as string | null;
+
+    // Converte "DD/MM/AAAA" para "AAAA-MM-DD" para o Pydantic do backend (só no cadastro)
+    let birth_date: string | null = null;
+    if (rawBirthDate) {
+      const parts = rawBirthDate.split("/");
+      birth_date = parts.length === 3 ? `${parts[2]}-${parts[1]}-${parts[0]}` : rawBirthDate;
+    }
 
     try {
       if (mode === "register") {
@@ -63,7 +70,15 @@ export default function AuthPage() {
           let errorMsg = "Erro ao cadastrar. Verifique seus dados.";
           try {
             const data = await res.json();
-            errorMsg = data.detail || errorMsg;
+            if (data && data.detail) {
+              if (typeof data.detail === "string") {
+                errorMsg = data.detail;
+              } else if (Array.isArray(data.detail)) {
+                errorMsg = data.detail.map((err: any) => err.msg || JSON.stringify(err)).join(", ");
+              } else if (typeof data.detail === "object") {
+                errorMsg = JSON.stringify(data.detail);
+              }
+            }
           } catch {
             // Se falhar o parse (ex: 500 Internal Server Error em HTML), mantém erro genérico
           }
