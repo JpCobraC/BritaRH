@@ -12,16 +12,10 @@ export default function VagasPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { jobs, loading, error } = useJobs();
-  const { applications, loading: loadingApps } = useMyApplications();
+  const { appliedJobIds, loading: loadingApps } = useMyApplications();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [locationFilter, setLocationFilter] = useState("Todas as cidades");
-
-  // IDs das vagas onde o candidato já se candidatou (vem do BD)
-  const appliedJobIds = useMemo(
-    () => applications.map((a) => a.jobId),
-    [applications]
-  );
 
   useEffect(() => {
     if (session?.user?.role === "recruiter") {

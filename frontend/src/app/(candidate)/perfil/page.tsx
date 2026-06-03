@@ -11,7 +11,7 @@ export default function PerfilPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { jobs, loading: loadingJobs } = useJobs();
-  const { applications, loading: loadingApps } = useMyApplications();
+  const { appliedJobIds, loading: loadingApps } = useMyApplications();
 
   // Redireciona para o login se não estiver autenticado
   useEffect(() => {
@@ -29,8 +29,8 @@ export default function PerfilPage() {
     );
   }
 
-  // Cruza as candidaturas do BD com os dados completos das vagas
-  const appliedJobs = jobs.filter((j) => applications.some((a) => a.jobId === j.id));
+  // Cruza os IDs do BD com os dados completos das vagas
+  const appliedJobs = jobs.filter((j) => appliedJobIds.includes(j.id));
 
   return (
     <div className="min-h-screen bg-slate-50 py-12">
