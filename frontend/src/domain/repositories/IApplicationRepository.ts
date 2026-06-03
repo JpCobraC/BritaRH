@@ -9,4 +9,5 @@ export interface IApplicationRepository {
     file: File,
     message?: string
   ): Promise<Application>;
+  listMyApplications(token: string): Promise<Application[]>;
 }

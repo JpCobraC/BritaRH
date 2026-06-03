@@ -50,7 +50,7 @@ class SubmitApplicationUseCase:
 
         # 4. Upload resume
         try:
-            object_key = await self.storage_gateway.upload_file(
+            object_key = self.storage_gateway.upload_file(
                 file_content=file_content,
                 filename=filename,
                 content_type="application/pdf"

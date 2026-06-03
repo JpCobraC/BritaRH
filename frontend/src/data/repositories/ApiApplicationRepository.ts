@@ -78,4 +78,45 @@ export class ApiApplicationRepository implements IApplicationRepository {
       createdAt: data.created_at,
     });
   }
+
+  async listMyApplications(token: string): Promise<Application[]> {
+    const response = await fetch(`${this.apiBaseUrl}/applications/my`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      let errorMessage = "Erro ao buscar candidaturas.";
+      try {
+        const errorJson = await response.json();
+        errorMessage = errorJson.detail || errorMessage;
+      } catch {}
+      throw new Error(errorMessage);
+    }
+
+    const list = await response.json();
+    return list.map((data: any) => {
+      const profile = new ApplicationProfile({
+        fullName: data.profile_data?.full_name || "",
+        email: data.profile_data?.email || "",
+        phone: data.profile_data?.phone || "",
+        linkedinUrl: data.profile_data?.linkedin_url,
+        portfolioUrl: data.profile_data?.portfolio_url,
+        summary: data.profile_data?.summary,
+      });
+
+      return new Application({
+        id: data.id,
+        jobId: data.job_id,
+        candidateEmail: data.candidate_email,
+        profileData: profile,
+        score: data.score,
+        message: data.message,
+        resumeUrl: data.resume_url,
+        createdAt: data.created_at,
+      });
+    });
+  }
 }

@@ -41,7 +41,7 @@ export default function ConfirmacaoPage() {
           {/* Actions */}
           <div className="mt-10 flex flex-col items-center gap-6">
             <Link
-              href="#"
+              href="/perfil"
               className="inline-flex items-center justify-center px-8 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary/90 transition-all shadow-md shadow-primary/10"
             >
               Acompanhar Processo

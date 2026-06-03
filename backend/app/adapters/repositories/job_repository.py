@@ -109,7 +109,7 @@ class JobRepository(IJobRepository):
         count_result = await self.session.execute(count_stmt)
         total = count_result.scalar() or 0
 
-        stmt = base_stmt.offset(skip).limit(limit).order_by(ModelJob.created_at.desc())
+        stmt = base_stmt.options(selectinload(ModelJob.questions)).offset(skip).limit(limit).order_by(ModelJob.created_at.desc())
         result = await self.session.execute(stmt)
         models = result.scalars().all()
         return total, [self._to_domain(m) for m in models]

@@ -1,18 +1,27 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useMemo } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useJobs } from "@/presentation/hooks/useJobs";
+import { useMyApplications } from "@/presentation/hooks/useMyApplications";
 
 export default function VagasPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { jobs, loading, error } = useJobs();
+  const { applications, loading: loadingApps } = useMyApplications();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [locationFilter, setLocationFilter] = useState("Todas as cidades");
+
+  // IDs das vagas onde o candidato já se candidatou (vem do BD)
+  const appliedJobIds = useMemo(
+    () => applications.map((a) => a.jobId),
+    [applications]
+  );
 
   useEffect(() => {
     if (session?.user?.role === "recruiter") {
@@ -45,7 +54,7 @@ export default function VagasPage() {
     });
   }, [jobs, searchTerm, locationFilter]);
 
-  if (status === "loading" || loading) {
+  if (status === "loading" || loading || loadingApps) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-3 bg-background-light">
         <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
@@ -170,13 +179,23 @@ export default function VagasPage() {
                   <span className="font-semibold text-slate-700">{vaga.schedule}</span>
                 </div>
 
-                <Link
-                  href={`/candidatura/${vaga.id}/perfil`}
-                  className="mt-4 w-full flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary/90 transition-all shadow-sm shadow-primary/20"
-                >
-                  Candidatar-se
-                  <span className="material-symbols-outlined text-base">arrow_forward</span>
-                </Link>
+                {appliedJobIds.includes(vaga.id) ? (
+                  <Link
+                    href="/perfil"
+                    className="mt-4 w-full flex items-center justify-center gap-2 px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-xl hover:bg-slate-200 transition-all border border-slate-200"
+                  >
+                    Acompanhar Processo
+                    <span className="material-symbols-outlined text-base">search</span>
+                  </Link>
+                ) : (
+                  <Link
+                    href={`/candidatura/${vaga.id}/perfil`}
+                    className="mt-4 w-full flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary/90 transition-all shadow-sm shadow-primary/20"
+                  >
+                    Candidatar-se
+                    <span className="material-symbols-outlined text-base">arrow_forward</span>
+                  </Link>
+                )}
               </div>
             </div>
           )))}

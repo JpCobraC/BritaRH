@@ -3,8 +3,13 @@ from typing import Annotated
 
 from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, HTTPException, UploadFile, status
 from pydantic import EmailStr
+from sqlalchemy import select, desc
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api import deps
+from app.core.database import get_db
+from app.models.models import Application
+from app.schemas.user import User
 from app.schemas.application import ApplicationRead
 from app.usecases.application_usecases import SubmitApplicationUseCase
 from app.services.email import send_confirmation_email
@@ -90,3 +95,18 @@ async def submit_application(
     except RuntimeError as e:
         # Erros de infraestrutura (MinIO, etc)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+
+@router.get("/my", response_model=list[ApplicationRead])
+async def list_my_applications(
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(deps.get_current_user)],
+):
+    """Retorna todas as candidaturas do candidato logado."""
+    stmt = (
+        select(Application)
+        .where(Application.candidate_email == current_user.email)
+        .order_by(desc(Application.created_at))
+    )
+    result = await db.execute(stmt)
+    return result.scalars().all()

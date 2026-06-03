@@ -158,13 +158,39 @@ export function ApplicationWizardProvider({
 
       setSubmitSuccess(true);
       
-      // Limpa rascunho após submissão de sucesso
+      // Salva no localStorage que o candidato se aplicou para essa vaga
       if (typeof window !== "undefined") {
+        try {
+          const applied = JSON.parse(localStorage.getItem("applied_job_ids") || "[]");
+          if (!applied.includes(vagaId)) {
+            applied.push(vagaId);
+            localStorage.setItem("applied_job_ids", JSON.stringify(applied));
+          }
+        } catch (e) {
+          console.error("Error saving applied job to localStorage:", e);
+        }
         sessionStorage.removeItem(sessionKey);
       }
     } catch (err: any) {
       console.error("Failed to submit candidacy:", err);
-      setSubmitError(err.message || "Erro desconhecido ao enviar a candidatura. Tente novamente.");
+      // Se o erro for de duplicidade (já se candidatou), aproveitamos para atualizar o localStorage
+      if (err.message && (err.message.includes("já se candidatou") || err.message.includes("409"))) {
+        if (typeof window !== "undefined") {
+          try {
+            const applied = JSON.parse(localStorage.getItem("applied_job_ids") || "[]");
+            if (!applied.includes(vagaId)) {
+              applied.push(vagaId);
+              localStorage.setItem("applied_job_ids", JSON.stringify(applied));
+            }
+          } catch (e) {
+            console.error("Error saving applied job to localStorage:", e);
+          }
+          sessionStorage.removeItem(sessionKey);
+        }
+        setSubmitSuccess(true);
+      } else {
+        setSubmitError(err.message || "Erro desconhecido ao enviar a candidatura. Tente novamente.");
+      }
     } finally {
       setIsSubmitting(false);
     }
