@@ -33,9 +33,7 @@ export type Question = z.infer<typeof questionSchema>;
    Mínimo 5, máximo 20 — regra central do test-question-builder.
    ========================================================= */
 export const questionsSchema = z
-  .array(questionSchema)
-  .min(5, "mínimo de 5 questões obrigatório.")
-  .max(20, "máximo de 20 questões permitido.");
+  .array(questionSchema);
 
 /* =========================================================
    SCHEMA COMPLETO DA VAGA

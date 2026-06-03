@@ -17,7 +17,7 @@ class JobBase(BaseModel):
 
 
 class JobCreate(JobBase):
-    questions: list[QuestionCreate] = Field(..., min_length=5, max_length=20)
+    questions: list[QuestionCreate] = Field(default_factory=list)
 
 
 class JobUpdate(BaseModel):
@@ -33,7 +33,7 @@ class JobUpdate(BaseModel):
 
 
 class JobQuestionsUpdate(BaseModel):
-    questions: list[QuestionCreate] = Field(..., min_length=5, max_length=20)
+    questions: list[QuestionCreate] = Field(default_factory=list)
 
 
 class JobRead(JobBase):

@@ -49,10 +49,6 @@ export default function NovaVagaPage() {
       setError("Preencha o título e a área da vaga.");
       return;
     }
-    if (questions.length < 5) {
-      setError("Adicione pelo menos 5 questões ao questionário.");
-      return;
-    }
     const incomplete = questions.findIndex(
       (q) => !q.text.trim() || q.options.some((o) => !o.trim())
     );
@@ -180,7 +176,7 @@ export default function NovaVagaPage() {
               <span className="material-symbols-outlined text-primary">quiz</span>
               Questionário
               <span className="text-xs font-normal text-slate-400 ml-1">
-                {questions.length}/20 questões · mín. 5
+                {questions.length} questão(ões)
               </span>
             </h2>
             <button
@@ -198,7 +194,7 @@ export default function NovaVagaPage() {
             <div className="py-10 text-center border-2 border-dashed border-slate-200 rounded-xl">
               <span className="material-symbols-outlined text-4xl text-slate-300 mb-2">quiz</span>
               <p className="text-slate-500 text-sm font-medium">Nenhuma questão adicionada</p>
-              <p className="text-slate-400 text-xs mt-1">Adicione pelo menos 5 questões para publicar a vaga</p>
+              <p className="text-slate-400 text-xs mt-1">Adicione questões ao questionário se desejar testar os candidatos</p>
               <button
                 type="button"
                 onClick={addQuestion}
@@ -270,11 +266,6 @@ export default function NovaVagaPage() {
                 </div>
               ))}
 
-              {atMax && (
-                <p className="text-center text-sm text-amber-600 font-medium">
-                  Limite máximo de 20 questões atingido.
-                </p>
-              )}
 
               <button
                 type="button"
@@ -297,13 +288,6 @@ export default function NovaVagaPage() {
           </div>
         )}
 
-        {/* Progresso do questionário */}
-        {questions.length > 0 && questions.length < 5 && (
-          <div className="bg-amber-50 border border-amber-200 text-amber-700 rounded-xl px-5 py-3 text-sm font-medium flex items-center gap-2">
-            <span className="material-symbols-outlined text-base">warning</span>
-            Adicione mais {5 - questions.length} questão(ões) para publicar a vaga.
-          </div>
-        )}
 
         {/* Actions */}
         <div className="flex items-center justify-between pt-2 pb-8">

@@ -50,13 +50,8 @@ export function useQuestionBuilder(initialQuestions: number, onSubmit?: (questio
   const [questions, setQuestions] = useState<QuestionData[]>(
     buildInitial(initialQuestions)
   );
-  const [minError, setMinError] = useState(false);
-
-  const atMax = questions.length >= 20;
-  const MIN = 5;
 
   const addQuestion = () => {
-    if (atMax) return;
     setQuestions((prev) => [...prev, emptyQuestion()]);
   };
 
@@ -86,18 +81,13 @@ export function useQuestionBuilder(initialQuestions: number, onSubmit?: (questio
   };
 
   const handleSubmit = () => {
-    if (questions.length < MIN) {
-      setMinError(true);
-      return;
-    }
-    setMinError(false);
     onSubmit?.(questions);
   };
 
   return {
     questions,
-    minError,
-    atMax,
+    minError: false,
+    atMax: false,
     addQuestion,
     removeQuestion,
     updateField,

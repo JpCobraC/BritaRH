@@ -60,31 +60,17 @@ describe("QuestionBuilder — remoção de questões", () => {
   });
 });
 
-describe("QuestionBuilder — limite máximo (20 questões)", () => {
-  it("desabilita 'Adicionar questão' ao atingir 20 questões", () => {
+describe("QuestionBuilder — sem limites de quantidade", () => {
+  it("não desabilita 'Adicionar questão' ao atingir 20 questões", () => {
     renderBuilder(20);
     const addBtn = screen.getByRole("button", { name: /adicionar questão/i });
-    expect(addBtn).toBeDisabled();
+    expect(addBtn).not.toBeDisabled();
   });
 
-  it("exibe mensagem de limite ao atingir 20 questões", () => {
-    renderBuilder(20);
-    expect(screen.getByText(/limite.*20|20.*questões/i)).toBeInTheDocument();
-  });
-});
-
-describe("QuestionBuilder — validação de mínimo (5 questões)", () => {
-  it("exibe aviso de mínimo se tentar submeter com menos de 5 questões", () => {
+  it("permite submeter com qualquer quantidade de questões (por exemplo, 0 ou 3)", () => {
     renderBuilder(3);
     const submitBtn = screen.getByRole("button", { name: /salvar|publicar/i });
     fireEvent.click(submitBtn);
-    expect(screen.getByText(/mínimo.*5/i)).toBeInTheDocument();
-  });
-
-  it("não bloqueia submissão com 5 questões ou mais", () => {
-    renderBuilder(5);
-    const submitBtn = screen.getByRole("button", { name: /salvar|publicar/i });
-    fireEvent.click(submitBtn);
-    expect(screen.queryByText(/mínimo.*5/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/mínimo/i)).not.toBeInTheDocument();
   });
 });

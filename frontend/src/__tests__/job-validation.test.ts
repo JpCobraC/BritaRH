@@ -75,24 +75,15 @@ describe("questionsSchema — regras de quantidade", () => {
       correct_index: 0,
     }));
 
-  it("aceita exatamente 5 questões (mínimo)", () => {
+  it("aceita questionário vazio (sem questões)", () => {
+    expect(() => questionsSchema.parse([])).not.toThrow();
+  });
+
+  it("aceita qualquer quantidade de questões (por exemplo, 1, 4, 5, 21)", () => {
+    expect(() => questionsSchema.parse(makeQuestions(1))).not.toThrow();
+    expect(() => questionsSchema.parse(makeQuestions(4))).not.toThrow();
     expect(() => questionsSchema.parse(makeQuestions(5))).not.toThrow();
-  });
-
-  it("aceita exatamente 20 questões (máximo)", () => {
-    expect(() => questionsSchema.parse(makeQuestions(20))).not.toThrow();
-  });
-
-  it("rejeita 4 questões (abaixo do mínimo)", () => {
-    expect(() => questionsSchema.parse(makeQuestions(4))).toThrow(
-      /mínimo.*5/i
-    );
-  });
-
-  it("rejeita 21 questões (acima do máximo)", () => {
-    expect(() => questionsSchema.parse(makeQuestions(21))).toThrow(
-      /máximo.*20/i
-    );
+    expect(() => questionsSchema.parse(makeQuestions(21))).not.toThrow();
   });
 
   it("rejeita questão com menos de 4 alternativas", () => {
