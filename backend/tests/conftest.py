@@ -77,9 +77,11 @@ async def ensure_test_database_exists(test_url: str):
     if not parsed_test.scheme.startswith("postgresql"):
         return
         
-    # Conecta no banco original (que já existe) para criar o banco de teste
+    # Conecta no banco default 'postgres' do servidor de testes para criar o banco de teste
     # Usamos isolation_level AUTOCOMMIT para permitir a execução de CREATE DATABASE
-    temp_engine = create_async_engine(settings.database_url, isolation_level="AUTOCOMMIT")
+    temp_parsed = parsed_test._replace(path="/postgres")
+    temp_url = urlunparse(temp_parsed)
+    temp_engine = create_async_engine(temp_url, isolation_level="AUTOCOMMIT")
     try:
         async with temp_engine.connect() as conn:
             result = await conn.execute(
