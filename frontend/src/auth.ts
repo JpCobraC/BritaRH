@@ -83,13 +83,47 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
   },
   callbacks: {
-    async jwt({ token, user, profile }) {
+    async signIn({ user, account }) {
+      if (account?.provider === "google") {
+        try {
+          const rawUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+          const apiBaseUrl = rawUrl.replace(/\/api\/v1\/?$/, "");
+          const res = await fetch(`${apiBaseUrl}/api/v1/auth/check?email=${encodeURIComponent(user.email || "")}`);
+          if (res.ok) {
+            const data = await res.json();
+            if (!data.exists) {
+              const nameParam = encodeURIComponent(user.name || "");
+              const emailParam = encodeURIComponent(user.email || "");
+              const pictureParam = encodeURIComponent(user.image || "");
+              return `/completar-cadastro?email=${emailParam}&name=${nameParam}&picture=${pictureParam}`;
+            }
+          }
+        } catch (err) {
+          console.error("Error checking user in signIn callback:", err);
+        }
+      }
+      return true;
+    },
+    async jwt({ token, user, account }) {
       if (user) {
         token.email = user.email;
         token.name = user.name;
         token.picture = user.image;
         token.role = (user as any).role;
         token.accessToken = (user as any).accessToken;
+      }
+      if (account?.provider === "google" && token.email) {
+        try {
+          const rawUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+          const apiBaseUrl = rawUrl.replace(/\/api\/v1\/?$/, "");
+          const res = await fetch(`${apiBaseUrl}/api/v1/auth/check?email=${encodeURIComponent(token.email)}`);
+          if (res.ok) {
+            const data = await res.json();
+            token.role = data.role;
+          }
+        } catch (err) {
+          console.error("Error fetching user role in jwt callback:", err);
+        }
       }
       return token;
     },

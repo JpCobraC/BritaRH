@@ -16,6 +16,27 @@ from app.services.auth import (
 
 router = APIRouter()
 
+@router.get("/check")
+async def check_user(email: str, db: AsyncSession = Depends(get_db)):
+    """Verifica se o usuário existe pelo e-mail e retorna se existe e sua role."""
+    user = await get_user_by_email(db, email)
+    if not user:
+        # Verifica se está na whitelist como fallback para recrutador
+        stmt_wl = select(RecruiterWhitelist).where(
+            RecruiterWhitelist.email == email,
+            RecruiterWhitelist.is_active == True
+        )
+        result_wl = await db.execute(stmt_wl)
+        is_whitelisted = result_wl.scalar_one_or_none() is not None
+        return {
+            "exists": False,
+            "role": UserRole.RECRUITER if is_whitelisted else UserRole.CANDIDATE
+        }
+    return {
+        "exists": True,
+        "role": user.role
+    }
+
 @router.post("/register", response_model=UserRead, status_code=status.HTTP_201_CREATED)
 async def register(user_in: UserRegister, db: AsyncSession = Depends(get_db)):
     """Cria um novo usuário com senha hashed, validação de CPF e idade."""
