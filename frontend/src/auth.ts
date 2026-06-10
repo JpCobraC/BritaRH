@@ -121,6 +121,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             const data = await res.json();
             token.role = data.role;
           }
+          
+          const backendToken = await new SignJWT({ 
+            email: token.email, 
+            name: token.name, 
+            picture: token.picture 
+          })
+            .setProtectedHeader({ alg: "HS256" })
+            .setIssuedAt()
+            .setExpirationTime("30d")
+            .sign(secret);
+            
+          token.accessToken = backendToken;
         } catch (err) {
           console.error("Error fetching user role in jwt callback:", err);
         }
