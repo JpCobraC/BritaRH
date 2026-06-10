@@ -53,10 +53,10 @@ export default function DashboardPage() {
     .slice(0, 5);
 
   const metrics = [
-    { icon: "work", label: "Total de Vagas", value: String(totalVagas), color: "bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400" },
-    { icon: "work_history", label: "Vagas Ativas", value: String(vagasAtivas), color: "bg-green-50 dark:bg-green-950/30 text-green-600 dark:text-green-400" },
-    { icon: "people", label: "Candidatos", value: String(totalCandidatos), color: "bg-purple-50 dark:bg-purple-950/30 text-purple-600 dark:text-purple-400" },
-    { icon: "inventory_2", label: "Vagas Encerradas", value: String(totalVagas - vagasAtivas), color: "bg-slate-50 dark:bg-slate-800/30 text-slate-500 dark:text-slate-400" },
+    { icon: "work", label: "Total de Vagas", value: String(totalVagas), bg: "bg-blue-50 dark:bg-blue-950/30", text: "text-blue-600 dark:text-blue-400" },
+    { icon: "work_history", label: "Vagas Ativas", value: String(vagasAtivas), bg: "bg-green-50 dark:bg-green-950/30", text: "text-green-600 dark:text-green-400" },
+    { icon: "people", label: "Candidatos", value: String(totalCandidatos), bg: "bg-purple-50 dark:bg-purple-950/30", text: "text-purple-600 dark:text-purple-400" },
+    { icon: "inventory_2", label: "Vagas Encerradas", value: String(totalVagas - vagasAtivas), bg: "bg-slate-50 dark:bg-slate-800/30", text: "text-slate-500 dark:text-slate-400" },
   ];
 
   if (loading || status === "loading") {
@@ -90,8 +90,8 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {metrics.map((m) => (
           <div key={m.label} className="bg-white dark:bg-[#1a251b] rounded-2xl border border-slate-100 dark:border-[#253326] p-5 hover:shadow-md transition-shadow">
-            <div className={`size-10 rounded-xl flex items-center justify-center mb-3 ${m.color.split(" ")[0]}`}>
-              <span className={`material-symbols-outlined ${m.color.split(" ")[1]}`}>{m.icon}</span>
+            <div className={`size-10 rounded-xl flex items-center justify-center mb-3 ${m.bg}`}>
+              <span className={`material-symbols-outlined ${m.text}`}>{m.icon}</span>
             </div>
             <p className="text-3xl font-bold text-slate-900 dark:text-white leading-tight">{m.value}</p>
             <p className="text-sm font-medium text-slate-600 dark:text-slate-400 mt-1">{m.label}</p>
