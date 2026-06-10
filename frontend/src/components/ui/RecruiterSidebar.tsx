@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
+import { useTheme } from "@/presentation/contexts/ThemeContext";
 
 const navItems = [
   { href: "/admin", label: "Painel", icon: "dashboard" },
@@ -18,6 +19,7 @@ interface RecruiterSidebarProps {
 export default function RecruiterSidebar({ onClose }: RecruiterSidebarProps) {
   const pathname = usePathname();
   const { data: session } = useSession();
+  const { theme, setTheme } = useTheme();
 
   return (
     <aside className="w-64 h-full bg-primary dark:bg-[#152717] text-white flex flex-col shrink-0 transition-colors duration-200 border-r border-white/5 shadow-xl lg:shadow-none">
@@ -75,6 +77,14 @@ export default function RecruiterSidebar({ onClose }: RecruiterSidebarProps) {
             <p className="text-sm font-semibold truncate leading-tight">{session?.user?.name || "Recrutador"}</p>
             <p className="text-xs text-white/60 truncate mt-0.5">{session?.user?.email || "RH"}</p>
           </div>
+          <button 
+            type="button"
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            className="material-symbols-outlined text-white/60 cursor-pointer hover:text-white transition-colors p-1.5 hover:bg-white/10 rounded-lg"
+            title={theme === "dark" ? "Ativar Modo Claro" : "Ativar Modo Escuro"}
+          >
+            {theme === "dark" ? "light_mode" : "dark_mode"}
+          </button>
           <button 
             onClick={() => signOut({ callbackUrl: '/' })}
             className="material-symbols-outlined text-white/60 cursor-pointer hover:text-white transition-colors p-1.5 hover:bg-white/10 rounded-lg"

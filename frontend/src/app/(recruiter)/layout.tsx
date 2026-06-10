@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import RecruiterSidebar from "@/components/ui/RecruiterSidebar";
+import { useTheme } from "@/presentation/contexts/ThemeContext";
 
 export default function RecruiterLayout({
   children,
@@ -11,6 +12,7 @@ export default function RecruiterLayout({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const { theme, setTheme } = useTheme();
 
   // Fecha o menu lateral automaticamente quando mudar de página (mobile)
   useEffect(() => {
@@ -46,13 +48,24 @@ export default function RecruiterLayout({
             <span className="material-symbols-outlined">architecture</span>
             <span className="font-bold tracking-tight text-lg">BritaRH</span>
           </div>
-          <button
-            onClick={() => setIsOpen(true)}
-            className="size-10 rounded-xl hover:bg-white/10 flex items-center justify-center transition-colors"
-            title="Abrir Menu"
-          >
-            <span className="material-symbols-outlined">menu</span>
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="size-10 rounded-xl hover:bg-white/10 flex items-center justify-center transition-colors"
+              title={theme === "dark" ? "Ativar Modo Claro" : "Ativar Modo Escuro"}
+            >
+              <span className="material-symbols-outlined">
+                {theme === "dark" ? "light_mode" : "dark_mode"}
+              </span>
+            </button>
+            <button
+              onClick={() => setIsOpen(true)}
+              className="size-10 rounded-xl hover:bg-white/10 flex items-center justify-center transition-colors"
+              title="Abrir Menu"
+            >
+              <span className="material-symbols-outlined">menu</span>
+            </button>
+          </div>
         </header>
 
         {/* Page content */}
