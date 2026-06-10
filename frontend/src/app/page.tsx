@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { UserIcon, GoogleIcon, BriefcaseIcon } from "@/components/icons";
 import Link from "next/link";
 import { maskCPF, maskDate } from "@/utils/masks";
+import { useTheme } from "@/presentation/contexts/ThemeContext";
 
 type AuthMode = "login" | "register";
 
@@ -17,6 +18,7 @@ export default function AuthPage() {
   const [birthDate, setBirthDate] = useState("");
   const { data: session, status } = useSession();
   const router = useRouter();
+  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     if (status === "authenticated" && session?.user) {
@@ -30,7 +32,7 @@ export default function AuthPage() {
 
   if (status === "loading" || status === "authenticated") {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 dark:bg-background-dark flex items-center justify-center">
         <div className="w-8 h-8 rounded-full border-4 border-primary border-t-transparent animate-spin"></div>
       </div>
     );
@@ -97,10 +99,6 @@ export default function AuthPage() {
         throw new Error("E-mail ou senha inválidos.");
       }
 
-      // Se for o login do recrutador de teste (ou se conseguíssemos ler a role do result), redirecionamos
-      // Como o NextAuth reload limpa o state, e queremos ir para o lugar certo, vamos recarregar na raiz
-      // e o middleware ou a página que decidir para onde vai. Mas por enquanto vamos para a dashboard
-      // se for o email de recrutador conhecido, senão /vagas.
       if (email === "recrutador@britarh.com.br") {
         window.location.href = "/dashboard";
       } else {
@@ -113,19 +111,32 @@ export default function AuthPage() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white rounded-3xl shadow-xl shadow-slate-200/50 overflow-hidden border border-slate-100 transform transition-all">
+    <main className="min-h-screen bg-slate-50 dark:bg-background-dark flex items-center justify-center p-4 transition-colors duration-200 relative">
+      {/* Floating Theme Toggle */}
+      <div className="absolute top-4 right-4">
+        <button
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          className="size-10 rounded-xl bg-white dark:bg-[#1a251b] border border-slate-200 dark:border-[#253326] flex items-center justify-center hover:bg-slate-50 dark:hover:bg-[#152016] text-slate-600 dark:text-slate-300 transition-colors shadow-sm"
+          title={theme === "dark" ? "Ativar Modo Claro" : "Ativar Modo Escuro"}
+        >
+          <span className="material-symbols-outlined text-lg">
+            {theme === "dark" ? "light_mode" : "dark_mode"}
+          </span>
+        </button>
+      </div>
+
+      <div className="max-w-md w-full bg-white dark:bg-[#1a251b] rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none overflow-hidden border border-slate-100 dark:border-[#253326] transform transition-all">
         
         {/* Header Section */}
         <div className="p-8 pb-4 text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-green-50 rounded-2xl mb-4">
-            <h1 className="text-3xl font-black text-green-600">B.</h1>
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-green-50 dark:bg-green-950/20 rounded-2xl mb-4">
+            <h1 className="text-3xl font-black text-green-600 dark:text-green-400">B.</h1>
           </div>
-          <h2 className="text-2xl font-bold text-slate-800">BritaRH</h2>
-          <p className="text-slate-500 mt-1">
+          <h2 className="text-2xl font-bold text-slate-800 dark:text-white">BritaRH</h2>
+          <p className="text-slate-500 dark:text-slate-400 mt-1">
             {mode === "login" ? "Acesse sua conta" : "Cadastre-se para encontrar vagas"}
           </p>
-          <Link href="/vagas" className="inline-flex items-center gap-1 mt-4 text-sm font-medium text-primary hover:text-primary/80 transition-colors bg-primary/5 px-4 py-2 rounded-lg">
+          <Link href="/vagas" className="inline-flex items-center gap-1 mt-4 text-sm font-medium text-primary dark:text-green-400 hover:text-primary/80 dark:hover:text-green-300 transition-colors bg-primary/5 dark:bg-green-500/10 px-4 py-2 rounded-lg">
             <span className="material-symbols-outlined text-[18px]">search</span>
             Explorar vagas sem cadastro
           </Link>
@@ -133,11 +144,11 @@ export default function AuthPage() {
 
         {/* Tab Switcher */}
         <div className="px-8 pb-6">
-          <div className="flex bg-slate-100 p-1 rounded-xl">
+          <div className="flex bg-slate-100 dark:bg-[#152016] p-1 rounded-xl">
             <button
               onClick={() => setMode("login")}
               className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all ${
-                mode === "login" ? "bg-white text-slate-800 shadow-sm" : "text-slate-500 hover:text-slate-700"
+                mode === "login" ? "bg-white dark:bg-[#1a251b] text-slate-800 dark:text-white shadow-sm" : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300"
               }`}
             >
               Entrar
@@ -145,7 +156,7 @@ export default function AuthPage() {
             <button
               onClick={() => setMode("register")}
               className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all ${
-                mode === "register" ? "bg-white text-slate-800 shadow-sm" : "text-slate-500 hover:text-slate-700"
+                mode === "register" ? "bg-white dark:bg-[#1a251b] text-slate-800 dark:text-white shadow-sm" : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300"
               }`}
             >
               Cadastrar
@@ -155,7 +166,7 @@ export default function AuthPage() {
 
         <div className="px-8 pb-8">
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm rounded-r-lg">
+            <div className="mb-6 p-4 bg-red-50 dark:bg-red-950/20 border-l-4 border-red-500 text-red-700 dark:text-red-400 text-sm rounded-r-lg">
               {error}
             </div>
           )}
@@ -164,19 +175,19 @@ export default function AuthPage() {
             {mode === "register" && (
               <>
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-1">Nome Completo</label>
+                  <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Nome Completo</label>
                   <input
                     name="name"
                     type="text"
                     required
                     placeholder="Seu nome"
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-green-500 outline-none transition-all"
+                    className="w-full px-4 py-3 bg-slate-50 dark:bg-[#152016] text-slate-900 dark:text-white rounded-xl border border-slate-200 dark:border-[#253326] focus:ring-2 focus:ring-green-500 outline-none transition-all"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-1">CPF</label>
+                    <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">CPF</label>
                     <input
                       name="cpf"
                       type="text"
@@ -184,11 +195,11 @@ export default function AuthPage() {
                       value={cpf}
                       onChange={(e) => setCpf(maskCPF(e.target.value))}
                       placeholder="000.000.000-00"
-                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-green-500 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-slate-50 dark:bg-[#152016] text-slate-900 dark:text-white rounded-xl border border-slate-200 dark:border-[#253326] focus:ring-2 focus:ring-green-500 outline-none transition-all"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-1">Nascimento</label>
+                    <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Nascimento</label>
                     <input
                       name="birth_date"
                       type="text"
@@ -196,7 +207,7 @@ export default function AuthPage() {
                       value={birthDate}
                       onChange={(e) => setBirthDate(maskDate(e.target.value))}
                       placeholder="DD/MM/AAAA"
-                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-green-500 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-slate-50 dark:bg-[#152016] text-slate-900 dark:text-white rounded-xl border border-slate-200 dark:border-[#253326] focus:ring-2 focus:ring-green-500 outline-none transition-all"
                     />
                   </div>
                 </div>
@@ -204,31 +215,31 @@ export default function AuthPage() {
             )}
 
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1">E-mail</label>
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">E-mail</label>
               <input
                 name="email"
                 type="email"
                 required
                 placeholder="exemplo@vaga.com"
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-green-500 outline-none transition-all"
+                className="w-full px-4 py-3 bg-slate-50 dark:bg-[#152016] text-slate-900 dark:text-white rounded-xl border border-slate-200 dark:border-[#253326] focus:ring-2 focus:ring-green-500 outline-none transition-all"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1">Senha</label>
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Senha</label>
               <input
                 name="password"
                 type="password"
                 required
                 placeholder="••••••••"
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-green-500 outline-none transition-all"
+                className="w-full px-4 py-3 bg-slate-50 dark:bg-[#152016] text-slate-900 dark:text-white rounded-xl border border-slate-200 dark:border-[#253326] focus:ring-2 focus:ring-green-500 outline-none transition-all"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-4 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold shadow-lg shadow-green-200 transition-all disabled:opacity-70"
+              className="w-full py-4 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold shadow-lg shadow-green-200 dark:shadow-none transition-all disabled:opacity-70"
             >
               {loading ? "Processando..." : mode === "login" ? "Entrar na plataforma" : "Criar minha conta"}
             </button>
@@ -238,22 +249,20 @@ export default function AuthPage() {
           <div className="mt-8">
             <div className="relative mb-6">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-slate-100"></div>
+                <div className="w-full border-t border-slate-100 dark:border-[#253326]"></div>
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white px-3 text-slate-400 font-medium">Ou continue com</span>
+                <span className="bg-white dark:bg-[#1a251b] px-3 text-slate-400 dark:text-slate-500 font-medium">Ou continue com</span>
               </div>
             </div>
 
             <button
               onClick={() => signIn("google", { callbackUrl: "/vagas" })}
-              className="w-full py-3 border border-slate-200 rounded-xl flex items-center justify-center gap-3 hover:bg-slate-50 transition-all font-semibold text-slate-700 shadow-sm"
+              className="w-full py-3 bg-white dark:bg-[#1a251b] border border-slate-200 dark:border-[#253326] rounded-xl flex items-center justify-center gap-3 hover:bg-slate-50 dark:hover:bg-[#152016] transition-all font-semibold text-slate-700 dark:text-slate-300 shadow-sm"
             >
               <GoogleIcon className="w-5 h-5" />
               Google
             </button>
-
-
           </div>
         </div>
       </div>
