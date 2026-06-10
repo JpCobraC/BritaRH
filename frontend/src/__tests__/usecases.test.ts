@@ -87,6 +87,7 @@ describe("SubmitApplicationUseCase", () => {
           message: "Hello!"
         })
       ),
+      listMyApplications: vi.fn(),
     };
 
     const usecase = new SubmitApplicationUseCase(mockRepo);
@@ -98,7 +99,7 @@ describe("SubmitApplicationUseCase", () => {
 
   it("should throw error if jobId is missing", async () => {
     const mockFile = createMockFile("curriculo.pdf", 1024, "application/pdf");
-    const mockRepo: IApplicationRepository = { submitApplication: vi.fn() };
+    const mockRepo: IApplicationRepository = { submitApplication: vi.fn(), listMyApplications: vi.fn() };
     const usecase = new SubmitApplicationUseCase(mockRepo);
 
     await expect(usecase.execute("", "jane@doe.com", profile, 80, mockFile)).rejects.toThrow("O ID da vaga é obrigatório.");
@@ -106,7 +107,7 @@ describe("SubmitApplicationUseCase", () => {
 
   it("should throw error if email is missing", async () => {
     const mockFile = createMockFile("curriculo.pdf", 1024, "application/pdf");
-    const mockRepo: IApplicationRepository = { submitApplication: vi.fn() };
+    const mockRepo: IApplicationRepository = { submitApplication: vi.fn(), listMyApplications: vi.fn() };
     const usecase = new SubmitApplicationUseCase(mockRepo);
 
     await expect(usecase.execute("vaga-123", "", profile, 80, mockFile)).rejects.toThrow("O e-mail do candidato é obrigatório.");
@@ -114,7 +115,7 @@ describe("SubmitApplicationUseCase", () => {
 
   it("should throw error if name is too short", async () => {
     const mockFile = createMockFile("curriculo.pdf", 1024, "application/pdf");
-    const mockRepo: IApplicationRepository = { submitApplication: vi.fn() };
+    const mockRepo: IApplicationRepository = { submitApplication: vi.fn(), listMyApplications: vi.fn() };
     const usecase = new SubmitApplicationUseCase(mockRepo);
     const badProfile = { ...profile, fullName: "Jo" };
 
@@ -123,7 +124,7 @@ describe("SubmitApplicationUseCase", () => {
 
   it("should throw error if phone is missing", async () => {
     const mockFile = createMockFile("curriculo.pdf", 1024, "application/pdf");
-    const mockRepo: IApplicationRepository = { submitApplication: vi.fn() };
+    const mockRepo: IApplicationRepository = { submitApplication: vi.fn(), listMyApplications: vi.fn() };
     const usecase = new SubmitApplicationUseCase(mockRepo);
     const badProfile = { ...profile, phone: "" };
 
@@ -132,7 +133,7 @@ describe("SubmitApplicationUseCase", () => {
 
   it("should throw error if file is not PDF", async () => {
     const mockFile = createMockFile("curriculo.docx", 1024, "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
-    const mockRepo: IApplicationRepository = { submitApplication: vi.fn() };
+    const mockRepo: IApplicationRepository = { submitApplication: vi.fn(), listMyApplications: vi.fn() };
     const usecase = new SubmitApplicationUseCase(mockRepo);
 
     await expect(usecase.execute("vaga-123", "jane@doe.com", profile, 80, mockFile)).rejects.toThrow("Apenas arquivos PDF são aceitos.");
@@ -140,7 +141,7 @@ describe("SubmitApplicationUseCase", () => {
 
   it("should throw error if file size is over 5MB", async () => {
     const mockFile = createMockFile("curriculo.pdf", 6 * 1024 * 1024, "application/pdf");
-    const mockRepo: IApplicationRepository = { submitApplication: vi.fn() };
+    const mockRepo: IApplicationRepository = { submitApplication: vi.fn(), listMyApplications: vi.fn() };
     const usecase = new SubmitApplicationUseCase(mockRepo);
 
     await expect(usecase.execute("vaga-123", "jane@doe.com", profile, 80, mockFile)).rejects.toThrow("O currículo deve ter no máximo 5MB.");
