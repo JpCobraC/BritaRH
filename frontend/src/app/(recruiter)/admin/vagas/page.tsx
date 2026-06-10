@@ -19,8 +19,8 @@ interface JobRecruiter {
 type Filter = "Todas" | "Ativas" | "Encerradas";
 
 const statusColors = {
-  open: "bg-green-100 text-green-700",
-  closed: "bg-slate-100 text-slate-500",
+  open: "bg-green-100 text-green-700 dark:bg-green-950/40 dark:text-green-400",
+  closed: "bg-slate-100 text-slate-500 dark:bg-[#152016]/40 dark:text-slate-400",
 };
 
 export default function VagasAdminPage() {
@@ -67,15 +67,15 @@ export default function VagasAdminPage() {
   }
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-8">
+    <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto space-y-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Vagas</h1>
-          <p className="text-slate-500 text-sm mt-1">{jobs.length} vaga{jobs.length !== 1 ? "s" : ""} no total</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Vagas</h1>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">{jobs.length} vaga{jobs.length !== 1 ? "s" : ""} no total</p>
         </div>
         <Link
           href="/admin/vagas/nova"
-          className="flex items-center gap-2 px-5 py-2.5 bg-primary text-white font-semibold rounded-xl hover:bg-primary/90 transition-all shadow-md shadow-primary/20 text-sm"
+          className="flex items-center justify-center gap-2 px-5 py-2.5 bg-primary text-white font-semibold rounded-xl hover:bg-primary/90 transition-all shadow-md shadow-primary/20 text-sm shrink-0"
         >
           <span className="material-symbols-outlined text-base">add</span>
           Nova Vaga
@@ -83,15 +83,15 @@ export default function VagasAdminPage() {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap gap-2 mb-6">
+      <div className="flex flex-wrap gap-2">
         {(["Todas", "Ativas", "Encerradas"] as Filter[]).map((f) => (
           <button
             key={f}
             onClick={() => setFilter(f)}
             className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
               filter === f
-                ? "bg-primary text-white"
-                : "bg-white border border-slate-200 text-slate-600 hover:border-primary/30"
+                ? "bg-primary text-white shadow-sm shadow-primary/10"
+                : "bg-white dark:bg-[#1a251b] border border-slate-200 dark:border-[#253326] text-slate-600 dark:text-slate-300 hover:border-primary/30 dark:hover:border-green-500/30"
             }`}
           >
             {f}
@@ -101,23 +101,23 @@ export default function VagasAdminPage() {
 
       {/* Cards Grid */}
       {filtered.length === 0 ? (
-        <div className="py-20 text-center text-slate-400">
+        <div className="py-20 text-center text-slate-400 dark:text-slate-500">
           <span className="material-symbols-outlined text-5xl mb-3 opacity-30">work_off</span>
           <p className="font-medium">Nenhuma vaga encontrada.</p>
           {filter !== "Todas" && (
-            <button onClick={() => setFilter("Todas")} className="mt-3 text-primary text-sm font-semibold hover:underline">
+            <button onClick={() => setFilter("Todas")} className="mt-3 text-primary dark:text-green-400 text-sm font-semibold hover:underline">
               Ver todas
             </button>
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {filtered.map((vaga) => (
-            <div key={vaga.id} className="bg-white rounded-2xl border border-slate-100 p-5 hover:shadow-md transition-shadow flex flex-col gap-3">
+            <div key={vaga.id} className="bg-white dark:bg-[#1a251b] rounded-2xl border border-slate-100 dark:border-[#253326] p-5 hover:shadow-md dark:hover:shadow-green-950/10 transition-shadow flex flex-col gap-3">
               <div className="flex items-start justify-between gap-2">
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-bold text-slate-900 truncate">{vaga.title}</h3>
-                  <p className="text-xs text-slate-500 mt-1">
+                  <h3 className="font-bold text-slate-900 dark:text-white truncate">{vaga.title}</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                     {vaga.area}{vaga.contract_type ? ` · ${vaga.contract_type}` : ""}
                   </p>
                 </div>
@@ -126,7 +126,7 @@ export default function VagasAdminPage() {
                 </span>
               </div>
 
-              <div className="flex items-center gap-4 text-sm text-slate-500">
+              <div className="flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400">
                 <span className="flex items-center gap-1">
                   <span className="material-symbols-outlined text-base">people</span>
                   {vaga.applicant_count} candidato{vaga.applicant_count !== 1 ? "s" : ""}
@@ -137,10 +137,10 @@ export default function VagasAdminPage() {
                 </span>
               </div>
 
-              <div className="flex items-center gap-2 pt-1 border-t border-slate-100">
+              <div className="flex items-center gap-2 pt-1 border-t border-slate-100 dark:border-[#253326]">
                 <Link
                   href="/dashboard"
-                  className="flex-1 flex items-center justify-center gap-1 py-2 text-primary border border-primary/30 rounded-lg text-xs font-semibold hover:bg-primary/5 transition-colors"
+                  className="flex-1 flex items-center justify-center gap-1 py-2 text-primary dark:text-green-400 border border-primary/30 dark:border-green-500/30 rounded-lg text-xs font-semibold hover:bg-primary/5 dark:hover:bg-green-500/10 transition-colors"
                 >
                   <span className="material-symbols-outlined text-sm">people</span>
                   Candidatos

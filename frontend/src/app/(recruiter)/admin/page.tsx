@@ -53,10 +53,10 @@ export default function DashboardPage() {
     .slice(0, 5);
 
   const metrics = [
-    { icon: "work", label: "Total de Vagas", value: String(totalVagas), color: "bg-blue-50 text-blue-600" },
-    { icon: "work_history", label: "Vagas Ativas", value: String(vagasAtivas), color: "bg-green-50 text-green-600" },
-    { icon: "people", label: "Candidatos", value: String(totalCandidatos), color: "bg-purple-50 text-purple-600" },
-    { icon: "inventory_2", label: "Vagas Encerradas", value: String(totalVagas - vagasAtivas), color: "bg-slate-50 text-slate-500" },
+    { icon: "work", label: "Total de Vagas", value: String(totalVagas), color: "bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400" },
+    { icon: "work_history", label: "Vagas Ativas", value: String(vagasAtivas), color: "bg-green-50 dark:bg-green-950/30 text-green-600 dark:text-green-400" },
+    { icon: "people", label: "Candidatos", value: String(totalCandidatos), color: "bg-purple-50 dark:bg-purple-950/30 text-purple-600 dark:text-purple-400" },
+    { icon: "inventory_2", label: "Vagas Encerradas", value: String(totalVagas - vagasAtivas), color: "bg-slate-50 dark:bg-slate-800/30 text-slate-500 dark:text-slate-400" },
   ];
 
   if (loading || status === "loading") {
@@ -68,42 +68,44 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-8">
+    <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto space-y-8">
+      {/* Title Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Painel de Controle</h1>
-          <p className="text-slate-500 text-sm mt-1">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Painel de Controle</h1>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-0.5">
             Bem-vindo de volta, {session?.user?.name?.split(" ")[0] || "Recrutador"} 👋
           </p>
         </div>
         <Link
           href="/admin/vagas/nova"
-          className="flex items-center gap-2 px-5 py-2.5 bg-primary text-white font-semibold rounded-xl hover:bg-primary/90 transition-all shadow-md shadow-primary/20 text-sm"
+          className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 bg-primary text-white font-semibold rounded-xl hover:bg-primary/90 transition-all shadow-md shadow-primary/20 text-sm"
         >
           <span className="material-symbols-outlined text-base">add</span>
           Nova Vaga
         </Link>
       </div>
 
-      {/* Metrics */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      {/* Metrics Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {metrics.map((m) => (
-          <div key={m.label} className="bg-white rounded-2xl border border-slate-100 p-5 hover:shadow-md transition-shadow">
+          <div key={m.label} className="bg-white dark:bg-[#1a251b] rounded-2xl border border-slate-100 dark:border-[#253326] p-5 hover:shadow-md transition-shadow">
             <div className={`size-10 rounded-xl flex items-center justify-center mb-3 ${m.color.split(" ")[0]}`}>
               <span className={`material-symbols-outlined ${m.color.split(" ")[1]}`}>{m.icon}</span>
             </div>
-            <p className="text-3xl font-bold text-slate-900">{m.value}</p>
-            <p className="text-sm font-medium text-slate-600 mt-1">{m.label}</p>
+            <p className="text-3xl font-bold text-slate-900 dark:text-white leading-tight">{m.value}</p>
+            <p className="text-sm font-medium text-slate-600 dark:text-slate-400 mt-1">{m.label}</p>
           </div>
         ))}
       </div>
 
       {/* Vagas Table */}
-      <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-          <h2 className="font-bold text-slate-900">Vagas Recentes</h2>
-          <Link href="/admin/vagas" className="text-primary text-sm font-medium hover:underline">
+      <div className="bg-white dark:bg-[#1a251b] rounded-2xl border border-slate-100 dark:border-[#253326] overflow-hidden shadow-sm">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-[#253326]">
+          <h2 className="font-bold text-slate-900 dark:text-white">Vagas Recentes</h2>
+          <Link href="/admin/vagas" className="text-primary dark:text-green-400 text-sm font-medium hover:underline flex items-center gap-1">
             Ver todas
+            <span className="material-symbols-outlined text-xs">arrow_forward</span>
           </Link>
         </div>
 
@@ -111,52 +113,54 @@ export default function DashboardPage() {
           <div className="py-16 text-center text-slate-400">
             <span className="material-symbols-outlined text-5xl mb-3 opacity-30">work_off</span>
             <p className="font-medium">Nenhuma vaga criada ainda.</p>
-            <Link href="/admin/vagas/nova" className="mt-4 inline-block text-primary text-sm font-semibold hover:underline">
+            <Link href="/admin/vagas/nova" className="mt-4 inline-block text-primary dark:text-green-400 text-sm font-semibold hover:underline">
               Criar primeira vaga
             </Link>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+          <div className="overflow-x-auto w-full">
+            <table className="w-full text-sm min-w-[650px]">
               <thead>
-                <tr className="bg-slate-50 text-left">
-                  <th className="px-6 py-3 font-semibold text-slate-500 text-xs uppercase tracking-wide">Vaga</th>
-                  <th className="px-6 py-3 font-semibold text-slate-500 text-xs uppercase tracking-wide">Candidatos</th>
-                  <th className="px-6 py-3 font-semibold text-slate-500 text-xs uppercase tracking-wide">Status</th>
-                  <th className="px-6 py-3 font-semibold text-slate-500 text-xs uppercase tracking-wide">Criada em</th>
-                  <th className="px-6 py-3 font-semibold text-slate-500 text-xs uppercase tracking-wide">Ações</th>
+                <tr className="bg-slate-50 dark:bg-[#152016] text-left border-b border-slate-100 dark:border-[#253326]">
+                  <th className="px-6 py-3.5 font-semibold text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wide">Vaga</th>
+                  <th className="px-6 py-3.5 font-semibold text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wide">Candidatos</th>
+                  <th className="px-6 py-3.5 font-semibold text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wide">Status</th>
+                  <th className="px-6 py-3.5 font-semibold text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wide">Criada em</th>
+                  <th className="px-6 py-3.5 font-semibold text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wide text-right">Ações</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-[#253326]">
                 {vagasRecentes.map((vaga) => (
-                  <tr key={vaga.id} className="hover:bg-slate-50 transition-colors">
+                  <tr key={vaga.id} className="hover:bg-slate-50/50 dark:hover:bg-[#1f2c20]/35 transition-colors">
                     <td className="px-6 py-4">
-                      <p className="font-semibold text-slate-900">{vaga.title}</p>
-                      <p className="text-xs text-slate-400 mt-0.5">{vaga.area}</p>
+                      <p className="font-bold text-slate-900 dark:text-white leading-tight">{vaga.title}</p>
+                      <p className="text-xs text-slate-400 mt-1 font-medium">{vaga.area}</p>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-2 text-slate-600">
+                      <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 font-medium">
                         <span className="material-symbols-outlined text-base text-slate-400">people</span>
                         {vaga.applicant_count}
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`text-xs font-bold px-3 py-1 rounded-full ${
-                        vaga.status === "open" ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-500"
+                      <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full ${
+                        vaga.status === "open"
+                          ? "bg-green-100 text-green-700 dark:bg-green-950/40 dark:text-green-400"
+                          : "bg-slate-100 text-slate-500 dark:bg-slate-800/40 dark:text-slate-400"
                       }`}>
                         {vaga.status === "open" ? "Ativa" : "Encerrada"}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-slate-500">
+                    <td className="px-6 py-4 text-slate-500 dark:text-slate-400 font-medium">
                       {new Date(vaga.created_at).toLocaleDateString("pt-BR")}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 text-right">
                       <Link
                         href="/dashboard"
-                        className="flex items-center gap-1 px-3 py-1.5 text-primary border border-primary/30 rounded-lg text-xs font-semibold hover:bg-primary/5 transition-colors w-fit"
+                        className="inline-flex items-center gap-1 px-3.5 py-1.5 text-primary dark:text-green-400 border border-primary/20 dark:border-green-500/20 rounded-xl text-xs font-bold hover:bg-primary/5 dark:hover:bg-green-500/10 transition-colors"
                       >
                         <span className="material-symbols-outlined text-sm">people</span>
-                        Ver Candidatos
+                        Analisar
                       </Link>
                     </td>
                   </tr>

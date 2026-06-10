@@ -23,6 +23,10 @@ export default function EditarVagaPage() {
     status: "Ativa",
   });
 
+  const inputCls =
+    "w-full px-4 py-3 border border-slate-200 dark:border-[#253326] rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 dark:focus:ring-green-500/20 focus:border-primary dark:focus:border-green-500 bg-slate-50 dark:bg-[#152016] text-sm text-slate-900 dark:text-white transition-all";
+  const labelCls = "block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5";
+
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) {
@@ -30,105 +34,105 @@ export default function EditarVagaPage() {
   }
 
   return (
-    <div className="p-8">
-      <div className="flex items-center gap-3 mb-8">
+    <div className="p-4 sm:p-6 md:p-8 max-w-3xl mx-auto space-y-8">
+      <div className="flex items-center gap-3">
         <button
           onClick={() => router.back()}
-          className="size-9 rounded-lg border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-colors"
+          className="size-9 rounded-lg border border-slate-200 dark:border-[#253326] flex items-center justify-center hover:bg-slate-50 dark:hover:bg-[#1a251b] transition-colors"
         >
-          <span className="material-symbols-outlined text-slate-500 text-lg">arrow_back</span>
+          <span className="material-symbols-outlined text-slate-500 dark:text-slate-400 text-lg">arrow_back</span>
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Editar Vaga</h1>
-          <p className="text-slate-500 text-sm mt-0.5">{form.titulo}</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Editar Vaga</h1>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-0.5">{form.titulo}</p>
         </div>
         <span
           className={`ml-2 text-xs font-bold px-3 py-1 rounded-full ${
-            form.status === "Ativa" ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-500"
+            form.status === "Ativa" ? "bg-green-100 text-green-700 dark:bg-green-950/40 dark:text-green-400" : "bg-slate-100 text-slate-500 dark:bg-[#152016]/40 dark:text-slate-400"
           }`}
         >
           {form.status}
         </span>
       </div>
 
-      <div className="max-w-3xl space-y-6">
+      <div className="space-y-6">
         {/* Informações Básicas */}
-        <div className="bg-white rounded-2xl border border-slate-100 p-6">
-          <h2 className="font-bold text-slate-900 flex items-center gap-2 mb-5">
-            <span className="material-symbols-outlined text-primary">info</span>
+        <div className="bg-white dark:bg-[#1a251b] rounded-2xl border border-slate-100 dark:border-[#253326] p-6">
+          <h2 className="font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-5">
+            <span className="material-symbols-outlined text-primary dark:text-green-400">info</span>
             Informações Básicas
           </h2>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">Título da Vaga *</label>
+              <label className={labelCls}>Título da Vaga *</label>
               <input
                 name="titulo"
                 value={form.titulo}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-slate-50 text-sm transition-all"
+                className={inputCls}
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">Área</label>
+                <label className={labelCls}>Área</label>
                 <select
                   name="area"
                   value={form.area}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-slate-50 text-sm transition-all text-slate-600"
+                  className={inputCls + " text-slate-600 dark:text-slate-300"}
                 >
                   {["Operações", "Manutenção", "Engenharia", "Geologia", "Segurança", "Administrativo"].map((o) => (
-                    <option key={o}>{o}</option>
+                    <option key={o} className="dark:bg-[#152016]">{o}</option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">Nível</label>
+                <label className={labelCls}>Nível</label>
                 <select
                   name="nivel"
                   value={form.nivel}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-slate-50 text-sm transition-all text-slate-600"
+                  className={inputCls + " text-slate-600 dark:text-slate-300"}
                 >
                   {["Operacional", "Técnico", "Júnior", "Pleno", "Sênior", "Coordenação"].map((o) => (
-                    <option key={o}>{o}</option>
+                    <option key={o} className="dark:bg-[#152016]">{o}</option>
                   ))}
                 </select>
               </div>
             </div>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">Tipo de Contrato</label>
+                <label className={labelCls}>Tipo de Contrato</label>
                 <select
                   name="tipo"
                   value={form.tipo}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-slate-50 text-sm transition-all text-slate-600"
+                  className={inputCls + " text-slate-600 dark:text-slate-300"}
                 >
                   {["CLT", "PJ", "Temporário", "Estágio"].map((o) => (
-                    <option key={o}>{o}</option>
+                    <option key={o} className="dark:bg-[#152016]">{o}</option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">Nº de Vagas</label>
+                <label className={labelCls}>Nº de Vagas</label>
                 <input
                   type="number"
                   name="vagas"
                   min="1"
                   value={form.vagas}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-slate-50 text-sm transition-all"
+                  className={inputCls}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">Encerramento</label>
+                <label className={labelCls}>Encerramento</label>
                 <input
                   type="date"
                   name="encerra"
                   value={form.encerra}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-slate-50 text-sm transition-all"
+                  className={inputCls}
                 />
               </div>
             </div>
@@ -136,38 +140,38 @@ export default function EditarVagaPage() {
         </div>
 
         {/* Localização e Salário */}
-        <div className="bg-white rounded-2xl border border-slate-100 p-6">
-          <h2 className="font-bold text-slate-900 flex items-center gap-2 mb-5">
-            <span className="material-symbols-outlined text-primary">location_on</span>
+        <div className="bg-white dark:bg-[#1a251b] rounded-2xl border border-slate-100 dark:border-[#253326] p-6">
+          <h2 className="font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-5">
+            <span className="material-symbols-outlined text-primary dark:text-green-400">location_on</span>
             Localização e Remuneração
           </h2>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">Local de Trabalho</label>
+              <label className={labelCls}>Local de Trabalho</label>
               <input
                 name="local"
                 value={form.local}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-slate-50 text-sm transition-all"
+                className={inputCls}
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">Salário Mínimo (R$)</label>
+                <label className={labelCls}>Salário Mínimo (R$)</label>
                 <input
                   name="salarioMin"
                   value={form.salarioMin}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-slate-50 text-sm transition-all"
+                  className={inputCls}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">Salário Máximo (R$)</label>
+                <label className={labelCls}>Salário Máximo (R$)</label>
                 <input
                   name="salarioMax"
                   value={form.salarioMax}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-slate-50 text-sm transition-all"
+                  className={inputCls}
                 />
               </div>
             </div>
@@ -175,51 +179,51 @@ export default function EditarVagaPage() {
         </div>
 
         {/* Descrição */}
-        <div className="bg-white rounded-2xl border border-slate-100 p-6">
-          <h2 className="font-bold text-slate-900 flex items-center gap-2 mb-5">
-            <span className="material-symbols-outlined text-primary">description</span>
+        <div className="bg-white dark:bg-[#1a251b] rounded-2xl border border-slate-100 dark:border-[#253326] p-6">
+          <h2 className="font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-5">
+            <span className="material-symbols-outlined text-primary dark:text-green-400">description</span>
             Descrição e Requisitos
           </h2>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">Descrição da Vaga</label>
+              <label className={labelCls}>Descrição da Vaga</label>
               <textarea
                 name="descricao"
                 value={form.descricao}
                 onChange={handleChange}
                 rows={5}
-                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-slate-50 text-sm transition-all resize-none"
+                className={inputCls + " resize-none"}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">Requisitos e Qualificações</label>
+              <label className={labelCls}>Requisitos e Qualificações</label>
               <textarea
                 name="requisitos"
                 value={form.requisitos}
                 onChange={handleChange}
                 rows={4}
-                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-slate-50 text-sm transition-all resize-none"
+                className={inputCls + " resize-none"}
               />
             </div>
           </div>
         </div>
 
         {/* Actions */}
-        <div className="flex items-center justify-between pt-2 pb-8">
-          <button className="flex items-center gap-2 px-5 py-3 border border-red-200 text-red-600 font-semibold rounded-xl hover:bg-red-50 transition-all text-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2 pb-8">
+          <button className="flex items-center justify-center gap-2 px-5 py-3 border border-red-200 dark:border-red-900/30 text-red-600 dark:text-red-400 font-semibold rounded-xl hover:bg-red-50 dark:hover:bg-red-950/10 transition-all text-sm w-full sm:w-auto">
             <span className="material-symbols-outlined text-base">delete</span>
             Excluir Vaga
           </button>
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
             <button
               onClick={() => router.back()}
-              className="px-6 py-3 border border-slate-200 text-slate-600 font-semibold rounded-xl hover:bg-slate-50 transition-all text-sm"
+              className="px-6 py-3 border border-slate-200 dark:border-[#253326] text-slate-600 dark:text-slate-400 font-semibold rounded-xl hover:bg-slate-50 dark:hover:bg-[#1a251b] transition-all text-sm w-full sm:w-auto"
             >
               Cancelar
             </button>
             <button
               onClick={() => router.push("/admin")}
-              className="flex items-center gap-2 px-6 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary/90 transition-all shadow-md shadow-primary/20 text-sm"
+              className="flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary/90 transition-all shadow-md shadow-primary/20 text-sm w-full sm:w-auto"
             >
               <span className="material-symbols-outlined text-base">save</span>
               Salvar Alterações
