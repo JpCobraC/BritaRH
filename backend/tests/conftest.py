@@ -1,5 +1,6 @@
 import pytest
 import pytest_asyncio
+from typing import AsyncGenerator
 from unittest.mock import MagicMock, patch
 from httpx import AsyncClient, ASGITransport
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
@@ -154,7 +155,7 @@ async def override_get_db():
 app.dependency_overrides[get_db] = override_get_db
 
 @pytest_asyncio.fixture(scope="function")
-async def client() -> AsyncClient:
+async def client() -> AsyncGenerator[AsyncClient, None]:
     """Cliente HTTP assíncrono."""
     async with AsyncClient(
         transport=ASGITransport(app=app), base_url="http://testserver"
@@ -173,7 +174,7 @@ def recruiter_token() -> str:
     )
 
 @pytest_asyncio.fixture(scope="function")
-async def recruiter_client(recruiter_token) -> AsyncClient:
+async def recruiter_client(recruiter_token) -> AsyncGenerator[AsyncClient, None]:
     """Cliente HTTP com token de recrutador já injetado."""
     async with AsyncClient(
         transport=ASGITransport(app=app), 
