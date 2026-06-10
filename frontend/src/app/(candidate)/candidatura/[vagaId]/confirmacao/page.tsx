@@ -2,12 +2,12 @@ import Link from "next/link";
 
 export default function ConfirmacaoPage() {
   return (
-    <div className="relative flex min-h-screen flex-col overflow-x-hidden bg-background-light">
+    <div className="relative flex min-h-[calc(100vh-140px)] flex-col overflow-x-hidden bg-background-light dark:bg-background-dark transition-colors duration-200">
       <main className="flex flex-1 items-center justify-center px-6 py-12">
         <div className="flex flex-col max-w-[600px] w-full items-center text-center">
           {/* Hero visual */}
           <div className="w-full mb-8">
-            <div className="w-full h-64 bg-primary/5 rounded-2xl flex items-center justify-center border border-primary/10 relative overflow-hidden">
+            <div className="w-full h-64 bg-primary/5 dark:bg-green-500/10 rounded-2xl flex items-center justify-center border border-primary/10 dark:border-[#253326] relative overflow-hidden">
               {/* Dotted pattern */}
               <div
                 className="absolute inset-0 opacity-10 pointer-events-none"
@@ -30,10 +30,10 @@ export default function ConfirmacaoPage() {
 
           {/* Text */}
           <div className="space-y-4">
-            <h1 className="text-slate-900 tracking-tight text-3xl md:text-4xl font-bold leading-tight px-4">
+            <h1 className="text-slate-900 dark:text-white tracking-tight text-3xl md:text-4xl font-bold leading-tight px-4">
               Candidatura enviada com sucesso!
             </h1>
-            <p className="text-slate-600 text-lg font-normal leading-relaxed px-4">
+            <p className="text-slate-600 dark:text-slate-400 text-lg font-normal leading-relaxed px-4">
               Boa sorte! Recebemos suas informações e entraremos em contato em breve através do seu e-mail cadastrado.
             </p>
           </div>
@@ -48,7 +48,7 @@ export default function ConfirmacaoPage() {
             </Link>
             <Link
               href="/vagas"
-              className="group flex items-center gap-2 text-primary font-medium hover:opacity-80 transition-all underline underline-offset-4 decoration-primary/30 hover:decoration-primary"
+              className="group flex items-center gap-2 text-primary dark:text-green-400 font-medium hover:opacity-80 transition-all underline underline-offset-4 decoration-primary/30 dark:decoration-green-400/30 hover:decoration-primary"
             >
               <span>Ver outras vagas</span>
               <span className="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">
@@ -58,12 +58,12 @@ export default function ConfirmacaoPage() {
           </div>
 
           {/* Footer info */}
-          <div className="mt-16 pt-8 border-t border-primary/5 w-full">
-            <p className="text-slate-400 text-sm">
+          <div className="mt-16 pt-8 border-t border-slate-100 dark:border-[#253326] w-full">
+            <p className="text-slate-400 dark:text-slate-500 text-sm">
               Um e-mail de confirmação foi enviado para você.{" "}
               <br className="hidden sm:block" />
               Dúvidas?{" "}
-              <a href="#" className="text-primary hover:underline">
+              <a href="#" className="text-primary dark:text-green-400 hover:underline">
                 Entre em contato com o suporte
               </a>
               .
@@ -71,9 +71,6 @@ export default function ConfirmacaoPage() {
           </div>
         </div>
       </main>
-      <footer className="py-6 text-center text-slate-400 text-xs">
-        © 2024 BritaRH. Todos os direitos reservados.
-      </footer>
     </div>
   );
 }

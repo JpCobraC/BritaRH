@@ -8,22 +8,25 @@ O **BritaRH** é o sistema de recrutamento e seleção da **Britasul**, desenvol
 - **Candidatura online** — O candidato se candidata diretamente pelo sistema.
 - **Teste inicial** — Questionário com perguntas configuráveis que avalia o perfil do candidato.
 - **Envio de currículo** — Área para anexar currículo em formato PDF ou DOC/DOCX.
+- **Tema Escuro & Responsividade** — Suporte completo para modo claro e escuro (com botões de alternância rápida na tela de Login, no cabeçalho do Candidato e no menu do Recrutador) e interface adaptada para qualquer tamanho de tela.
+- **Cadastro Completo via Google OAuth** — Fluxo automático de onboarding para que novos candidatos vindos do Google preencham CPF e data de nascimento no primeiro acesso.
 
 ## 📋 Fluxo de candidatura
 
 1. Candidato acessa a plataforma e autentica-se com Google.
-2. Visualiza as **vagas disponíveis** e seleciona uma.
-3. Preenche o **perfil** (passo 1).
-4. Realiza o **teste** da vaga (passo 2).
-5. Envia o **currículo** (passo 3).
-6. Recebe confirmação; RH acessa o painel com candidaturas.
+2. Caso seja um novo usuário, preenche os dados cadastrais obrigatórios faltantes.
+3. Visualiza as **vagas disponíveis** e seleciona uma.
+4. Preenche o **perfil** (passo 1).
+5. Realiza o **teste** da vaga (passo 2).
+6. Envia o **currículo** (passo 3).
+7. Recebe confirmação; RH acessa o painel com candidaturas.
 
 ## 🛠️ Setup Local (Desenvolvimento)
 
 ### Pré-requisitos
 
-- [Docker](https://docs.docker.com/get-docker/) ≥ 24
-- [Docker Compose](https://docs.docker.com/compose/) ≥ 2.20
+- Docker ≥ 24
+- Docker Compose ≥ 2.20
 - Git
 
 ### 1. Clonar o repositório

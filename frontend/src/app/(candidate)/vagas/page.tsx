@@ -50,37 +50,37 @@ export default function VagasPage() {
 
   if (status === "loading" || loading || loadingApps) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-3 bg-background-light">
+      <div className="min-h-screen flex flex-col items-center justify-center gap-3 bg-background-light dark:bg-background-dark transition-colors duration-200">
         <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-        <p className="text-slate-600 font-medium">Buscando oportunidades...</p>
+        <p className="text-slate-600 dark:text-slate-400 font-medium">Buscando oportunidades...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-background-light px-6 text-center">
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-background-light dark:bg-background-dark px-6 text-center transition-colors duration-200">
         <span className="material-symbols-outlined text-red-500 text-5xl">error</span>
-        <h2 className="text-xl font-bold text-slate-800">Ops, algo deu errado!</h2>
-        <p className="text-slate-600 max-w-md">{error}</p>
+        <h2 className="text-xl font-bold text-slate-800 dark:text-white">Ops, algo deu errado!</h2>
+        <p className="text-slate-600 dark:text-slate-400 max-w-md">{error}</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background-light">
+    <div className="min-h-screen bg-background-light dark:bg-background-dark transition-colors duration-200">
       {/* Hero */}
-      <div className="bg-white border-b border-slate-100">
+      <div className="bg-white dark:bg-[#1a251b] border-b border-slate-100 dark:border-[#253326]">
         <div className="max-w-6xl mx-auto px-6 py-10 lg:py-14">
           <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary text-xs font-semibold px-3 py-1 rounded-full mb-4">
+            <div className="inline-flex items-center gap-2 bg-primary/10 dark:bg-green-500/10 text-primary dark:text-green-400 text-xs font-semibold px-3 py-1 rounded-full mb-4">
               <span className="material-symbols-outlined text-sm">work</span>
               {filteredVagas.length} vagas encontradas
             </div>
-            <h1 className="text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight mb-3">
+            <h1 className="text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white tracking-tight mb-3">
               Vagas BritaRH Mineração
             </h1>
-            <p className="text-slate-500 text-lg leading-relaxed">
+            <p className="text-slate-500 dark:text-slate-400 text-lg leading-relaxed">
               Oportunidades em mineração, operações industriais e engenharia.
             </p>
           </div>
@@ -94,7 +94,7 @@ export default function VagasPage() {
                 placeholder="Buscar vagas por cargo, área..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm"
+                className="w-full pl-10 pr-4 py-3 border border-slate-200 dark:border-[#253326] rounded-xl bg-white dark:bg-[#152016] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 dark:focus:ring-green-500/20 focus:border-primary dark:focus:border-green-500 transition-all text-sm"
               />
             </div>
             <div className="relative">
@@ -102,11 +102,11 @@ export default function VagasPage() {
               <select 
                 value={locationFilter}
                 onChange={(e) => setLocationFilter(e.target.value)}
-                className="pl-9 pr-8 py-3 border border-slate-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm text-slate-600 appearance-none cursor-pointer w-full sm:w-auto min-w-[200px]"
+                className="pl-9 pr-8 py-3 border border-slate-200 dark:border-[#253326] rounded-xl bg-white dark:bg-[#152016] focus:outline-none focus:ring-2 focus:ring-primary/20 dark:focus:ring-green-500/20 focus:border-primary dark:focus:border-green-500 transition-all text-sm text-slate-600 dark:text-slate-300 appearance-none cursor-pointer w-full sm:w-auto min-w-[200px]"
               >
-                <option>Todas as cidades</option>
+                <option className="dark:bg-[#152016]">Todas as cidades</option>
                 {locations.map((loc) => (
-                  <option key={loc} value={loc}>{loc}</option>
+                  <option key={loc} value={loc} className="dark:bg-[#152016]">{loc}</option>
                 ))}
               </select>
             </div>
@@ -118,38 +118,38 @@ export default function VagasPage() {
       <div className="max-w-6xl mx-auto px-6 py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {filteredVagas.length === 0 ? (
-            <div className="col-span-full py-12 text-center text-slate-500">
+            <div className="col-span-full py-12 text-center text-slate-500 dark:text-slate-450">
               Nenhuma vaga encontrada com os filtros atuais.
             </div>
           ) : (
             filteredVagas.map((vaga) => (
             <div
               key={vaga.id}
-              className="bg-white rounded-2xl border border-slate-100 p-6 hover:shadow-lg hover:border-primary/20 transition-all group flex flex-col justify-between"
+              className="bg-white dark:bg-[#1a251b] rounded-2xl border border-slate-100 dark:border-[#253326] p-6 hover:shadow-lg dark:hover:shadow-green-950/10 hover:border-primary/20 dark:hover:border-green-500/20 transition-all group flex flex-col justify-between"
             >
               <div>
                 <div className="flex items-start justify-between mb-3">
-                  <div className="size-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                    <span className="material-symbols-outlined text-primary text-2xl">precision_manufacturing</span>
+                  <div className="size-12 bg-primary/10 dark:bg-green-500/20 rounded-xl flex items-center justify-center">
+                    <span className="material-symbols-outlined text-primary dark:text-green-400 text-2xl">precision_manufacturing</span>
                   </div>
-                  <span className="text-xs font-semibold px-3 py-1 rounded-full bg-blue-100 text-blue-700">
+                  <span className="text-xs font-semibold px-3 py-1 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-950/40 dark:text-blue-400">
                     {vaga.area}
                   </span>
                 </div>
 
-                <h2 className="text-lg font-bold text-slate-900 mt-3 group-hover:text-primary transition-colors">
+                <h2 className="text-lg font-bold text-slate-900 dark:text-white mt-3 group-hover:text-primary dark:group-hover:text-green-400 transition-colors">
                   {vaga.title}
                 </h2>
-                <p className="text-sm text-slate-500 mt-0.5 font-medium">BritaRH Mineração</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5 font-medium">BritaRH Mineração</p>
 
-                <p className="text-sm text-slate-600 mt-3 leading-relaxed line-clamp-2">{vaga.description}</p>
+                <p className="text-sm text-slate-600 dark:text-slate-300 mt-3 leading-relaxed line-clamp-2">{vaga.description}</p>
 
                 <div className="mt-4 flex flex-wrap gap-2">
-                  <span className="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded-lg font-medium">
+                  <span className="bg-slate-100 dark:bg-[#152016] text-slate-600 dark:text-slate-300 text-xs px-2.5 py-1 rounded-lg font-medium">
                     {vaga.area}
                   </span>
                   {vaga.contractType && (
-                    <span className="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded-lg font-medium">
+                    <span className="bg-slate-100 dark:bg-[#152016] text-slate-600 dark:text-slate-300 text-xs px-2.5 py-1 rounded-lg font-medium">
                       {vaga.contractType}
                     </span>
                   )}
@@ -157,7 +157,7 @@ export default function VagasPage() {
               </div>
 
               <div>
-                <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-sm text-slate-500">
+                <div className="mt-4 pt-4 border-t border-slate-100 dark:border-[#253326] flex items-center justify-between text-sm text-slate-500 dark:text-slate-400">
                   <div className="flex items-center gap-3">
                     <span className="flex items-center gap-1">
                       <span className="material-symbols-outlined text-base">location_on</span>
@@ -170,13 +170,13 @@ export default function VagasPage() {
                       </span>
                     )}
                   </div>
-                  <span className="font-semibold text-slate-700">{vaga.schedule}</span>
+                  <span className="font-semibold text-slate-700 dark:text-slate-300">{vaga.schedule}</span>
                 </div>
 
                 {appliedJobIds.includes(vaga.id) ? (
                   <Link
                     href="/perfil"
-                    className="mt-4 w-full flex items-center justify-center gap-2 px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-xl hover:bg-slate-200 transition-all border border-slate-200"
+                    className="mt-4 w-full flex items-center justify-center gap-2 px-6 py-3 bg-slate-100 dark:bg-[#152016] text-slate-700 dark:text-slate-300 font-semibold rounded-xl hover:bg-slate-200 dark:hover:bg-[#202c21] transition-all border border-slate-200 dark:border-[#253326]"
                   >
                     Acompanhar Processo
                     <span className="material-symbols-outlined text-base">search</span>

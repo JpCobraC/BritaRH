@@ -111,70 +111,70 @@ function CompletarCadastroForm() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white rounded-3xl shadow-xl shadow-slate-200/50 overflow-hidden border border-slate-100 transform transition-all">
+    <main className="min-h-screen bg-slate-50 dark:bg-background-dark flex items-center justify-center p-4 transition-colors duration-200">
+      <div className="max-w-md w-full bg-white dark:bg-[#1a251b] rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none overflow-hidden border border-slate-100 dark:border-[#253326] transform transition-all">
         {/* Header Section */}
         <div className="p-8 pb-4 text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-green-50 rounded-2xl mb-4 text-green-600">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-green-50 dark:bg-green-950/20 rounded-2xl mb-4 text-green-600 dark:text-green-400">
             <span className="material-symbols-outlined text-4xl">account_circle</span>
           </div>
-          <h2 className="text-2xl font-bold text-slate-800">Concluir Cadastro</h2>
-          <p className="text-slate-500 mt-1">
+          <h2 className="text-2xl font-bold text-slate-800 dark:text-white">Concluir Cadastro</h2>
+          <p className="text-slate-500 dark:text-slate-400 mt-1">
             Falta pouco! Insira seus dados para ativar sua conta.
           </p>
         </div>
 
         <div className="px-8 pb-8">
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm rounded-r-lg">
+            <div className="mb-6 p-4 bg-red-50 dark:bg-red-950/20 border-l-4 border-red-500 text-red-700 dark:text-red-400 text-sm rounded-r-lg">
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1">Nome Completo</label>
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Nome Completo</label>
               <input
                 type="text"
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Seu nome"
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-green-500 outline-none transition-all"
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-[#253326] bg-slate-50 dark:bg-[#152016] text-slate-900 dark:text-white focus:ring-2 focus:ring-green-500 outline-none transition-all"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-slate-400 mb-1">E-mail (Confirmado via Google)</label>
+              <label className="block text-sm font-semibold text-slate-400 dark:text-slate-500 mb-1">E-mail (Confirmado via Google)</label>
               <input
                 type="email"
                 disabled
                 value={email}
-                className="w-full px-4 py-3 rounded-xl border border-slate-100 bg-slate-50 text-slate-400 cursor-not-allowed outline-none"
+                className="w-full px-4 py-3 rounded-xl border border-slate-100 dark:border-[#253326] bg-slate-50 dark:bg-[#152016]/50 text-slate-400 dark:text-slate-500 cursor-not-allowed outline-none"
               />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1">CPF</label>
+                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">CPF</label>
                 <input
                   type="text"
                   required
                   value={cpf}
                   onChange={(e) => setCpf(maskCPF(e.target.value))}
                   placeholder="000.000.000-00"
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-green-500 outline-none transition-all"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-[#253326] bg-slate-50 dark:bg-[#152016] text-slate-900 dark:text-white focus:ring-2 focus:ring-green-500 outline-none transition-all"
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1">Nascimento</label>
+                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Nascimento</label>
                 <input
                   type="text"
                   required
                   value={birthDate}
                   onChange={(e) => setBirthDate(maskDate(e.target.value))}
                   placeholder="DD/MM/AAAA"
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-green-500 outline-none transition-all"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-[#253326] bg-slate-50 dark:bg-[#152016] text-slate-900 dark:text-white focus:ring-2 focus:ring-green-500 outline-none transition-all"
                 />
               </div>
             </div>
@@ -182,7 +182,7 @@ function CompletarCadastroForm() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full mt-4 py-4 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold shadow-lg shadow-green-200 transition-all disabled:opacity-70 flex items-center justify-center gap-2"
+              className="w-full mt-4 py-4 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold shadow-lg shadow-green-200 dark:shadow-none transition-all disabled:opacity-70 flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>
@@ -203,7 +203,7 @@ function CompletarCadastroForm() {
 export default function CompletarCadastroPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 dark:bg-background-dark flex items-center justify-center transition-colors duration-200">
         <div className="w-8 h-8 rounded-full border-4 border-primary border-t-transparent animate-spin"></div>
       </div>
     }>

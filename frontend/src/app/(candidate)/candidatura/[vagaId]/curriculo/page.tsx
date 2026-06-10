@@ -51,13 +51,13 @@ export default function CurriculoPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background-light">
+    <div className="min-h-screen bg-background-light dark:bg-background-dark transition-colors duration-200">
       {/* Sub-header */}
-      <div className="bg-white border-b border-slate-100 px-6 py-4">
+      <div className="bg-white dark:bg-[#1a251b] border-b border-slate-100 dark:border-[#253326] px-6 py-4">
         <div className="max-w-3xl mx-auto flex items-center justify-between gap-8">
           <div className="shrink-0">
-            <p className="text-xs text-slate-500 font-medium">Último passo</p>
-            <h2 className="text-base font-bold text-slate-900">Envio de Currículo</h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Último passo</p>
+            <h2 className="text-base font-bold text-slate-900 dark:text-white">Envio de Currículo</h2>
           </div>
           <div className="flex-1">
             <ProgressBar value={100} />
@@ -70,19 +70,19 @@ export default function CurriculoPage() {
           <StepIndicator currentStep={3} />
         </div>
 
-        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-8">
+        <div className="bg-white dark:bg-[#1a251b] rounded-2xl border border-slate-100 dark:border-[#253326] shadow-sm p-8">
           <div className="flex items-center gap-3 mb-6">
-            <div className="size-10 bg-primary/10 rounded-xl flex items-center justify-center">
-              <span className="material-symbols-outlined text-primary">upload_file</span>
+            <div className="size-10 bg-primary/10 dark:bg-green-500/20 rounded-xl flex items-center justify-center">
+              <span className="material-symbols-outlined text-primary dark:text-green-400">upload_file</span>
             </div>
             <div>
-              <h1 className="text-xl font-bold text-slate-900">Currículo e Mensagem</h1>
-              <p className="text-sm text-slate-500">Envie seu currículo em PDF (máx. 5 MB)</p>
+              <h1 className="text-xl font-bold text-slate-900 dark:text-white">Currículo e Mensagem</h1>
+              <p className="text-sm text-slate-500 dark:text-slate-400">Envie seu currículo em PDF (máx. 5 MB)</p>
             </div>
           </div>
 
           {submitError && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-100 text-red-700 rounded-xl text-sm flex items-center gap-2">
+            <div className="mb-6 p-4 bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/30 text-red-700 dark:text-red-400 rounded-xl text-sm flex items-center gap-2">
               <span className="material-symbols-outlined text-red-500 text-lg">error</span>
               {submitError}
             </div>
@@ -96,10 +96,10 @@ export default function CurriculoPage() {
             onClick={() => inputRef.current?.click()}
             className={`relative border-2 border-dashed rounded-2xl p-10 text-center cursor-pointer transition-all ${
               dragOver
-                ? "border-primary bg-primary/5"
+                ? "border-primary bg-primary/5 dark:bg-green-500/10"
                 : resumeFile
-                ? "border-primary/40 bg-primary/5"
-                : "border-slate-200 hover:border-primary/30 hover:bg-slate-50"
+                ? "border-primary/40 bg-primary/5 dark:border-green-500/30 dark:bg-green-500/10"
+                : "border-slate-200 dark:border-[#253326] hover:border-primary/30 dark:hover:border-green-500/30 hover:bg-slate-50 dark:hover:bg-[#152016]"
             }`}
           >
             <input
@@ -113,17 +113,17 @@ export default function CurriculoPage() {
 
             {resumeFile ? (
               <div className="flex flex-col items-center gap-3">
-                <div className="size-14 bg-primary/10 rounded-xl flex items-center justify-center">
-                  <span className="material-symbols-outlined text-primary text-3xl">picture_as_pdf</span>
+                <div className="size-14 bg-primary/10 dark:bg-green-500/20 rounded-xl flex items-center justify-center">
+                  <span className="material-symbols-outlined text-primary dark:text-green-400 text-3xl">picture_as_pdf</span>
                 </div>
-                <p className="font-semibold text-slate-900">{resumeFile.name}</p>
-                <p className="text-sm text-slate-500">
+                <p className="font-semibold text-slate-900 dark:text-white">{resumeFile.name}</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">
                   {(resumeFile.size / 1024 / 1024).toFixed(2)} MB
                 </p>
                 <button
                   onClick={(e) => { e.stopPropagation(); updateResume(null, message); }}
                   disabled={isSubmitting}
-                  className="text-xs text-red-500 hover:text-red-700 flex items-center gap-1 disabled:opacity-50"
+                  className="text-xs text-red-500 hover:text-red-750 flex items-center gap-1 disabled:opacity-50"
                 >
                   <span className="material-symbols-outlined text-sm">delete</span>
                   Remover
@@ -131,14 +131,14 @@ export default function CurriculoPage() {
               </div>
             ) : (
               <div className="flex flex-col items-center gap-3">
-                <div className="size-14 bg-slate-100 rounded-xl flex items-center justify-center">
-                  <span className="material-symbols-outlined text-slate-400 text-3xl">cloud_upload</span>
+                <div className="size-14 bg-slate-100 dark:bg-[#152016] rounded-xl flex items-center justify-center">
+                  <span className="material-symbols-outlined text-slate-400 dark:text-slate-500 text-3xl">cloud_upload</span>
                 </div>
                 <div>
-                  <p className="font-semibold text-slate-700">
-                    Arraste seu PDF aqui ou <span className="text-primary">clique para selecionar</span>
+                  <p className="font-semibold text-slate-700 dark:text-slate-300">
+                    Arraste seu PDF aqui ou <span className="text-primary dark:text-green-400">clique para selecionar</span>
                   </p>
-                  <p className="text-sm text-slate-400 mt-1">PDF, máximo 5 MB</p>
+                  <p className="text-sm text-slate-400 dark:text-slate-500 mt-1">PDF, máximo 5 MB</p>
                 </div>
               </div>
             )}
@@ -146,9 +146,9 @@ export default function CurriculoPage() {
 
           {/* Mensagem */}
           <div className="mt-6">
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
               Mensagem para o recrutador{" "}
-              <span className="text-slate-400 font-normal">(opcional)</span>
+              <span className="text-slate-400 dark:text-slate-500 font-normal">(opcional)</span>
             </label>
             <textarea
               value={message}
@@ -157,16 +157,16 @@ export default function CurriculoPage() {
               rows={4}
               maxLength={500}
               placeholder="Apresente-se brevemente e explique por que você é o candidato ideal para esta vaga..."
-              className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-slate-50 text-sm transition-all resize-none"
+              className="w-full px-4 py-3 border border-slate-200 dark:border-[#253326] rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 dark:focus:ring-green-500/20 focus:border-primary dark:focus:border-green-500 bg-slate-50 dark:bg-[#152016] text-sm text-slate-900 dark:text-white transition-all resize-none"
             />
-            <p className="text-xs text-slate-400 mt-1 text-right">{message.length}/500 caracteres</p>
+            <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 text-right">{message.length}/500 caracteres</p>
           </div>
 
-          <div className="flex items-center justify-between mt-8 pt-6 border-t border-slate-100">
+          <div className="flex items-center justify-between mt-8 pt-6 border-t border-slate-100 dark:border-[#253326]">
             <button
               onClick={() => router.push(`/candidatura/${vagaId}/teste`)}
               disabled={isSubmitting}
-              className="flex items-center gap-2 px-6 py-3 border border-slate-200 text-slate-600 font-semibold rounded-xl hover:bg-slate-50 transition-all text-sm disabled:opacity-50"
+              className="flex items-center gap-2 px-6 py-3 border border-slate-200 dark:border-[#253326] text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-[#152016] transition-all text-sm disabled:opacity-50"
             >
               <span className="material-symbols-outlined text-base">arrow_back</span>
               Voltar ao Questionário
