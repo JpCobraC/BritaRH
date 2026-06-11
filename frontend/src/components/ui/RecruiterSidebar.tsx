@@ -26,7 +26,7 @@ export default function RecruiterSidebar({ onClose }: RecruiterSidebarProps) {
       
       {/* Sidebar Header */}
       <div className="p-6 flex items-center justify-between border-b border-white/10 dark:border-white/5">
-        <div className="flex items-center gap-3">
+        <Link href="/dashboard" className="flex items-center gap-3 hover:opacity-85 transition-opacity">
           <div className="size-10 bg-white/20 rounded-lg flex items-center justify-center">
             <span className="material-symbols-outlined text-white">architecture</span>
           </div>
@@ -34,7 +34,7 @@ export default function RecruiterSidebar({ onClose }: RecruiterSidebarProps) {
             <h1 className="text-xl font-bold tracking-tight">BritaRH</h1>
             <p className="text-xs text-white/70 font-medium">Recruiter Portal</p>
           </div>
-        </div>
+        </Link>
         {onClose && (
           <button
             onClick={onClose}

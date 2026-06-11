@@ -37,7 +37,50 @@ export default function QRCodeModal({
   const handleDownload = () => {
     const canvas = document.getElementById("qr-code-canvas") as HTMLCanvasElement;
     if (canvas) {
-      const pngUrl = canvas
+      // Configurações de borda e padding
+      const padding = 24;
+      const borderThickness = 6;
+      const borderRadius = 20;
+      
+      const size = canvas.width;
+      const totalSize = size + padding * 2;
+      
+      // Criar um canvas temporário maior para acomodar a borda e o padding
+      const borderCanvas = document.createElement("canvas");
+      borderCanvas.width = totalSize;
+      borderCanvas.height = totalSize;
+      
+      const ctx = borderCanvas.getContext("2d");
+      if (ctx) {
+        // 1. Fundo Branco
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, totalSize, totalSize);
+        
+        // 2. Desenhar o QR Code centralizado
+        ctx.drawImage(canvas, padding, padding);
+        
+        // 3. Desenhar a borda externa arredondada elegante (cor primária do BritaRH: #2f7f33)
+        const offset = borderThickness / 2 + 6; // Pequeno recuo para a borda respirar
+        const x = offset;
+        const y = offset;
+        const w = totalSize - offset * 2;
+        const h = totalSize - offset * 2;
+        const r = borderRadius;
+        
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.arcTo(x + w, y, x + w, y + h, r);
+        ctx.arcTo(x + w, y + h, x, y + h, r);
+        ctx.arcTo(x, y + h, x, y, r);
+        ctx.arcTo(x, y, x + w, y, r);
+        ctx.closePath();
+        
+        ctx.strokeStyle = "#2f7f33"; // Verde BritaRH
+        ctx.lineWidth = borderThickness;
+        ctx.stroke();
+      }
+      
+      const pngUrl = borderCanvas
         .toDataURL("image/png")
         .replace("image/png", "image/octet-stream");
       const downloadLink = document.createElement("a");

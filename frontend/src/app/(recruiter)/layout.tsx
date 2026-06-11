@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import RecruiterSidebar from "@/components/ui/RecruiterSidebar";
 import { useTheme } from "@/presentation/contexts/ThemeContext";
+import Link from "next/link";
 
 export default function RecruiterLayout({
   children,
@@ -44,10 +45,10 @@ export default function RecruiterLayout({
         
         {/* Mobile Header */}
         <header className="lg:hidden h-16 bg-primary dark:bg-[#152717] text-white flex items-center justify-between px-6 border-b border-white/10 dark:border-white/5 shrink-0 transition-colors duration-200">
-          <div className="flex items-center gap-3">
+          <Link href="/dashboard" className="flex items-center gap-3 hover:opacity-85 transition-opacity">
             <span className="material-symbols-outlined">architecture</span>
             <span className="font-bold tracking-tight text-lg">BritaRH</span>
-          </div>
+          </Link>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
