@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import QRCodeModal from "@/components/QRCodeModal";
 
 interface JobRecruiter {
   id: string;
@@ -32,6 +33,14 @@ export default function VagasAdminPage() {
   const [jobs, setJobs] = useState<JobRecruiter[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<Filter>("Todas");
+  const [selectedQRJob, setSelectedQRJob] = useState<JobRecruiter | null>(null);
+  const [shareUrl, setShareUrl] = useState("");
+
+  const openQRModal = (vaga: JobRecruiter) => {
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    setShareUrl(`${origin}/candidatura/${vaga.id}/perfil`);
+    setSelectedQRJob(vaga);
+  };
 
   const fetchJobs = useCallback(async () => {
     if (!session?.accessToken) return;
@@ -145,11 +154,28 @@ export default function VagasAdminPage() {
                   <span className="material-symbols-outlined text-sm">people</span>
                   Candidatos
                 </Link>
+                <button
+                  onClick={() => openQRModal(vaga)}
+                  className="px-3 py-2 text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-green-400 border border-slate-200 dark:border-[#253326] hover:border-primary/30 dark:hover:border-green-500/30 rounded-lg text-xs font-semibold hover:bg-slate-50 dark:hover:bg-green-500/5 transition-colors flex items-center justify-center gap-1 shrink-0"
+                  title="Divulgar Vaga"
+                >
+                  <span className="material-symbols-outlined text-sm">share</span>
+                  Divulgar
+                </button>
               </div>
             </div>
           ))}
         </div>
       )}
+
+      <QRCodeModal
+        isOpen={!!selectedQRJob}
+        onClose={() => setSelectedQRJob(null)}
+        vagaTitle={selectedQRJob?.title || ""}
+        vagaArea={selectedQRJob?.area || ""}
+        vagaWorkplace={selectedQRJob?.workplace || ""}
+        vagaLink={shareUrl}
+      />
     </div>
   );
 }

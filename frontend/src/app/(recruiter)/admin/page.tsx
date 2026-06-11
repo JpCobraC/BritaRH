@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import QRCodeModal from "@/components/QRCodeModal";
 
 interface JobRecruiter {
   id: string;
@@ -24,6 +25,14 @@ export default function DashboardPage() {
 
   const [jobs, setJobs] = useState<JobRecruiter[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedQRJob, setSelectedQRJob] = useState<JobRecruiter | null>(null);
+  const [shareUrl, setShareUrl] = useState("");
+
+  const openQRModal = (vaga: JobRecruiter) => {
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    setShareUrl(`${origin}/candidatura/${vaga.id}/perfil`);
+    setSelectedQRJob(vaga);
+  };
 
   const fetchJobs = useCallback(async () => {
     if (!session?.accessToken) return;
@@ -154,7 +163,7 @@ export default function DashboardPage() {
                     <td className="px-6 py-4 text-slate-500 dark:text-slate-400 font-medium">
                       {new Date(vaga.created_at).toLocaleDateString("pt-BR")}
                     </td>
-                    <td className="px-6 py-4 text-right">
+                    <td className="px-6 py-4 text-right flex items-center justify-end gap-2">
                       <Link
                         href="/dashboard"
                         className="inline-flex items-center gap-1 px-3.5 py-1.5 text-primary dark:text-green-400 border border-primary/20 dark:border-green-500/20 rounded-xl text-xs font-bold hover:bg-primary/5 dark:hover:bg-green-500/10 transition-colors"
@@ -162,6 +171,13 @@ export default function DashboardPage() {
                         <span className="material-symbols-outlined text-sm">people</span>
                         Analisar
                       </Link>
+                      <button
+                        onClick={() => openQRModal(vaga)}
+                        className="inline-flex items-center justify-center p-1.5 text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-green-400 border border-slate-200 dark:border-[#253326] hover:border-primary/30 dark:hover:border-green-500/30 rounded-xl hover:bg-slate-50 dark:hover:bg-green-500/5 transition-colors"
+                        title="Divulgar Vaga"
+                      >
+                        <span className="material-symbols-outlined text-base">share</span>
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -170,6 +186,15 @@ export default function DashboardPage() {
           </div>
         )}
       </div>
+
+      <QRCodeModal
+        isOpen={!!selectedQRJob}
+        onClose={() => setSelectedQRJob(null)}
+        vagaTitle={selectedQRJob?.title || ""}
+        vagaArea={selectedQRJob?.area || ""}
+        vagaWorkplace={selectedQRJob?.workplace || ""}
+        vagaLink={shareUrl}
+      />
     </div>
   );
 }
