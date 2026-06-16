@@ -66,7 +66,7 @@ from app.adapters.repositories.job_repository import JobRepository
 from app.adapters.repositories.application_repository import ApplicationRepository
 from app.adapters.repositories.user_repository import UserRepository
 from app.services.storage import storage_service
-from app.usecases.job_usecases import CreateJobUseCase, ListOpenJobsUseCase, GetJobUseCase, UpdateJobUseCase, UpdateJobQuestionsUseCase, DeleteJobUseCase
+from app.usecases.job_usecases import CreateJobUseCase, ListOpenJobsUseCase, GetJobUseCase, UpdateJobUseCase, UpdateJobQuestionsUseCase, DeleteJobUseCase, HireCandidateUseCase
 from app.usecases.application_usecases import SubmitApplicationUseCase, ListApplicationsUseCase
 
 async def get_job_repository(db: Annotated[AsyncSession, Depends(get_db)]) -> JobRepository:
@@ -98,6 +98,12 @@ async def get_update_job_questions_usecase(
 
 async def get_delete_job_usecase(repo: Annotated[JobRepository, Depends(get_job_repository)]) -> DeleteJobUseCase:
     return DeleteJobUseCase(repo)
+
+async def get_hire_candidate_usecase(
+    job_repo: Annotated[JobRepository, Depends(get_job_repository)],
+    app_repo: Annotated[ApplicationRepository, Depends(get_application_repository)],
+) -> HireCandidateUseCase:
+    return HireCandidateUseCase(job_repo, app_repo, storage_service)
 
 async def get_submit_application_usecase(
     app_repo: Annotated[ApplicationRepository, Depends(get_application_repository)],

@@ -6,9 +6,10 @@ from botocore.client import Config
 from botocore.exceptions import ClientError
 
 from app.core.config import settings
+from app.domain.interfaces import IStorageGateway
 
 
-class StorageService:
+class StorageService(IStorageGateway):
     def __init__(self):
         endpoint_url = settings.minio_endpoint_url
         use_ssl = endpoint_url.startswith("https://")
@@ -62,6 +63,14 @@ class StorageService:
             Params={"Bucket": self.bucket, "Key": object_key},
             ExpiresIn=expires_in,
         )
+
+    def delete_file(self, object_key: str) -> None:
+        """Exclui um arquivo do MinIO."""
+        try:
+            self.s3.delete_object(Bucket=self.bucket, Key=object_key)
+        except ClientError:
+            # Silencia erros se o arquivo já não existir
+            pass
 
 
 storage_service = StorageService()

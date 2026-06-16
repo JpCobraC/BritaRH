@@ -7,6 +7,7 @@ import { useTheme } from "@/presentation/contexts/ThemeContext";
 
 const navItems = [
   { href: "/admin", label: "Painel", icon: "dashboard" },
+  { href: "/dashboard", label: "Candidaturas", icon: "group" },
   { href: "/admin/vagas", label: "Vagas", icon: "work" },
   { href: "/admin/vagas/nova", label: "Nova Vaga", icon: "add_circle" },
   { href: "/admin/configuracoes", label: "Configurações", icon: "settings" },

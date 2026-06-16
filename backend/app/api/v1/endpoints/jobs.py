@@ -1,7 +1,8 @@
 import uuid
 from typing import Annotated, List
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status, Header
+from fastapi import APIRouter, Depends, HTTPException, Query, status, Header, BackgroundTasks
+from pydantic import EmailStr
 
 from app.api import deps
 from app.schemas.job import JobCreate, JobRead, JobSimple, JobUpdate, JobQuestionsUpdate
@@ -15,7 +16,9 @@ from app.usecases.job_usecases import (
     UpdateJobUseCase,
     UpdateJobQuestionsUseCase,
     DeleteJobUseCase,
+    HireCandidateUseCase,
 )
+from app.services.email import send_confirmation_email
 from app.usecases.application_usecases import ListApplicationsUseCase
 
 router = APIRouter()
@@ -116,4 +119,30 @@ async def list_job_applications(
         return PaginatedResponse.create(items=applications, total=total, page=page, size=size)
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
+
+
+@router.post("/{job_id}/hire")
+async def hire_candidate(
+    job_id: uuid.UUID,
+    candidate_email: EmailStr,
+    usecase: Annotated[HireCandidateUseCase, Depends(deps.get_hire_candidate_usecase)],
+    current_user: Annotated[User, Depends(deps.get_current_recruiter)],
+    background_tasks: BackgroundTasks,
+):
+    """
+    Contrata um candidato para a vaga, marcando a vaga como fechada
+    e excluindo todas as outras candidaturas e currículos de forma definitiva.
+    """
+    try:
+        await usecase.execute(job_id, candidate_email)
+        # Envia e-mail de contratação para o candidato em background
+        background_tasks.add_task(
+            send_confirmation_email,
+            candidate_name=candidate_email.split("@")[0].title(),
+            candidate_email=candidate_email,
+            job_title=f"Vaga {job_id} (CONTRATADO(A))"
+        )
+        return {"status": "success", "message": "Candidato contratado com sucesso e vaga fechada."}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 

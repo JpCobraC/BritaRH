@@ -48,6 +48,10 @@ class IApplicationRepository(ABC):
     async def list_by_job_id(self, job_id: uuid.UUID, skip: int = 0, limit: int = 100) -> Tuple[int, List[Application]]:
         pass
 
+    @abstractmethod
+    async def delete_by_job_id(self, job_id: uuid.UUID) -> None:
+        pass
+
 
 class IUserRepository(ABC):
     @abstractmethod
@@ -80,4 +84,8 @@ class IStorageGateway(ABC):
 
     @abstractmethod
     def get_presigned_url(self, object_key: str, expires_in: int = 900) -> str:
+        pass
+
+    @abstractmethod
+    def delete_file(self, object_key: str) -> None:
         pass

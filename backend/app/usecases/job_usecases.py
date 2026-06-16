@@ -2,7 +2,7 @@ import uuid
 from typing import List, Optional, Tuple
 
 from app.domain.entities import Job as DomainJob, Question as DomainQuestion
-from app.domain.interfaces import IJobRepository, IApplicationRepository
+from app.domain.interfaces import IJobRepository, IApplicationRepository, IStorageGateway
 from app.schemas.job import JobCreate, JobUpdate, JobQuestionsUpdate
 
 
@@ -99,4 +99,44 @@ class DeleteJobUseCase:
         
         job.soft_delete()
         await self.job_repository.delete(job_id)
+        return True
+
+
+class HireCandidateUseCase:
+    def __init__(
+        self,
+        job_repository: IJobRepository,
+        application_repository: IApplicationRepository,
+        storage_gateway: IStorageGateway,
+    ):
+        self.job_repository = job_repository
+        self.application_repository = application_repository
+        self.storage_gateway = storage_gateway
+
+    async def execute(self, job_id: uuid.UUID, candidate_email: str) -> bool:
+        job = await self.job_repository.get_by_id(job_id)
+        if not job:
+            raise ValueError("Vaga não encontrada.")
+        if not job.is_open():
+            raise ValueError("Esta vaga já está fechada.")
+
+        # Fecha a vaga
+        job.close()
+
+        # Busca todas as candidaturas desta vaga (limite alto para garantir que todas sejam processadas)
+        _, apps = await self.application_repository.list_by_job_id(job_id=job_id, skip=0, limit=10000)
+
+        # Deleta os currículos do storage
+        for app in apps:
+            if app.resume_url:
+                try:
+                    self.storage_gateway.delete_file(app.resume_url)
+                except Exception:
+                    pass
+
+        # Deleta as candidaturas do banco de dados
+        await self.application_repository.delete_by_job_id(job_id)
+
+        # Atualiza a vaga para CLOSED
+        await self.job_repository.update(job)
         return True

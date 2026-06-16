@@ -38,6 +38,9 @@ export default function RecruiterDashboard() {
   const [applications, setApplications] = useState<Application[]>([]);
   const [loadingApps, setLoadingApps] = useState(false);
   const [showMobileDetail, setShowMobileDetail] = useState(false);
+  const [hireModal, setHireModal] = useState<Application | null>(null);
+  const [confirmStep, setConfirmStep] = useState<1 | 2>(1);
+  const [hiring, setHiring] = useState(false);
 
   const fetchJobs = useCallback(async () => {
     try {
@@ -56,6 +59,39 @@ export default function RecruiterDashboard() {
       setLoading(false);
     }
   }, [apiV1Url, session?.accessToken]);
+
+  const handleHireCandidate = async () => {
+    if (!selectedJob || !hireModal) return;
+    if (confirmStep === 1) {
+      setConfirmStep(2);
+      return;
+    }
+    
+    setHiring(true);
+    try {
+      const res = await fetch(`${apiV1Url}/jobs/${selectedJob.id}/hire?candidate_email=${encodeURIComponent(hireModal.candidate_email)}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+        },
+      });
+      if (res.ok) {
+        setHireModal(null);
+        setConfirmStep(1);
+        setApplications([]);
+        setSelectedJob(prev => prev ? { ...prev, status: "closed", applicant_count: 0 } : null);
+        await fetchJobs();
+      } else {
+        const errorData = await res.json();
+        alert(errorData.detail || "Erro ao contratar candidato.");
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Erro de conexão ao tentar contratar.");
+    } finally {
+      setHiring(false);
+    }
+  };
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -281,6 +317,19 @@ export default function RecruiterDashboard() {
                             Contatar
                           </a>
                         </div>
+
+                        {selectedJob?.status === "open" && (
+                          <button
+                            onClick={() => {
+                              setHireModal(app);
+                              setConfirmStep(1);
+                            }}
+                            className="w-full mt-3 flex items-center justify-center gap-2 py-2 bg-primary hover:bg-primary/95 text-white font-bold rounded-xl text-[10px] transition-all shadow-sm"
+                          >
+                            <span className="material-symbols-outlined text-sm">check_circle</span>
+                            Contratar Candidato
+                          </button>
+                        )}
                       </div>
                     ))
                   )}
@@ -291,6 +340,90 @@ export default function RecruiterDashboard() {
         </div>
 
       </div>
+
+      {/* Modal de Contratação */}
+      {hireModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <div className="bg-white dark:bg-[#1a251b] rounded-3xl border border-slate-100 dark:border-[#253326] shadow-2xl w-full max-w-md p-6 sm:p-8 space-y-6">
+            <div className="flex items-start justify-between">
+              <div>
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+                  {confirmStep === 1 ? "Confirmar Contratação" : "⚠️ ATENÇÃO: Confirmação Final"}
+                </h2>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                  {confirmStep === 1 
+                    ? "Você está prestes a contratar este candidato." 
+                    : "Esta ação é IRREVERSÍVEL!"}
+                </p>
+              </div>
+              <button
+                onClick={() => setHireModal(null)}
+                className="size-8 rounded-lg hover:bg-slate-100 dark:hover:bg-[#202c21] flex items-center justify-center transition-colors"
+              >
+                <span className="material-symbols-outlined text-slate-500 dark:text-slate-400">close</span>
+              </button>
+            </div>
+
+            <div className="bg-slate-50 dark:bg-[#152016]/40 border border-slate-100 dark:border-[#253326] rounded-xl p-4 flex items-center gap-3">
+              <div className="size-12 rounded-full bg-primary/10 dark:bg-green-500/20 flex items-center justify-center shrink-0">
+                <span className="text-primary dark:text-green-400 font-bold text-lg">
+                  {hireModal.profile_data?.full_name?.charAt(0) || "C"}
+                </span>
+              </div>
+              <div>
+                <p className="font-bold text-slate-900 dark:text-white">{hireModal.profile_data?.full_name}</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">{hireModal.candidate_email}</p>
+                <p className="text-xs text-slate-450 dark:text-slate-550">Pontuação do Teste: {hireModal.score}%</p>
+              </div>
+            </div>
+
+            <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/30 rounded-xl p-4">
+              {confirmStep === 1 ? (
+                <p className="text-sm text-amber-850 dark:text-amber-400 font-medium leading-relaxed">
+                  Ao contratar este candidato, a vaga será **fechada automaticamente** e novos candidatos não poderão se inscrever.
+                </p>
+              ) : (
+                <p className="text-sm text-red-800 dark:text-red-400 font-semibold leading-relaxed">
+                  Para garantir a privacidade e segurança, **todos os dados e currículos em PDF de outros candidatos** desta vaga serão excluídos permanentemente!
+                </p>
+              )}
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button
+                disabled={hiring}
+                onClick={() => setHireModal(null)}
+                className="flex-1 px-4 py-3 border border-slate-200 dark:border-[#253326] text-slate-600 dark:text-slate-400 font-semibold rounded-xl hover:bg-slate-50 dark:hover:bg-[#1a251b] transition-all text-sm disabled:opacity-50"
+              >
+                Cancelar
+              </button>
+              <button
+                disabled={hiring}
+                onClick={handleHireCandidate}
+                className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 text-white font-semibold rounded-xl transition-all shadow-md text-sm disabled:opacity-50 ${
+                  confirmStep === 1 
+                    ? "bg-primary hover:bg-primary/90 shadow-primary/20" 
+                    : "bg-red-600 hover:bg-red-700 shadow-red-600/20"
+                }`}
+              >
+                {hiring ? (
+                  <div className="w-5 h-5 rounded-full border-2 border-white border-t-transparent animate-spin"></div>
+                ) : confirmStep === 1 ? (
+                  <>
+                    <span className="material-symbols-outlined text-base">check_circle</span>
+                    Contratar
+                  </>
+                ) : (
+                  <>
+                    <span className="material-symbols-outlined text-base">warning</span>
+                    Confirmar Contratação
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import uuid
 from typing import Optional, List, Tuple
 
-from sqlalchemy import select, func
+from sqlalchemy import select, func, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.entities import Application as DomainApplication
@@ -80,4 +80,9 @@ class ApplicationRepository(IApplicationRepository):
         result = await self.session.execute(stmt)
         models = result.scalars().all()
         return total, [self._to_domain(m) for m in models]
+
+    async def delete_by_job_id(self, job_id: uuid.UUID) -> None:
+        stmt = delete(ModelApplication).where(ModelApplication.job_id == job_id)
+        await self.session.execute(stmt)
+        await self.session.commit()
 
