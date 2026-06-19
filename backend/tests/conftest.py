@@ -16,8 +16,6 @@ import os
 from urllib.parse import urlparse, urlunparse
 from sqlalchemy import text
 
-# ─── Configuração de Banco de Testes ──────────────────────────────────────────
-# Garantimos que os testes usem um banco isolado e seguro para não apagar dados reais.
 
 def get_test_database_url() -> str:
     """Retorna a URL do banco de dados de teste, isolando do banco de desenvolvimento/produção."""
