@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BritaRH — Apresentação META 2026</title>
+  
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              DEFAULT: '#16a34a', // green-600
+              hover: '#15803d', // green-700
+              light: '#bbf7d0', // green-200
+            },
+            background: {
+              light: '#f8fafc', // slate-50
+              dark: '#070a08', // customized dark green-black
+              cardDark: '#121814',
+            }
+          },
+          fontFamily: {
+            display: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts & Material Symbols -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+
+  <style>
+    /* Transições suaves globais */
+    * {
+      transition: background-color 0.2s ease, border-color 0.2s ease, text-decoration-color 0.2s ease;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      height: 4px;
+      width: 4px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #16a34a;
+      border-radius: 10px;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.4s ease forwards;
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-800 dark:text-slate-200 antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-white/80 dark:bg-background-dark/80 border-b border-slate-200/50 dark:border-slate-800/50 px-6 py-4 lg:px-20 flex items-center justify-between transition-all duration-300">
+    <div class="flex items-center gap-3 text-primary">
+      <span class="material-symbols-outlined text-3xl">eco</span>
+      <h1 class="text-slate-900 dark:text-white text-xl font-black leading-tight tracking-tight">
+        Brita<span class="text-primary">RH</span>
+      </h1>
+    </div>
+    
+    <div class="flex items-center gap-3">
+      <!-- Dark/Light Theme Button -->
+      <button
+        id="theme-toggle"
+        type="button"
+        class="w-10 h-10 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-center bg-white dark:bg-background-cardDark hover:bg-slate-50 dark:hover:bg-slate-900 text-slate-600 dark:text-slate-300 shadow-sm transition-all"
+        title="Alternar Tema"
+      >
+        <span id="theme-icon" class="material-symbols-outlined text-[20px]">dark_mode</span>
+      </button>
+
+      <a 
+        href="https://github.com/JpCobraC/BritaRH" 
+        target="_blank" 
+        class="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 border border-slate-200 dark:border-slate-800 rounded-xl text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
+      >
+        <span>GitHub</span>
+        <span class="material-symbols-outlined text-sm">open_in_new</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-6xl w-full mx-auto px-6 py-10 lg:py-16">
+    
+    <!-- Hero Banner -->
+    <div class="text-center mb-14 animate-fade-in">
+      <div class="inline-flex items-center gap-2 bg-green-500/10 text-primary dark:text-green-400 text-xs font-semibold px-4 py-1.5 rounded-full mb-4">
+        <span class="material-symbols-outlined text-sm">school</span>
+        35ª META · CEFET-MG · 2026
+      </div>
+      <h2 class="text-3xl lg:text-5xl font-black tracking-tight text-slate-900 dark:text-white mb-4">
+        Apresentação do Projeto BritaRH
+      </h2>
+      <p class="text-md lg:text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
+        Sistema Web de Recrutamento e Seleção de candidatos com testes de conhecimento integrados e exclusão permanente de dados pessoais de acordo com a LGPD.
+      </p>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="flex border-b border-slate-200 dark:border-slate-800 mb-10 overflow-x-auto pb-px custom-scroll">
+      <div class="flex gap-2 min-w-max">
+        <button
+          onclick="switchTab('projeto')"
+          id="tab-btn-projeto"
+          class="tab-btn flex items-center gap-2 px-6 py-3 border-b-2 font-semibold text-sm transition-all border-primary text-primary dark:text-green-400 dark:border-green-400"
+        >
+          <span class="material-symbols-outlined text-lg">info</span>
+          O Projeto (META 2026)
+        </button>
+        <button
+          onclick="switchTab('fluxos')"
+          id="tab-btn-fluxos"
+          class="tab-btn flex items-center gap-2 px-6 py-3 border-b-2 font-semibold text-sm transition-all border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
+        >
+          <span class="material-symbols-outlined text-lg">swap_calls</span>
+          Fluxos & Funcionalidades
+        </button>
+        <button
+          onclick="switchTab('arquitetura')"
+          id="tab-btn-arquitetura"
+          class="tab-btn flex items-center gap-2 px-6 py-3 border-b-2 font-semibold text-sm transition-all border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
+        >
+          <span class="material-symbols-outlined text-lg">schema</span>
+          Arquitetura & Engenharia
+        </button>
+        <button
+          onclick="switchTab('deploy')"
+          id="tab-btn-deploy"
+          class="tab-btn flex items-center gap-2 px-6 py-3 border-b-2 font-semibold text-sm transition-all border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
+        >
+          <span class="material-symbols-outlined text-lg">cloud_sync</span>
+          Deploy & Domínio Online
+        </button>
+      </div>
+    </div>
+
+    <!-- TAB CONTENT: O Projeto -->
+    <div id="tab-content-projeto" class="tab-content space-y-12 animate-fade-in">
+      
+      <!-- Key metadata info grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="p-6 bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-2xl flex items-start gap-4 shadow-sm hover:shadow-md transition-all duration-300">
+          <span class="material-symbols-outlined text-primary text-3xl">category</span>
+          <div>
+            <h3 class="font-bold text-slate-900 dark:text-white mb-1">Categoria META</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+              Ciências Exatas / Engenharias e Ciência Aplicada / Inovação Tecnológica.
+            </p>
+          </div>
+        </div>
+        <div class="p-6 bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-2xl flex items-start gap-4 shadow-sm hover:shadow-md transition-all duration-300">
+          <span class="material-symbols-outlined text-primary text-3xl">groups</span>
+          <div>
+            <h3 class="font-bold text-slate-900 dark:text-white mb-1">Público-Alvo</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+              Candidatos e equipe de Recursos Humanos (RH) da empresa Britasul.
+            </p>
+          </div>
+        </div>
+        <div class="p-6 bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-2xl flex items-start gap-4 shadow-sm hover:shadow-md transition-all duration-300">
+          <span class="material-symbols-outlined text-primary text-3xl">gavel</span>
+          <div>
+            <h3 class="font-bold text-slate-900 dark:text-white mb-1">LGPD & Privacidade</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+              Expurgo total seguro de dados de candidaturas ao encerrar o edital da vaga.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Problem & Solution -->
+      <div class="bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-3xl p-8 lg:p-10 shadow-sm">
+        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4">Problema & Solução Tecnológica</h3>
+        <div class="text-slate-650 dark:text-slate-350 text-sm leading-relaxed space-y-4">
+          <p>
+            O recrutamento industrial rotineiramente ocorre por processos físicos ou descentralizados (triagem manual de currículos em papel, aplicação desorganizada de testes técnicos presenciais e armazenamento indevido de dados pessoais), o que eleva a lentidão, abre margem para erros e viola a conformidade com a LGPD.
+          </p>
+          <p>
+            O **BritaRH** é uma aplicação web unificada que automatiza o fluxo de candidatura a vagas, composto por três etapas guiadas: preenchimento de perfil, realização de teste de conhecimento de múltipla escolha e envio de currículo. O sistema avalia a pontuação dos candidatos, ranqueia-os no painel da empresa de forma automática e realiza a exclusão definitiva de seus dados confidenciais assim que a contratação é homologada.
+          </p>
+        </div>
+      </div>
+
+      <!-- Diário de Bordo Timeline -->
+      <div class="space-y-8">
+        <h3 class="text-xl font-bold text-slate-900 dark:text-white text-center">Diário de Bordo — Evolução do Projeto</h3>
+        <div class="relative border-l border-slate-200 dark:border-slate-800 ml-4 md:ml-32 space-y-8">
+          
+          <div class="relative pl-8 md:pl-10">
+            <div class="absolute -left-[130px] top-1 hidden md:block text-right w-24 text-xs font-semibold text-slate-400">Março 2026</div>
+            <span class="absolute -left-4 top-0 w-8 h-8 rounded-full bg-white dark:bg-background-cardDark border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-400">
+              <span class="material-symbols-outlined text-[16px]">lightbulb</span>
+            </span>
+            <div class="bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 p-5 rounded-2xl shadow-sm">
+              <span class="inline-block md:hidden text-[10px] font-bold text-primary mb-1">Março 2026</span>
+              <h4 class="font-bold text-sm text-slate-900 dark:text-white">Concepção & Requisitos</h4>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Definição dos requisitos, levantamento das dores no R&S da Britasul e enquadramento nos critérios da META CEFET-MG.</p>
+            </div>
+          </div>
+
+          <div class="relative pl-8 md:pl-10">
+            <div class="absolute -left-[130px] top-1 hidden md:block text-right w-24 text-xs font-semibold text-slate-400">Abril 2026</div>
+            <span class="absolute -left-4 top-0 w-8 h-8 rounded-full bg-white dark:bg-background-cardDark border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-400">
+              <span class="material-symbols-outlined text-[16px]">architecture</span>
+            </span>
+            <div class="bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 p-5 rounded-2xl shadow-sm">
+              <span class="inline-block md:hidden text-[10px] font-bold text-primary mb-1">Abril 2026</span>
+              <h4 class="font-bold text-sm text-slate-900 dark:text-white">Arquitetura e DB</h4>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Criação do modelo de dados PostgreSQL. Estruturação do backend com Clean Architecture modular e isolamento de dependências.</p>
+            </div>
+          </div>
+
+          <div class="relative pl-8 md:pl-10">
+            <div class="absolute -left-[130px] top-1 hidden md:block text-right w-24 text-xs font-semibold text-slate-400">Maio 2026</div>
+            <span class="absolute -left-4 top-0 w-8 h-8 rounded-full bg-white dark:bg-background-cardDark border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-400">
+              <span class="material-symbols-outlined text-[16px]">security</span>
+            </span>
+            <div class="bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 p-5 rounded-2xl shadow-sm">
+              <span class="inline-block md:hidden text-[10px] font-bold text-primary mb-1">Maio 2026</span>
+              <h4 class="font-bold text-sm text-slate-900 dark:text-white">Segurança & Onboarding</h4>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Configuração de login via Google OAuth (NextAuth.js v5) e controle de acessos (candidato vs recrutador) com JWT validado no backend.</p>
+            </div>
+          </div>
+
+          <div class="relative pl-8 md:pl-10">
+            <div class="absolute -left-[130px] top-1 hidden md:block text-right w-24 text-xs font-semibold text-slate-400">Junho 2026</div>
+            <span class="absolute -left-4 top-0 w-8 h-8 rounded-full bg-white dark:bg-background-cardDark border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-400">
+              <span class="material-symbols-outlined text-[16px]">fact_check</span>
+            </span>
+            <div class="bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 p-5 rounded-2xl shadow-sm">
+              <span class="inline-block md:hidden text-[10px] font-bold text-primary mb-1">Junho 2026</span>
+              <h4 class="font-bold text-sm text-slate-900 dark:text-white">Wizard de Fluxo e Testes</h4>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Implementação do Wizard passo a passo, integração de upload de PDF para o bucket MinIO/S3 e cobertura de testes acima de 85%.</p>
+            </div>
+          </div>
+
+          <div class="relative pl-8 md:pl-10">
+            <div class="absolute -left-[130px] top-1 hidden md:block text-right w-24 text-xs font-semibold text-slate-400">Julho 2026</div>
+            <span class="absolute -left-4 top-0 w-8 h-8 rounded-full bg-primary text-white border border-primary flex items-center justify-center animate-pulse">
+              <span class="material-symbols-outlined text-[16px]">rocket_launch</span>
+            </span>
+            <div class="bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 p-5 rounded-2xl shadow-sm">
+              <span class="inline-block md:hidden text-[10px] font-bold text-primary mb-1">Julho 2026</span>
+              <h4 class="font-bold text-sm text-slate-900 dark:text-white">Homologação e Domínio Online</h4>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Lançamento oficial da infraestrutura em produção com domínio e documentação estática interativa para avaliação.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB CONTENT: Fluxos -->
+    <div id="tab-content-fluxos" class="tab-content hidden space-y-12 animate-fade-in">
+      
+      <!-- Candidate Flow -->
+      <div class="space-y-6">
+        <div class="flex items-center gap-3">
+          <span class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+            <span class="material-symbols-outlined">person</span>
+          </span>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white">Fluxo do Candidato</h3>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <div class="p-5 bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-2xl shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-[10px] font-black text-slate-400">PASSO 01</span>
+                <span class="material-symbols-outlined text-primary text-lg">login</span>
+              </div>
+              <h4 class="font-bold text-sm text-slate-900 dark:text-white">Autenticação Google</h4>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Login OAuth integrado e onboarding de dados obrigatórios no primeiro acesso.</p>
+            </div>
+          </div>
+
+          <div class="p-5 bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-2xl shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-[10px] font-black text-slate-400">PASSO 02</span>
+                <span class="material-symbols-outlined text-primary text-lg">search</span>
+              </div>
+              <h4 class="font-bold text-sm text-slate-900 dark:text-white">Pesquisa de Vagas</h4>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Exploração dinâmica das vagas abertas com filtros de área e localidade.</p>
+            </div>
+          </div>
+
+          <div class="p-5 bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-2xl shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-[10px] font-black text-slate-400">PASSO 03</span>
+                <span class="material-symbols-outlined text-primary text-lg">assignment_ind</span>
+              </div>
+              <h4 class="font-bold text-sm text-slate-900 dark:text-white">Dados do Candidato</h4>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Formulário inicial para preenchimento de contato e histórico profissional.</p>
+            </div>
+          </div>
+
+          <div class="p-5 bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-2xl shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-[10px] font-black text-slate-400">PASSO 04</span>
+                <span class="material-symbols-outlined text-primary text-lg">quiz</span>
+              </div>
+              <h4 class="font-bold text-sm text-slate-900 dark:text-white">Questionário Técnico</h4>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Execução do teste de conhecimento elaborado pelo RH específico para o cargo.</p>
+            </div>
+          </div>
+
+          <div class="p-5 bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-2xl shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-[10px] font-black text-slate-400">PASSO 05</span>
+                <span class="material-symbols-outlined text-primary text-lg">upload_file</span>
+              </div>
+              <h4 class="font-bold text-sm text-slate-900 dark:text-white">Upload de Currículo</h4>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Envio do currículo em PDF direto para o storage seguro e conclusão.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recruiter Flow -->
+      <div class="space-y-6">
+        <div class="flex items-center gap-3">
+          <span class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+            <span class="material-symbols-outlined">supervisor_account</span>
+          </span>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white">Fluxo do Recrutador</h3>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="p-5 bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-2xl shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-[10px] font-black text-slate-400">PASSO 01</span>
+                <span class="material-symbols-outlined text-primary text-lg">admin_panel_settings</span>
+              </div>
+              <h4 class="font-bold text-sm text-slate-900 dark:text-white">Acesso por Whitelist</h4>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Restrição de segurança no painel por lista de e-mails autorizados.</p>
+            </div>
+          </div>
+
+          <div class="p-5 bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-2xl shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-[10px] font-black text-slate-400">PASSO 02</span>
+                <span class="material-symbols-outlined text-primary text-lg">post_add</span>
+              </div>
+              <h4 class="font-bold text-sm text-slate-900 dark:text-white">Criação de Vaga & Teste</h4>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">RH cria a vaga especificando detalhes e as questões do questionário técnico.</p>
+            </div>
+          </div>
+
+          <div class="p-5 bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-2xl shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-[10px] font-black text-slate-400">PASSO 03</span>
+                <span class="material-symbols-outlined text-primary text-lg">analytics</span>
+              </div>
+              <h4 class="font-bold text-sm text-slate-900 dark:text-white">Classificação Ordenada</h4>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Candidatos listados automaticamente pela maior pontuação obtida.</p>
+            </div>
+          </div>
+
+          <div class="p-5 bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-2xl shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-[10px] font-black text-slate-400">PASSO 04</span>
+                <span class="material-symbols-outlined text-primary text-lg">delete_sweep</span>
+              </div>
+              <h4 class="font-bold text-sm text-slate-900 dark:text-white">Homologação & Purga</h4>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Contratação realizada resulta no expurgo completo dos dados pessoais do banco.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+
+    <!-- TAB CONTENT: Arquitetura -->
+    <div id="tab-content-arquitetura" class="tab-content hidden space-y-12 animate-fade-in">
+      
+      <!-- Tech Grid -->
+      <div>
+        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-6">Stack de Desenvolvimento e Produção</h3>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+          <div class="p-4 bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-2xl text-center shadow-sm">
+            <span class="material-symbols-outlined text-primary text-3xl mb-1.5">widgets</span>
+            <h4 class="font-bold text-xs text-slate-950 dark:text-white">Next.js 14</h4>
+            <p class="text-[10px] text-slate-500 mt-0.5">App Router & RSC</p>
+          </div>
+          <div class="p-4 bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-2xl text-center shadow-sm">
+            <span class="material-symbols-outlined text-primary text-3xl mb-1.5">api</span>
+            <h4 class="font-bold text-xs text-slate-950 dark:text-white">FastAPI</h4>
+            <p class="text-[10px] text-slate-500 mt-0.5">REST Async Python</p>
+          </div>
+          <div class="p-4 bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-2xl text-center shadow-sm">
+            <span class="material-symbols-outlined text-primary text-3xl mb-1.5">database</span>
+            <h4 class="font-bold text-xs text-slate-950 dark:text-white">PostgreSQL</h4>
+            <p class="text-[10px] text-slate-500 mt-0.5">Persistência Relacional</p>
+          </div>
+          <div class="p-4 bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-2xl text-center shadow-sm">
+            <span class="material-symbols-outlined text-primary text-3xl mb-1.5">folder_shared</span>
+            <h4 class="font-bold text-xs text-slate-950 dark:text-white">MinIO / S3</h4>
+            <p class="text-[10px] text-slate-500 mt-0.5">Armazenamento de PDF</p>
+          </div>
+          <div class="p-4 bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-2xl text-center shadow-sm">
+            <span class="material-symbols-outlined text-primary text-3xl mb-1.5">vpn_key</span>
+            <h4 class="font-bold text-xs text-slate-950 dark:text-white">NextAuth v5</h4>
+            <p class="text-[10px] text-slate-500 mt-0.5">Autenticação OAuth</p>
+          </div>
+          <div class="p-4 bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-2xl text-center shadow-sm">
+            <span class="material-symbols-outlined text-primary text-3xl mb-1.5">settings_backup_restore</span>
+            <h4 class="font-bold text-xs text-slate-950 dark:text-white">Alembic</h4>
+            <p class="text-[10px] text-slate-500 mt-0.5">Controle de Versão DB</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clean Architecture -->
+      <div class="bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-3xl p-8 shadow-sm">
+        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4">Clean Architecture no Backend</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-6">
+          Divisão lógica das camadas do backend para isolamento total da regra de negócio de integrações de frameworks e banco de dados:
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
+          <div class="p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl">
+            <h4 class="font-bold text-primary mb-1.5">Camada 1: Domain</h4>
+            <p class="text-slate-500 dark:text-slate-400">Entidades puras representadas pelos modelos relacionais de negócio.</p>
+          </div>
+          <div class="p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl">
+            <h4 class="font-bold text-primary mb-1.5">Camada 2: Usecases</h4>
+            <p class="text-slate-500 dark:text-slate-400">Serviços executivos contendo a inteligência de negócios (cálculo de notas, purge).</p>
+          </div>
+          <div class="p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl">
+            <h4 class="font-bold text-primary mb-1.5">Camada 3: Adapters</h4>
+            <p class="text-slate-500 dark:text-slate-400">Esquemas de validação Pydantic e roteadores da API REST HTTP.</p>
+          </div>
+          <div class="p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl">
+            <h4 class="font-bold text-primary mb-1.5">Camada 4: Infra</h4>
+            <p class="text-slate-500 dark:text-slate-400">Conexões assíncronas do banco SQLAlchemy, cliente MinIO S3 e scripts de migração Alembic.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Database Schemas -->
+      <div class="bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-3xl p-8 shadow-sm">
+        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-6">Modelagem de Tabelas</h3>
+        <div class="overflow-x-auto custom-scroll">
+          <table class="w-full text-xs text-left border-collapse min-w-[600px]">
+            <thead>
+              <tr class="border-b border-slate-200 dark:border-slate-800 text-slate-400 uppercase tracking-wider font-semibold">
+                <th class="py-2.5 px-4">Tabela</th>
+                <th class="py-2.5 px-4">Campos Principais</th>
+                <th class="py-2.5 px-4">Relacionamentos</th>
+                <th class="py-2.5 px-4">Propósito</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-900 text-slate-650 dark:text-slate-350">
+              <tr>
+                <td className="py-3 px-4 font-bold text-slate-900 dark:text-white">users</td>
+                <td className="py-3 px-4 font-mono text-[10px]">id, name, email, cpf, birth_date, role</td>
+                <td className="py-3 px-4">1:N com applications</td>
+                <td className="py-3 px-4">Armazena credenciais e dados cadastrais.</td>
+              </tr>
+              <tr>
+                <td className="py-3 px-4 font-bold text-slate-900 dark:text-white">jobs</td>
+                <td className="py-3 px-4 font-mono text-[10px]">id, title, area, description, status, workplace, schedule</td>
+                <td className="py-3 px-4">1:N com questions/applications</td>
+                <td className="py-3 px-4">Armazena as vagas criadas pelo RH.</td>
+              </tr>
+              <tr>
+                <td className="py-3 px-4 font-bold text-slate-900 dark:text-white">questions</td>
+                <td className="py-3 px-4 font-mono text-[10px]">id, job_id, text, options (JSON), correct_index</td>
+                <td className="py-3 px-4">N:1 com jobs</td>
+                <td className="py-3 px-4">Questões dos testes vinculados a cada vaga.</td>
+              </tr>
+              <tr>
+                <td className="py-3 px-4 font-bold text-slate-900 dark:text-white">applications</td>
+                <td className="py-3 px-4 font-mono text-[10px]">id, job_id, user_id, score, resume_url, created_at</td>
+                <td className="py-3 px-4">N:1 com jobs e users</td>
+                <td className="py-3 px-4">Submissão dos dados e notas de candidatos.</td>
+              </tr>
+              <tr>
+                <td className="py-3 px-4 font-bold text-slate-900 dark:text-white">recruiter_whitelist</td>
+                <td className="py-3 px-4 font-mono text-[10px]">id, email</td>
+                <td className="py-3 px-4">Nenhum</td>
+                <td className="py-3 px-4">E-mails de administradores autorizados.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TAB CONTENT: Deploy -->
+    <div id="tab-content-deploy" class="tab-content hidden space-y-12 animate-fade-in">
+      
+      <!-- Production Domains -->
+      <div class="p-8 bg-gradient-to-br from-green-55/10 to-emerald-50/5 dark:from-[#0d1710] dark:to-background-dark border border-green-500/10 rounded-3xl text-center">
+        <span class="material-symbols-outlined text-primary text-4xl mb-2">language</span>
+        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Domínios Públicos do Projeto</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 max-w-lg mx-auto mb-6">
+          A infraestrutura está ativa e publicada na nuvem de forma gratuita para testes práticos da banca avaliadora da META.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a 
+            href="https://britarh.vercel.app" 
+            target="_blank" 
+            class="px-6 py-3 bg-primary hover:bg-primary-hover text-white font-bold rounded-xl text-xs shadow-md shadow-green-600/10 inline-flex items-center gap-2 justify-center"
+          >
+            <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+            Acessar Frontend (Vercel)
+          </a>
+          <a 
+            href="https://britarh-backend-production.up.railway.app/docs" 
+            target="_blank" 
+            class="px-6 py-3 bg-white dark:bg-background-cardDark text-slate-700 dark:text-slate-300 font-bold rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900 text-xs inline-flex items-center gap-2 justify-center"
+          >
+            <span class="material-symbols-outlined text-[16px]">api</span>
+            Documentação da API (Swagger)
+          </a>
+        </div>
+      </div>
+
+      <!-- Deploy Variables and Settings -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <div class="bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-3xl p-8">
+          <h4 class="font-bold text-slate-900 dark:text-white text-base mb-4 flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary">check_circle</span>
+            Google Cloud Console OAuth
+          </h4>
+          <p class="text-xs text-slate-500 dark:text-slate-450 leading-relaxed mb-6">
+            Configuração dos endpoints autorizados na API do Google Cloud para correto funcionamento da autenticação OAuth 2.0:
+          </p>
+          <div class="space-y-4">
+            <div class="p-3 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">
+              <div class="text-[9px] font-black text-slate-400 mb-1">ORIGEM JAVASCRIPT AUTORIZADA</div>
+              <code class="text-xs text-slate-800 dark:text-slate-200 select-all font-mono break-all">https://britarh.vercel.app</code>
+            </div>
+            <div class="p-3 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">
+              <div class="text-[9px] font-black text-slate-400 mb-1">URI DE REDIRECIONAMENTO AUTORIZADO</div>
+              <code class="text-xs text-slate-800 dark:text-slate-200 select-all font-mono break-all">https://britarh.vercel.app/api/auth/callback/google</code>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-3xl p-8 flex flex-col justify-between">
+          <div>
+            <h4 class="font-bold text-slate-900 dark:text-white text-base mb-4 flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary">info</span>
+              Principais Variáveis de Ambiente
+            </h4>
+            <ul class="space-y-3.5 text-xs text-slate-650 dark:text-slate-450">
+              <li class="flex justify-between border-b border-slate-100 dark:border-slate-900 pb-2">
+                <span class="font-semibold font-mono text-[10px]">NEXTAUTH_URL</span>
+                <span class="text-slate-500 text-[10px] font-mono">https://britarh.vercel.app</span>
+              </li>
+              <li class="flex justify-between border-b border-slate-100 dark:border-slate-900 pb-2">
+                <span class="font-semibold font-mono text-[10px]">NEXT_PUBLIC_API_URL</span>
+                <span class="text-slate-500 text-[10px] font-mono">https://britarh-backend-production.up.railway...</span>
+              </li>
+              <li class="flex justify-between border-b border-slate-100 dark:border-slate-900 pb-2">
+                <span class="font-semibold font-mono text-[10px]">DATABASE_URL</span>
+                <span class="text-slate-500 text-[10px] font-mono">postgresql+asyncpg://... (Produção)</span>
+              </li>
+              <li class="flex justify-between pb-2">
+                <span class="font-semibold font-mono text-[10px]">MINIO_BUCKET_CURRICULOS</span>
+                <span class="text-slate-500 text-[10px] font-mono">britarh-curriculos</span>
+              </li>
+            </ul>
+          </div>
+          <div class="pt-4 border-t border-slate-150 dark:border-slate-800 mt-4">
+            <p class="text-[10px] text-slate-400 leading-normal flex items-start gap-1">
+              <span class="material-symbols-outlined text-xs mt-0.5">help_outline</span>
+              Você pode consultar o guia técnico completo de deploy no arquivo `infra/DEPLOY.md` no código fonte do projeto.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="py-6 text-center text-slate-450 dark:text-slate-500 text-xs border-t border-slate-200/50 dark:border-slate-800/50 transition-colors duration-200">
+    <div>
+      © 2026 BritaRH. Desenvolvido para a 35ª META do CEFET-MG. Todos os direitos reservados.
+    </div>
+  </footer>
+
+  <!-- Script for Tab Switching & Theme Toggle -->
+  <script>
+    // Tab switching logic
+    function switchTab(tabId) {
+      // Hide all contents
+      const contents = document.querySelectorAll('.tab-content');
+      contents.forEach(content => content.classList.add('hidden'));
+
+      // Remove active classes from buttons
+      const buttons = document.querySelectorAll('.tab-btn');
+      buttons.forEach(btn => {
+        btn.classList.remove('border-primary', 'text-primary', 'dark:text-green-400', 'dark:border-green-400');
+        btn.classList.add('border-transparent', 'text-slate-500');
+      });
+
+      // Show current content
+      const activeContent = document.getElementById(`tab-content-${tabId}`);
+      if (activeContent) {
+        activeContent.classList.remove('hidden');
+      }
+
+      // Add active classes to selected button
+      const activeBtn = document.getElementById(`tab-btn-${tabId}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('border-transparent', 'text-slate-500');
+        activeBtn.classList.add('border-primary', 'text-primary', 'dark:text-green-400', 'dark:border-green-400');
+      }
+    }
+
+    // Theme toggle logic
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+
+    // On page load, set the initial theme
+    if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+      themeIcon.textContent = 'light_mode';
+    } else {
+      document.documentElement.classList.remove('dark');
+      themeIcon.textContent = 'dark_mode';
+    }
+
+    themeToggleBtn.addEventListener('click', () => {
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+        themeIcon.textContent = 'dark_mode';
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+        themeIcon.textContent = 'light_mode';
+      }
+    });
+  </script>
+</body>
+</html>
