@@ -1,12 +1,12 @@
-# Guia de Implantação em Produção e Domínio Online — BritaRH
+# Guia de Implantação e Infraestrutura Cloud — BritaRH
 
-Este guia detalha o processo de deploy em produção do monorepo **BritaRH** e a configuração de seu domínio online para que esteja acessível a candidatos e recrutadores.
+Este documento detalha a arquitetura de implantação em produção e os requisitos de infraestrutura em nuvem para o monorepo **BritaRH**. O sistema é projetado para rodar de forma distribuída e resiliente, utilizando serviços modernos de nuvem para otimização de custo e performance.
 
 ---
 
-## 🛠️ Visão Geral da Arquitetura de Produção
+## 🛠️ Arquitetura de Implantação em Produção
 
-Para um ambiente de produção robusto e econômico, recomendamos a seguinte divisão de serviços:
+O BritaRH adota uma arquitetura desacoplada onde o frontend, o backend, o banco de dados e o armazenamento de objetos residem em provedores distintos, comunicando-se por meio de conexões encriptadas (SSL/HTTPS):
 
 ```
                [ Navegador do Usuário ]
@@ -14,114 +14,78 @@ Para um ambiente de produção robusto e econômico, recomendamos a seguinte div
          ┌────────────────┴────────────────┐
          ▼                                 ▼
 ┌──────────────────┐             ┌──────────────────┐
-│   Vercel (SSL)   │             │  Railway/Render  │
+│   Vercel (SSL)   │             │  Render / Railway│
 │  (Next.js Front) │             │  (FastAPI Back)  │
 └──────────────────┘             └────────┬─────────┘
                                           │
                          ┌────────────────┴────────────────┐
                          ▼                                 ▼
                ┌──────────────────┐              ┌──────────────────┐
-               │    Supa/Neon     │              │   AWS S3/B2/S3   │
-               │ (PostgreSQL DB)  │              │ (PDF Storage)    │
+               │  Neon PostgreSQL │              │   Cloudflare R2  │
+               │ (Banco de Dados) │              │ (Armazenamento)  │
                └──────────────────┘              └──────────────────┘
 ```
 
-- **Frontend (Next.js):** Hospedado na **Vercel** (deploy automático via GitHub, SSL nativo, alta performance global).
-- **Backend (FastAPI):** Hospedado no **Railway** ou **Render** (suporta containers Docker de forma contínua).
-- **Banco de Dados:** PostgreSQL hospedado no Railway (Add-on) ou **Neon/Supabase** (tier gratuito robusto).
-- **Armazenamento de Currículos:** Bucket compatível com S3 na **AWS S3**, **Backblaze B2** ou **Cloudflare R2** (MinIO é usado localmente, mas em produção prefere-se S3 gerenciado).
+---
+
+## ☁️ Serviços e Provedores de Cloud
+
+### 1. Frontend (Next.js) — Hospedagem na Vercel
+- O frontend Next.js 14 (App Router) é hospedado na **Vercel**, aproveitando a renderização híbrida (RSC) e a distribuição global de conteúdo (Edge Network).
+- O deploy é acionado automaticamente a cada commit nas branches de desenvolvimento e produção com suporte nativo a SSL automático.
+- As rotas públicas (`/vagas`) e fluxos protegidos do recrutador (`/admin`, `/dashboard`) operam integrados a este domínio.
+
+### 2. Backend (FastAPI) — Hospedagem no Render / Railway
+- O backend FastAPI é empacotado e distribuído como imagem de container Docker baseado em Debian/Slim.
+- O serviço de API roda de forma contínua, expondo a porta `8000`. O ciclo de inicialização executa o script de migração do banco de dados (`scripts/prestart.sh` executando `alembic upgrade head`).
+- A saúde da instância é monitorada continuamente pelo healthcheck no endpoint `GET /api/v1/health`.
+
+### 3. Banco de Dados — Neon PostgreSQL
+- Armazenamento relacional e controle de concorrência com banco **Neon.tech** (PostgreSQL 16 Serverless).
+- A integração usa SQLAlchemy de forma totalmente assíncrona (`asyncpg`). Em produção, a criptografia de transporte é obrigatória utilizando o sufixo encriptado `?ssl=require` na string de conexão.
+
+### 4. Armazenamento de Arquivos — Cloudflare R2
+- Utiliza **Cloudflare R2** para armazenamento durável de currículos em formato PDF de candidatos.
+- A comunicação com o R2 emprega a biblioteca `boto3` sob o protocolo compatível com AWS S3, expondo endpoints privados e autenticação via Access/Secret Keys.
+- Regras de CORS são aplicadas diretamente no bucket para restringir downloads e envios originados unicamente do domínio frontend oficial.
 
 ---
 
-## 📦 Passo 1: Deploy do Banco de Dados (PostgreSQL)
+## 🔑 Credenciais e Redirecionamentos de Autenticação (OAuth)
 
-Recomendamos usar o **Neon.tech** ou o próprio **Railway PostgreSQL**:
-1. Crie um projeto PostgreSQL no Neon ou Railway.
-2. Obtenha a Connection String do banco de dados (ex: `postgresql://user:password@ep-cool-pool-123456.us-east-2.aws.neon.tech/neondb?sslmode=require`).
-3. Anote esta URL; ela será usada na variável `DATABASE_URL` do backend.
+Para habilitar o Onboarding via Google OAuth em produção, as credenciais configuradas no Google Cloud Console devem ser mapeadas da seguinte forma:
+
+- **Origens JavaScript autorizadas:**
+  - `https://seu-dominio-front.vercel.app` (URL do Frontend na Vercel)
+- **URIs de redirecionamento autorizados:**
+  - `https://seu-dominio-front.vercel.app/api/auth/callback/google`
 
 ---
 
-## 🚀 Passo 2: Deploy do Backend (FastAPI) no Railway
+## 📦 Dicionário de Variáveis de Ambiente
 
-1. Acesse o [Railway.app](https://railway.app) e crie uma conta.
-2. Inicie um novo projeto a partir do seu repositório GitHub.
-3. Defina a pasta de origem do build como `backend/` (nas configurações de Root Directory do Railway).
-4. O Railway detectará o `Dockerfile` automaticamente no subdiretório `backend`.
-5. Adicione as seguintes **Variáveis de Ambiente** nas configurações do serviço:
+As seguintes variáveis de ambiente devem estar ativas nas configurações dos respectivos painéis de deploy (Vercel e Render/Railway):
 
-| Variável | Valor Recomendado | Descrição |
+### Variáveis do Frontend (Vercel)
+
+| Variável | Tipo / Formato | Função |
 | --- | --- | --- |
-| `POSTGRES_HOST` | *(Omitido se usar DATABASE_URL direta)* | Host do banco de dados |
-| `DATABASE_URL` | `postgresql+asyncpg://...` | Connection String assíncrona (usar `postgresql+asyncpg://` no início) |
-| `BACKEND_SECRET` | `sua-chave-secreta-jwt-de-producao` | Mesma chave usada no NextAuth |
-| `CORS_ORIGINS` | `["https://seu-dominio-front.vercel.app"]` | JSON array com as origens permitidas (URL do front) |
-| `MINIO_HOST` | `s3.amazonaws.com` | Ou host do seu provedor de S3 (ex: Cloudflare R2 / Backblaze) |
-| `MINIO_ROOT_USER` | `SUA_S3_ACCESS_KEY` | Chave de acesso S3 |
-| `MINIO_ROOT_PASSWORD` | `SUA_S3_SECRET_KEY` | Chave secreta S3 |
-| `MINIO_BUCKET_CURRICULOS` | `britarh-curriculos` | Nome do bucket na nuvem |
-| `MINIO_ENDPOINT_URL` | `https://s3.amazonaws.com` | URL endpoint S3 (se aplicável) |
+| `NEXTAUTH_URL` | URL completa | URL principal de produção do frontend Next.js. |
+| `AUTH_URL` | URL completa | Ponto de entrada de APIs do NextAuth v5 (geralmente idêntico à URL principal). |
+| `AUTH_SECRET` | String (32 caracteres) | Chave secreta de segurança para criptografar cookies de sessão. |
+| `GOOGLE_CLIENT_ID` | String única | ID gerado no Google Cloud Console para o fluxo do Google OAuth. |
+| `GOOGLE_CLIENT_SECRET` | String secreta | Segredo correspondente às credenciais Google OAuth. |
+| `NEXT_PUBLIC_API_URL` | URL completa | Endpoint público da API do backend no Render/Railway (ex: `https://api.onrender.com/api/v1`). |
+| `BACKEND_SECRET` | String | Segredo JWT simétrico correspondente ao configurado no backend. |
 
-6. Nas configurações do serviço no Railway, clique em **Generate Domain** para obter a URL pública do seu backend (ex: `https://britarh-backend-production.up.railway.app`).
+### Variáveis do Backend (Render / Railway)
 
----
-
-## ☁️ Passo 3: Configurar Bucket S3 para os Currículos
-
-Como o MinIO local não persiste seus arquivos após destruir o container em servidores efêmeros, substitua-o por um serviço compatível com S3 gratuito/barato (ex: **Cloudflare R2** ou **Backblaze B2**):
-1. Crie um bucket privado chamado `britarh-curriculos`.
-2. Configure uma política de CORS no bucket para permitir requisições do seu domínio frontend.
-3. Gere chaves de API (Access Key e Secret Key) com permissão de leitura/escrita no bucket.
-
----
-
-## 💻 Passo 4: Deploy do Frontend (Next.js) na Vercel
-
-1. Acesse a [Vercel](https://vercel.com) e conecte com seu GitHub.
-2. Clique em **Add New Project** e selecione o repositório `BritaRH`.
-3. Configure o diretório raiz como `frontend`.
-4. Deixe o Framework Preset como **Next.js**.
-5. Configure as **Environment Variables** nas configurações do projeto:
-
-| Variável | Valor de Produção | Descrição |
+| Variável | Tipo / Formato | Função |
 | --- | --- | --- |
-| `NEXTAUTH_SECRET` | `um-hash-aleatorio-de-32-caracteres` | Chave para assinar sessões JWT (use `openssl rand -base64 32`) |
-| `NEXTAUTH_URL` | `https://seu-dominio-front.vercel.app` | URL de produção do seu frontend Next.js |
-| `NEXT_PUBLIC_API_URL` | `https://seu-backend.railway.app/api/v1` | URL da API gerada pelo Railway no Passo 2 |
-| `GOOGLE_CLIENT_ID` | `xxx.apps.googleusercontent.com` | Client ID do Google Cloud Console |
-| `GOOGLE_CLIENT_SECRET` | `gsp_xxx` | Client Secret do Google Cloud Console |
-
-6. Clique em **Deploy**. A Vercel fornecerá um domínio padrão `.vercel.app` (ex: `https://britarh.vercel.app`).
-
----
-
-## 🔑 Passo 5: Configurar Google OAuth no Google Cloud Console
-
-Para que o login com o Google funcione no novo domínio de produção:
-1. Acesse o [Google Cloud Console](https://console.cloud.google.com/).
-2. Vá em **APIs e Serviços > Tela de permissão OAuth** e verifique se as configurações estão corretas.
-3. Vá em **Credenciais** e edite a credencial do tipo **ID do cliente OAuth 2.0** utilizada no projeto.
-4. Adicione em **Origens JavaScript autorizadas**:
-   - `https://seu-dominio-front.vercel.app` (ex: `https://britarh.vercel.app`)
-5. Adicione em **URIs de redirecionamento autorizados**:
-   - `https://seu-dominio-front.vercel.app/api/auth/callback/google`
-6. Salve as alterações. *(Pode levar alguns minutos para o Google propagar as novas URLs).*
-
----
-
-## 🌐 Passo 6: Apontamento de Domínio Customizado (Opcional)
-
-Se você adquiriu um domínio próprio (ex: `britarh.com.br` no Registro.br):
-
-### No Frontend (Vercel)
-1. Vá em **Settings > Domains** no painel do seu projeto Vercel.
-2. Adicione `britarh.com.br` e `www.britarh.com.br`.
-3. Siga as instruções de DNS fornecidas pela Vercel:
-   - Adicione uma entrada **CNAME** para `www` apontando para `cname.vercel-dns.com`.
-   - Adicione uma entrada **A** para o root `@` apontando para `76.76.21.21`.
-
-### No Backend (Railway)
-1. Vá em **Settings > Custom Domains** no painel do serviço backend no Railway.
-2. Adicione `api.britarh.com.br`.
-3. Configure a entrada **CNAME** correspondente no seu provedor de DNS apontando para o endereço fornecido pelo Railway.
-4. Lembre-se de atualizar a variável `NEXT_PUBLIC_API_URL` no frontend para `https://api.britarh.com.br/api/v1` e a variável `CORS_ORIGINS` no backend para incluir `https://britarh.com.br`.
+| `DATABASE_URL` | URL PostgreSQL assíncrona | String de conexão para o Neon (ex: `postgresql+asyncpg://owner:pwd@host/db?ssl=require`). |
+| `BACKEND_SECRET` | String | Segredo JWT simétrico compartilhado com o frontend Next.js para validação de sessões. |
+| `CORS_ORIGINS` | Array JSON | Origens autorizadas a acessar a API (ex: `["https://seu-dominio.vercel.app"]`). |
+| `MINIO_ENDPOINT_URL` | URL completa | Endpoint S3-compatível da Cloudflare R2 (ex: `https://<id-conta>.r2.cloudflarestorage.com`). |
+| `MINIO_BUCKET_CURRICULOS` | String | Nome do bucket privado de PDFs no Cloudflare R2 (ex: `britarh-curriculos`). |
+| `MINIO_ROOT_USER` | String | ID da chave de acesso S3 pública do Cloudflare R2. |
+| `MINIO_ROOT_PASSWORD` | String | Chave de acesso secreta privada correspondente no Cloudflare R2. |

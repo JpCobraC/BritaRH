@@ -10,8 +10,11 @@ O **BritaRH** é o sistema de recrutamento e seleção da **Britasul**, desenvol
 - **Envio de currículo** — Área para anexar currículo em formato PDF ou DOC/DOCX.
 - **Tema Escuro & Responsividade** — Suporte completo para modo claro e escuro (com botões de alternância rápida na tela de Login, no cabeçalho do Candidato e no menu do Recrutador) e interface adaptada para qualquer tamanho de tela.
 - **Cadastro Completo via Google OAuth** — Fluxo automático de onboarding para que novos candidatos vindos do Google preencham CPF e data de nascimento no primeiro acesso.
+- **Painel do Recrutador (Candidaturas)** — Visualização consolidada de vagas ativas/fechadas, contagem de inscritos e ranking de candidatos ordenados por desempenho no teste técnico.
+- **Contratação de Candidatos** — Ação direta de contratação que automaticamente encerra a vaga, tornando-a invisível para novas candidaturas.
+- **Conformidade LGPD & Exclusão Segura** — Mecanismo de privacidade que, mediante dupla confirmação no painel, remove permanentemente (hard delete) os dados de perfil dos outros concorrentes e apaga seus respectivos arquivos de currículo (PDF) do MinIO/Cloudflare R2 ao finalizar o processo.
 
-## 📋 Fluxo de candidatura
+## 📋 Fluxo de candidatura (Candidato)
 
 1. Candidato acessa a plataforma e autentica-se com Google.
 2. Caso seja um novo usuário, preenche os dados cadastrais obrigatórios faltantes.
@@ -19,7 +22,17 @@ O **BritaRH** é o sistema de recrutamento e seleção da **Britasul**, desenvol
 4. Preenche o **perfil** (passo 1).
 5. Realiza o **teste** da vaga (passo 2).
 6. Envia o **currículo** (passo 3).
-7. Recebe confirmação; RH acessa o painel com candidaturas.
+7. Recebe confirmação por e-mail.
+
+## 📋 Fluxo do Processo Seletivo (Recrutador)
+
+1. Recrutador acessa o Painel de Controle e gerencia vagas.
+2. Divulga oportunidades gerando links de candidatura rápidos via QRCode.
+3. Acessa a aba **Candidaturas** no menu para listar os candidatos de cada vaga.
+4. Realiza download de currículos, revisa perfis e envia e-mails de contato.
+5. Seleciona o candidato ideal e clica em **Contratar**.
+6. Confirma a contratação duas vezes no modal de segurança (dupla confirmação).
+7. O sistema envia e-mail de contratação, fecha a vaga e executa a exclusão segura de todos os demais dados e arquivos do processo.
 
 ## 🛠️ Setup Local (Desenvolvimento)
 

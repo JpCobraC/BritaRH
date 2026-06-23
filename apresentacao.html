@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BritaRH — Documentação Técnica do Projeto</title>
+  <title>BritaRH — Guia de Arquitetura & Deploy Cloud</title>
   
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -39,13 +39,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
 
   <style>
-    /* Transições suaves globais */
     * {
       transition: background-color 0.2s ease, border-color 0.2s ease, text-decoration-color 0.2s ease;
     }
     .custom-scroll::-webkit-scrollbar {
-      height: 5px;
-      width: 5px;
+      height: 6px;
+      width: 6px;
     }
     .custom-scroll::-webkit-scrollbar-track {
       background: transparent;
@@ -68,9 +67,9 @@
   <!-- Header -->
   <header class="sticky top-0 z-50 backdrop-blur-md bg-white/80 dark:bg-background-dark/80 border-b border-slate-200/50 dark:border-slate-800/50 px-6 py-4 lg:px-20 flex items-center justify-between transition-all duration-300">
     <div class="flex items-center gap-3 text-primary">
-      <span class="material-symbols-outlined text-3xl">eco</span>
+      <span class="material-symbols-outlined text-3xl">cloud_done</span>
       <h1 class="text-slate-900 dark:text-white text-xl font-black leading-tight tracking-tight">
-        Brita<span class="text-primary">RH</span>
+        Brita<span class="text-primary">RH</span> <span class="text-xs font-semibold text-slate-450 uppercase tracking-widest ml-1 bg-primary/10 px-2.5 py-1 rounded-md">Deploy Hub</span>
       </h1>
     </div>
     
@@ -102,14 +101,14 @@
     <!-- Hero Banner -->
     <div class="text-center mb-14 animate-fade-in">
       <div class="inline-flex items-center gap-2 bg-green-500/10 text-primary dark:text-green-400 text-xs font-semibold px-4 py-1.5 rounded-full mb-4">
-        <span class="material-symbols-outlined text-sm">terminal</span>
-        Especificação Técnica de Software
+        <span class="material-symbols-outlined text-sm">cloud</span>
+        Guia Técnico de Infraestrutura
       </div>
       <h2 class="text-3xl lg:text-5xl font-black tracking-tight text-slate-900 dark:text-white mb-4">
-        Documentação do Sistema BritaRH
+        Deploy em Produção do BritaRH
       </h2>
       <p class="text-md lg:text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed font-medium">
-        Especificação detalhada das regras de negócio, modelagem de banco de dados, arquitetura limpa de software e infraestrutura de deploy online.
+        Hospedagem do Frontend Next.js na **Vercel**, Banco **Neon PostgreSQL**, Imagem Docker no **DockerHub**, API no **Render** e Uploads no **Cloudflare R2**.
       </p>
     </div>
 
@@ -121,452 +120,412 @@
           id="tab-btn-visao"
           class="tab-btn flex items-center gap-2 px-6 py-3 border-b-2 font-semibold text-sm transition-all border-primary text-primary dark:text-green-400 dark:border-green-400"
         >
-          <span class="material-symbols-outlined text-lg">info</span>
-          Visão Geral & Requisitos
+          <span class="material-symbols-outlined text-lg">widgets</span>
+          Visão Geral & Frontend
         </button>
         <button
-          onclick="switchTab('arquitetura')"
-          id="tab-btn-arquitetura"
+          onclick="switchTab('neon')"
+          id="tab-btn-neon"
           class="tab-btn flex items-center gap-2 px-6 py-3 border-b-2 font-semibold text-sm transition-all border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
         >
-          <span class="material-symbols-outlined text-lg">schema</span>
-          Arquitetura, DB & Segurança
+          <span class="material-symbols-outlined text-lg">database</span>
+          NeonDB (PostgreSQL)
         </button>
         <button
-          onclick="switchTab('fluxos')"
-          id="tab-btn-fluxos"
+          onclick="switchTab('dockerhub')"
+          id="tab-btn-dockerhub"
           class="tab-btn flex items-center gap-2 px-6 py-3 border-b-2 font-semibold text-sm transition-all border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
         >
-          <span class="material-symbols-outlined text-lg">swap_calls</span>
-          Processos e Casos de Uso
+          <span class="material-symbols-outlined text-lg">box</span>
+          Backend & DockerHub
         </button>
         <button
-          onclick="switchTab('deploy')"
-          id="tab-btn-deploy"
+          onclick="switchTab('render')"
+          id="tab-btn-render"
           class="tab-btn flex items-center gap-2 px-6 py-3 border-b-2 font-semibold text-sm transition-all border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
         >
-          <span class="material-symbols-outlined text-lg">cloud_sync</span>
-          Ambientes, Deploy & Domínio
+          <span class="material-symbols-outlined text-lg">server</span>
+          API (Render)
+        </button>
+        <button
+          onclick="switchTab('cloudflare')"
+          id="tab-btn-cloudflare"
+          class="tab-btn flex items-center gap-2 px-6 py-3 border-b-2 font-semibold text-sm transition-all border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
+        >
+          <span class="material-symbols-outlined text-lg">folder_shared</span>
+          Armazenamento (R2)
+        </button>
+        <button
+          onclick="switchTab('variaveis')"
+          id="tab-btn-variaveis"
+          class="tab-btn flex items-center gap-2 px-6 py-3 border-b-2 font-semibold text-sm transition-all border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
+        >
+          <span class="material-symbols-outlined text-lg">key</span>
+          Dicionário de Variáveis
         </button>
       </div>
     </div>
 
-    <!-- TAB CONTENT: Visão Geral -->
+    <!-- TAB 1: Visão Geral e Frontend -->
     <div id="tab-content-visao" class="tab-content space-y-12 animate-fade-in">
       
-      <!-- Key structural specs -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="p-6 bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-2xl flex items-start gap-4 shadow-sm hover:shadow-md transition-all duration-300">
-          <span class="material-symbols-outlined text-primary text-3xl">developer_board</span>
-          <div>
-            <h3 class="font-bold text-slate-900 dark:text-white mb-1">Stack Principal</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-              FastAPI (Python async) no backend e Next.js 14 (App Router) + Tailwind no frontend.
-            </p>
-          </div>
-        </div>
-        <div class="p-6 bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-2xl flex items-start gap-4 shadow-sm hover:shadow-md transition-all duration-300">
-          <span class="material-symbols-outlined text-primary text-3xl">shield_locked</span>
-          <div>
-            <h3 class="font-bold text-slate-900 dark:text-white mb-1">Escopo de Segurança</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-              Autenticação via Google OAuth, proteção CSRF/XSS, JWT validado no backend e conformidade LGPD.
-            </p>
-          </div>
-        </div>
-        <div class="p-6 bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-2xl flex items-start gap-4 shadow-sm hover:shadow-md transition-all duration-300">
-          <span class="material-symbols-outlined text-primary text-3xl">cloud_sync</span>
-          <div>
-            <h3 class="font-bold text-slate-900 dark:text-white mb-1">Armazenamento</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-              Neon PostgreSQL Relacional e Object Storage compatível com AWS S3/MinIO para arquivos.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Problem Context & System Scope -->
-      <div class="bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-3xl p-8 lg:p-10 shadow-sm">
-        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4">Contexto de Software e Domínio do Sistema</h3>
-        <div class="text-slate-650 dark:text-slate-350 text-sm leading-relaxed space-y-4">
-          <p>
-            O **BritaRH** foi projetado para informatizar de ponta a ponta o pipeline de recrutamento e triagem de candidatos. O objetivo é eliminar o armazenamento desnecessário de dados de candidatos e o processamento em lotes não estruturados de currículos. A solução unifica a candidatura, a avaliação teórica e o envio de documentos em um processo linear e assíncrono.
-          </p>
-          <p>
-            O sistema é categorizado como uma aplicação de arquitetura desacoplada (monorepo com front e back isolados). As regras corporativas estipulam que dados sensíveis de candidatos não selecionados devem ser apagados definitivamente de forma segura ao fechar o processo seletivo (princípio do expurgo e minimização de dados da LGPD).
-          </p>
-        </div>
-      </div>
-
-      <!-- Dev Timeline & Versioning milestones -->
-      <div class="space-y-8">
-        <h3 class="text-xl font-bold text-slate-900 dark:text-white text-center font-bold">Fases de Desenvolvimento Técnico</h3>
-        <div class="relative border-l border-slate-200 dark:border-slate-800 ml-4 md:ml-32 space-y-8">
-          
-          <div class="relative pl-8 md:pl-10">
-            <div class="absolute -left-[130px] top-1 hidden md:block text-right w-24 text-xs font-semibold text-slate-450">Fase 1</div>
-            <span class="absolute -left-4 top-0 w-8 h-8 rounded-full bg-white dark:bg-background-cardDark border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-400">
-              <span class="material-symbols-outlined text-[16px]">settings_suggest</span>
-            </span>
-            <div class="bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 p-5 rounded-2xl shadow-sm">
-              <span class="inline-block md:hidden text-[10px] font-bold text-primary mb-1">Fase 1</span>
-              <h4 class="font-bold text-sm text-slate-900 dark:text-white">Arquitetura de Monorepo & Infra Inicial</h4>
-              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Configuração de containers do monorepo (`docker-compose.yml`) com os 4 serviços base (Backend API, Frontend Next.js, PostgreSQL e MinIO Object Storage). Criação do pipeline inicial de CI/CD (GitHub Actions).</p>
-            </div>
-          </div>
-
-          <div class="relative pl-8 md:pl-10">
-            <div class="absolute -left-[130px] top-1 hidden md:block text-right w-24 text-xs font-semibold text-slate-450">Fase 2</div>
-            <span class="absolute -left-4 top-0 w-8 h-8 rounded-full bg-white dark:bg-background-cardDark border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-400">
-              <span class="material-symbols-outlined text-[16px]">database</span>
-            </span>
-            <div class="bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 p-5 rounded-2xl shadow-sm">
-              <span class="inline-block md:hidden text-[10px] font-bold text-primary mb-1">Fase 2</span>
-              <h4 class="font-bold text-sm text-slate-900 dark:text-white">Modelagem e Clean Architecture</h4>
-              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Desenho físico das entidades e relacionamentos no banco de dados Neon PostgreSQL. Estruturação do backend em camadas isoladas para manter lógica pura separada do framework FastAPI.</p>
-            </div>
-          </div>
-
-          <div class="relative pl-8 md:pl-10">
-            <div class="absolute -left-[130px] top-1 hidden md:block text-right w-24 text-xs font-semibold text-slate-450">Fase 3</div>
-            <span class="absolute -left-4 top-0 w-8 h-8 rounded-full bg-white dark:bg-background-cardDark border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-400">
-              <span class="material-symbols-outlined text-[16px]">key</span>
-            </span>
-            <div class="bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 p-5 rounded-2xl shadow-sm">
-              <span class="inline-block md:hidden text-[10px] font-bold text-primary mb-1">Fase 3</span>
-              <h4 class="font-bold text-sm text-slate-900 dark:text-white">Autenticação e Permissões</h4>
-              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Configuração do NextAuth.js v5 no front, login via provedor Google OAuth. Backend adaptado para decodificar e validar cabeçalhos JWT de autenticação baseados em segredo simétrico compartilhado.</p>
-            </div>
-          </div>
-
-          <div class="relative pl-8 md:pl-10">
-            <div class="absolute -left-[130px] top-1 hidden md:block text-right w-24 text-xs font-semibold text-slate-450">Fase 4</div>
-            <span class="absolute -left-4 top-0 w-8 h-8 rounded-full bg-white dark:bg-background-cardDark border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-400">
-              <span class="material-symbols-outlined text-[16px]">upload</span>
-            </span>
-            <div class="bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 p-5 rounded-2xl shadow-sm">
-              <span class="inline-block md:hidden text-[10px] font-bold text-primary mb-1">Fase 4</span>
-              <h4 class="font-bold text-sm text-slate-900 dark:text-white">Wizard, Upload & Testes de Integração</h4>
-              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Criação do Wizard de candidatura de 3 etapas no frontend. Integração assíncrona com MinIO usando URLs pré-assinadas para envio de currículo em PDF. Implementação de suíte de testes com Pytest (cobertura superior a 85%).</p>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-    </div>
-
-    <!-- TAB CONTENT: Arquitetura, DB & Segurança -->
-    <div id="tab-content-arquitetura" class="tab-content hidden space-y-12 animate-fade-in">
-      
-      <!-- Clean Architecture Design -->
+      <!-- Deployment Architecture Flow -->
       <div class="bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-3xl p-8 lg:p-10 shadow-sm space-y-6">
         <h3 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-          <span class="material-symbols-outlined text-primary">layers</span>
-          Clean Architecture no Backend
+          <span class="material-symbols-outlined text-primary">cloud_done</span>
+          Arquitetura e Fluxo de Deploy em Produção
         </h3>
         <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-          O backend segue regras restritas para o fluxo de dados em sentido unidirecional em camadas concêntricas. O objetivo é isolar completamente o núcleo de regras de negócios de frameworks de comunicação e banco de dados:
+          O monorepo **BritaRH** é implantado em nuvem de forma desacoplada para otimizar a escalabilidade, garantir alta disponibilidade e custos mínimos:
         </p>
 
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
-          <div class="p-5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl">
-            <h4 class="font-bold text-primary mb-2">1. Camada de Domínio (Models)</h4>
-            <p class="text-slate-500 dark:text-slate-400">Contém as definições puras das entidades da regra de negócio (ex: User, Job, Question, Application). É totalmente independente de frameworks externos ou bibliotecas do banco de dados.</p>
+        <!-- Dynamic Architecture Diagram (pure CSS/HTML blocks) -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-center text-xs font-semibold py-4">
+          <div class="p-4 bg-slate-100 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col justify-between gap-3 shadow-inner">
+            <span class="text-primary text-[10px] font-black tracking-widest uppercase">FRONTEND</span>
+            <span class="material-symbols-outlined text-3xl text-slate-700 dark:text-slate-350">web</span>
+            <div>
+              <h4 class="text-slate-900 dark:text-white font-bold">Vercel (Next.js 14)</h4>
+              <p class="text-[10px] text-slate-405 font-medium mt-1">Hospedagem estática/RSC</p>
+            </div>
           </div>
-          <div class="p-5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl">
-            <h4 class="font-bold text-primary mb-2">2. Casos de Uso (Services)</h4>
-            <p class="text-slate-500 dark:text-slate-400">Implementa a lógica central de negócio (ex: cálculo de pontuação nos testes, verificação de e-mails em whitelist, e o purgador assíncrono para expurgo definitivo de dados).</p>
+          <div class="p-4 bg-slate-100 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col justify-between gap-3 shadow-inner">
+            <span class="text-primary text-[10px] font-black tracking-widest uppercase">BACKEND API</span>
+            <span class="material-symbols-outlined text-3xl text-slate-700 dark:text-slate-350">server</span>
+            <div>
+              <h4 class="text-slate-900 dark:text-white font-bold">Render (FastAPI)</h4>
+              <p class="text-[10px] text-slate-405 font-medium mt-1">Imagem Docker (DockerHub)</p>
+            </div>
           </div>
-          <div class="p-5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl">
-            <h4 class="font-bold text-primary mb-2">3. Adaptadores (API Routers & Schemas)</h4>
-            <p class="text-slate-500 dark:text-slate-400">Converte dados de entrada e saída. Roteadores FastAPI expõem recursos REST HTTP e Schemas Pydantic v2 validam e tipam as requisições de forma estrita.</p>
+          <div class="p-4 bg-slate-100 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col justify-between gap-3 shadow-inner">
+            <span class="text-primary text-[10px] font-black tracking-widest uppercase">BANCO DE DADOS</span>
+            <span class="material-symbols-outlined text-3xl text-slate-700 dark:text-slate-350">database</span>
+            <div>
+              <h4 class="text-slate-900 dark:text-white font-bold">NeonDB (PostgreSQL)</h4>
+              <p class="text-[10px] text-slate-405 font-medium mt-1">Conexão assíncrona SSL</p>
+            </div>
           </div>
-          <div class="p-5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl">
-            <h4 class="font-bold text-primary mb-2">4. Infraestrutura (Database & Storage)</h4>
-            <p class="text-slate-500 dark:text-slate-400">Conectores físicos. Configurações de conexão assíncrona SQLAlchemy + Alembic para o banco Neon PostgreSQL e provedor S3 MinIO para armazenamento de currículos.</p>
+          <div class="p-4 bg-slate-100 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col justify-between gap-3 shadow-inner">
+            <span class="text-primary text-[10px] font-black tracking-widest uppercase">OBJECT STORAGE</span>
+            <span class="material-symbols-outlined text-3xl text-slate-700 dark:text-slate-350">folder_shared</span>
+            <div>
+              <h4 class="text-slate-900 dark:text-white font-bold">Cloudflare R2</h4>
+              <p class="text-[10px] text-slate-405 font-medium mt-1">Bucket compatível com S3</p>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Relational DB Schema -->
+      <!-- Frontend Overview -->
       <div class="bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-3xl p-8 lg:p-10 shadow-sm space-y-6">
         <h3 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-          <span class="material-symbols-outlined text-primary">table_chart</span>
-          Modelagem Relacional do Banco de Dados
+          <span class="material-symbols-outlined text-primary">widgets</span>
+          Deploy do Frontend (Next.js) na Vercel
         </h3>
         
-        <div class="overflow-x-auto custom-scroll">
-          <table class="w-full text-xs text-left border-collapse min-w-[700px]">
-            <thead>
-              <tr class="border-b border-slate-200 dark:border-slate-800 text-slate-400 uppercase tracking-wider font-semibold">
-                <th class="py-3 px-4">Tabela</th>
-                <th class="py-3 px-4">Campos (Tipagem)</th>
-                <th class="py-3 px-4">Relacionamentos & Chaves</th>
-                <th class="py-3 px-4">Finalidade do Recurso</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-100 dark:divide-slate-900 text-slate-650 dark:text-slate-350">
-              <tr>
-                <td class="py-4 px-4 font-bold text-slate-900 dark:text-white">users</td>
-                <td class="py-4 px-4 font-mono text-[10px] leading-relaxed">
-                  id (UUID, PK)<br>name (VARCHAR)<br>email (VARCHAR, UNIQUE)<br>cpf (VARCHAR)<br>birth_date (DATE)<br>role (VARCHAR)
-                </td>
-                <td class="py-4 px-4">1:N com <code class="font-mono text-[10px]">applications</code></td>
-                <td class="py-4 px-4 leading-relaxed">Persiste os perfis cadastrados no sistema. A coluna <code class="font-mono text-[10px]">role</code> gerencia os papéis (<code class="font-mono text-[10px]">candidate</code> | <code class="font-mono text-[10px]">recruiter</code>).</td>
-              </tr>
-              <tr>
-                <td class="py-4 px-4 font-bold text-slate-900 dark:text-white">jobs</td>
-                <td class="py-4 px-4 font-mono text-[10px] leading-relaxed">
-                  id (UUID, PK)<br>title (VARCHAR)<br>area (VARCHAR)<br>description (TEXT)<br>status (VARCHAR)<br>workplace (VARCHAR)<br>schedule (VARCHAR)
-                </td>
-                <td class="py-4 px-4">1:N com <code class="font-mono text-[10px]">questions</code><br>1:N com <code class="font-mono text-[10px]">applications</code></td>
-                <td class="py-4 px-4 leading-relaxed">Contém as vagas cadastradas. O campo <code class="font-mono text-[10px]">status</code> pode ser <code class="font-mono text-[10px]">draft</code>, <code class="font-mono text-[10px]">open</code> ou <code class="font-mono text-[10px]">closed</code>.</td>
-              </tr>
-              <tr>
-                <td class="py-4 px-4 font-bold text-slate-900 dark:text-white">questions</td>
-                <td class="py-4 px-4 font-mono text-[10px] leading-relaxed">
-                  id (UUID, PK)<br>job_id (UUID, FK)<br>text (TEXT)<br>options (JSON)<br>correct_index (INTEGER)
-                </td>
-                <td class="py-4 px-4">N:1 com <code class="font-mono text-[10px]">jobs</code></td>
-                <td class="py-4 px-4 leading-relaxed">Questões de múltipla escolha associadas à vaga para o teste do candidato. As opções são armazenadas em um campo estruturado JSON.</td>
-              </tr>
-              <tr>
-                <td class="py-4 px-4 font-bold text-slate-900 dark:text-white">applications</td>
-                <td class="py-4 px-4 font-mono text-[10px] leading-relaxed">
-                  id (UUID, PK)<br>job_id (UUID, FK)<br>user_id (UUID, FK)<br>profile_data (JSON)<br>score (INTEGER)<br>resume_url (VARCHAR)<br>created_at (TIMESTAMP)
-                </td>
-                <td class="py-4 px-4">N:1 com <code class="font-mono text-[10px]">jobs</code><br>N:1 com <code class="font-mono text-[10px]">users</code></td>
-                <td class="py-4 px-4 leading-relaxed">Registra as candidaturas. Armazena o score da avaliação técnica do candidato e o link de acesso seguro ao arquivo PDF do currículo.</td>
-              </tr>
-              <tr>
-                <td class="py-4 px-4 font-bold text-slate-900 dark:text-white">recruiter_whitelist</td>
-                <td class="py-4 px-4 font-mono text-[10px] leading-relaxed">
-                  id (UUID, PK)<br>email (VARCHAR, UNIQUE)
-                </td>
-                <td class="py-4 px-4">Nenhum</td>
-                <td class="py-4 px-4 leading-relaxed">Tabela de controle de segurança de e-mails de recrutadores elegíveis para acesso ao painel administrativo.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Security Implementations -->
-      <div class="bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-3xl p-8 lg:p-10 shadow-sm space-y-6">
-        <h3 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-          <span class="material-symbols-outlined text-primary">security</span>
-          Segurança, Sanitização & Proteção de Vulnerabilidades
-        </h3>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-slate-650 dark:text-slate-350">
-          <div class="space-y-3">
-            <h4 class="font-bold text-slate-900 dark:text-white text-sm">Autenticação e Autorização JWT</h4>
+        <div class="text-xs text-slate-650 dark:text-slate-350 leading-relaxed grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="space-y-4">
+            <h4 class="font-bold text-slate-900 dark:text-white text-sm">Estrutura de Hospedagem do Frontend</h4>
             <p>
-              O sistema baseia-se em um modelo JWT simétrico de segredo compartilhado. O cabeçalho da requisição é inspecionado e validado por Middlewares de Dependência do FastAPI (`deps.get_current_user`). Rotas do painel admin de recrutadores exigem adicionalmente a validação da role `recruiter` contida no payload do token.
+              O frontend Next.js 14 foi hospedado diretamente na plataforma **Vercel** por meio da integração contínua vinculada à branch de produção do repositório. O diretório raiz configurado na Vercel é a pasta <code class="font-mono text-[10px]">frontend/</code>. A compilação é realizada automaticamente com otimização estática nativa do Next.js.
             </p>
-            <h4 class="font-bold text-slate-900 dark:text-white text-sm">Prevenção a Injeção de Código (SQLi e XSS)</h4>
             <p>
-              Para mitigar vulnerabilidades clássicas como SQL Injection, a aplicação utiliza parametrização de consultas via ORM SQLAlchemy 2.x com queries assíncronas nativas. No frontend, dados de usuários renderizados dinamicamente passam pelo processo de escape de caracteres nativo do Next.js (RSC).
+              A criptografia das sessões de usuário (cookies HTTP-only) e as integrações de API usam as credenciais de ambiente injetadas no console da Vercel (como os segredos e URLs do NextAuth v5 e do Google Cloud Console).
             </p>
           </div>
-          <div class="space-y-3">
-            <h4 class="font-bold text-slate-900 dark:text-white text-sm">Upload Seguro de Arquivos</h4>
+          <div class="space-y-4">
+            <h4 class="font-bold text-slate-900 dark:text-white text-sm">Controle de Estados e Sessões no Frontend</h4>
             <p>
-              O upload de currículos em formato PDF é realizado diretamente para o storage via URLs pré-assinadas com validade temporal curta (reduzindo a superfície de exposição). O backend valida rigorosamente o tipo MIME (`application/pdf`) e o tamanho máximo do buffer (5MB) para barrar uploads maliciosos.
+              O frontend do Next.js utiliza **React Server Components (RSC)** por padrão. Interações dinâmicas (como o Wizard de candidatura em etapas e os painéis de formulários) são marcadas com a diretiva `"use client"` e orquestradas pelo `ApplicationWizardContext`.
             </p>
-            <h4 class="font-bold text-slate-900 dark:text-white text-sm">Cabeçalhos de Segurança HTTP (Headers)</h4>
             <p>
-              Middleware customizado no backend adiciona cabeçalhos protetivos obrigatórios a todas as respostas:
+              A autenticação do usuário é realizada por meio do **NextAuth.js v5 (auth.ts)** utilizando o provedor externo Google OAuth. Após a validação com o Google, o token de sessão JWT criptografado em cookies é propagado nas chamadas subsequentes à API do backend.
             </p>
-            <ul class="list-disc pl-5 space-y-1 font-mono text-[10px]">
-              <li>X-Content-Type-Options: nosniff</li>
-              <li>X-Frame-Options: DENY (evita clickjacking)</li>
-              <li>Strict-Transport-Security (HSTS forcing HTTPS)</li>
-              <li>X-XSS-Protection: 1; mode=block</li>
-            </ul>
           </div>
         </div>
       </div>
 
     </div>
 
-    <!-- TAB CONTENT: Processos e Casos de Uso -->
-    <div id="tab-content-fluxos" class="tab-content hidden space-y-12 animate-fade-in">
+    <!-- TAB 2: NeonDB (PostgreSQL) -->
+    <div id="tab-content-neon" class="tab-content hidden space-y-12 animate-fade-in">
       
-      <!-- Detailed Candidate Flow -->
       <div class="bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-3xl p-8 lg:p-10 shadow-sm space-y-6">
-        <h3 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-          <span class="material-symbols-outlined text-primary">person</span>
-          Ciclo de Vida da Candidatura (Candidato)
-        </h3>
-        
-        <div class="relative border-l border-slate-200 dark:border-slate-800 ml-4 space-y-6 text-xs text-slate-650 dark:text-slate-350">
-          <div class="relative pl-6">
-            <span class="absolute -left-2.5 top-0.5 w-5 h-5 rounded-full bg-primary text-white text-[10px] font-black flex items-center justify-center">1</span>
-            <strong class="text-slate-900 dark:text-white">Google Login / Onboarding:</strong> Autenticação via conta externa. Caso o usuário não tenha o registro na base interna de dados, a interface aciona um formulário complementar exigindo CPF e data de nascimento.
-          </div>
-          <div class="relative pl-6">
-            <span class="absolute -left-2.5 top-0.5 w-5 h-5 rounded-full bg-primary text-white text-[10px] font-black flex items-center justify-center">2</span>
-            <strong class="text-slate-900 dark:text-white">Seleção de Vaga:</strong> O frontend consome dinamicamente o endpoint `GET /api/v1/jobs` buscando vagas ativas. O candidato seleciona a vaga desejada.
-          </div>
-          <div class="relative pl-6">
-            <span class="absolute -left-2.5 top-0.5 w-5 h-5 rounded-full bg-primary text-white text-[10px] font-black flex items-center justify-center">3</span>
-            <strong class="text-slate-900 dark:text-white">Formulário de Perfil (Wizard - Passo 1):</strong> Cadastro de histórico profissional estruturado. As informações são guardadas localmente no contexto do componente React (`ApplicationWizardContext`) antes da submissão unificada.
-          </div>
-          <div class="relative pl-6">
-            <span class="absolute -left-2.5 top-0.5 w-5 h-5 rounded-full bg-primary text-white text-[10px] font-black flex items-center justify-center">4</span>
-            <strong class="text-slate-900 dark:text-white">Avaliação Técnica (Wizard - Passo 2):</strong> Aplicação do questionário. Ao enviar as respostas, o backend valida as opções marcadas contra as alternativas corretas gravadas na tabela `questions` e calcula a pontuação (`score`).
-          </div>
-          <div class="relative pl-6">
-            <span class="absolute -left-2.5 top-0.5 w-5 h-5 rounded-full bg-primary text-white text-[10px] font-black flex items-center justify-center">5</span>
-            <strong class="text-slate-900 dark:text-white">Upload & Linkagem (Wizard - Passo 3):</strong> O frontend solicita uma URL de upload pré-assinada (`POST /api/v1/storage/presigned-url`). O arquivo PDF do currículo é enviado diretamente do navegador do usuário para o bucket S3 seguro, e a URL final é atrelada à tabela `applications`.
-          </div>
+        <div class="flex items-center gap-3">
+          <span class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+            <span class="material-symbols-outlined">database</span>
+          </span>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white">Banco de Dados Neon PostgreSQL</h3>
         </div>
-      </div>
 
-      <!-- Detailed Recruiter Flow -->
-      <div class="bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-3xl p-8 lg:p-10 shadow-sm space-y-6">
-        <h3 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-          <span class="material-symbols-outlined text-primary">supervisor_account</span>
-          Ciclo Administrativo de Gerenciamento (Recrutador)
-        </h3>
-
-        <div class="relative border-l border-slate-200 dark:border-slate-800 ml-4 space-y-6 text-xs text-slate-650 dark:text-slate-350">
-          <div class="relative pl-6">
-            <span class="absolute -left-2.5 top-0.5 w-5 h-5 rounded-full bg-primary text-white text-[10px] font-black flex items-center justify-center">1</span>
-            <strong class="text-slate-900 dark:text-white">Validação de Credencial Admin:</strong> O sistema inspeciona se o e-mail do recrutador existe na tabela `recruiter_whitelist`. Caso sim, o papel de usuário logado assume o perfil administrativo de `recruiter`.
-          </div>
-          <div class="relative pl-6">
-            <span class="absolute -left-2.5 top-0.5 w-5 h-5 rounded-full bg-primary text-white text-[10px] font-black flex items-center justify-center">2</span>
-            <strong class="text-slate-900 dark:text-white">Construção de Vagas e Testes:</strong> Pelo painel administrativo, o recrutador insere título, requisitos e as questões de múltipla escolha. O backend cria registros sincronizados em `jobs` e `questions` em uma transação ACID atômica.
-          </div>
-          <div class="relative pl-6">
-            <span class="absolute -left-2.5 top-0.5 w-5 h-5 rounded-full bg-primary text-white text-[10px] font-black flex items-center justify-center">3</span>
-            <strong class="text-slate-900 dark:text-white">Avaliação dos Candidatos:</strong> O recrutador acessa o painel de candidaturas por vaga. O sistema consome `GET /api/v1/recruiter/jobs/{id}/applications`, que retorna a lista de candidatos classificados de forma decrescente pela pontuação obtida na avaliação técnica.
-          </div>
-          <div class="relative pl-6">
-            <span class="absolute -left-2.5 top-0.5 w-5 h-5 rounded-full bg-primary text-white text-[10px] font-black flex items-center justify-center">4</span>
-            <strong class="text-slate-900 dark:text-white">Homologação da Contratação e Expurgo (Purge):</strong> No encerramento da vaga, o backend executa um purgador de banco (`DELETE` em cascata) que remove permanentemente (Hard-delete) todos os registros associados à vaga (candidatos cadastrados e dados de aplicações) para garantir a segurança dos dados pessoais.
+        <div class="text-xs text-slate-650 dark:text-slate-350 leading-relaxed space-y-4">
+          <p>
+            Para armazenamento relacional dos dados, o sistema utiliza o **Neon PostgreSQL**. O Neon é um banco de dados relacional serverless baseado em nuvem, otimizado para cargas variáveis e com suporte de recursos como branching de dados para testes.
+          </p>
+          
+          <h4 class="font-bold text-slate-900 dark:text-white text-sm mt-6">Conexão Segura em Produção</h4>
+          <p>
+            A integração do backend Python FastAPI com o banco de dados é feita de maneira assíncrona utilizando as capacidades do framework **SQLAlchemy 2.x** em conjunto com o driver assíncrono **asyncpg**.
+          </p>
+          
+          <div class="p-4 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 space-y-2">
+            <strong class="text-slate-900 dark:text-white block">Formato da URL de Conexão:</strong>
+            <code class="block font-mono text-[10px] text-primary break-all bg-white dark:bg-slate-950 p-3 rounded-lg border border-slate-200 dark:border-slate-800">
+              postgresql+asyncpg://neondb_owner:npg_iY6cXD3UOhZB@ep-mute-frog-ac62mp15-pooler.sa-east-1.aws.neon.tech/neondb?ssl=require
+            </code>
+            <p class="text-[10px] text-slate-500 mt-2">
+              A diretiva <code class="font-mono text-[10px]">?ssl=require</code> força o cliente de banco de dados a exigir túnel encriptado SSL, evitando ataques de Man-in-the-Middle e interceptação de dados sensíveis na comunicação entre a API FastAPI e o banco.
+            </p>
           </div>
         </div>
       </div>
 
     </div>
 
-    <!-- TAB CONTENT: Deploy -->
-    <div id="tab-content-deploy" class="tab-content hidden space-y-12 animate-fade-in">
+    <!-- TAB 3: Backend & DockerHub -->
+    <div id="tab-content-dockerhub" class="tab-content hidden space-y-12 animate-fade-in">
       
-      <!-- Deployment Infrastructure layout -->
       <div class="bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-3xl p-8 lg:p-10 shadow-sm space-y-6">
-        <h3 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-          <span class="material-symbols-outlined text-primary">cloud</span>
-          Configuração de Hospedagem em Produção
-        </h3>
-        <p class="text-xs text-slate-500 dark:text-slate-450 leading-relaxed">
-          A implantação do BritaRH na nuvem foi estruturada de forma distribuída para garantir escalabilidade e otimização de custos:
-        </p>
+        <div class="flex items-center gap-3">
+          <span class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+            <span class="material-symbols-outlined">box</span>
+          </span>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white">Construção de Imagem Docker & DockerHub</h3>
+        </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-slate-650 dark:text-slate-350">
-          <div class="space-y-3">
-            <h4 class="font-bold text-slate-900 dark:text-white text-sm">Hospedagem do Frontend (Next.js)</h4>
+        <div class="text-xs text-slate-650 dark:text-slate-350 leading-relaxed grid grid-cols-1 md:grid-cols-2 gap-8">
+          
+          <div class="space-y-4">
+            <h4 class="font-bold text-slate-900 dark:text-white text-sm">Construção e Versionamento no DockerHub</h4>
             <p>
-              O frontend está publicado na **Vercel** com integração contínua (CI/CD) ativada diretamente pela branch `main`. A plataforma garante certificados SSL automatizados e distribuição global através de redes de entrega de conteúdo edge.
+              O backend FastAPI foi empacotado em um container isolado de produção. A imagem Docker foi compilada a partir do Dockerfile na raiz do backend, recebendo uma tag semântica de versão, e enviada ao registro público do **DockerHub**. Isso permite que o Render puxe a imagem pronta sem necessitar de build local.
             </p>
-            <h4 class="font-bold text-slate-900 dark:text-white text-sm">Hospedagem do Backend (FastAPI)</h4>
+            <div class="bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 space-y-3">
+              <strong class="text-slate-900 dark:text-white block">Comandos de Build e Versionamento Executados:</strong>
+              <pre class="font-mono text-[10px] text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-950 p-3 rounded border border-slate-200 dark:border-slate-800 overflow-x-auto">
+# Build da imagem baseada no Dockerfile
+docker build -t seu-usuario/britarh-backend:1.0.0 ./backend
+
+# Envio do container pronto para o repositório DockerHub
+docker push seu-usuario/britarh-backend:1.0.0</pre>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <h4 class="font-bold text-slate-900 dark:text-white text-sm">Verificação de Conformidade do Código</h4>
+            <div class="space-y-3">
+              <div class="p-3 bg-green-500/5 border-l-4 border-primary rounded-r-lg">
+                <strong class="text-slate-900 dark:text-white block mb-0.5">Dockerfile: Verificado</strong>
+                <p class="text-[11px] text-slate-550 leading-normal">
+                  Utiliza a imagem de base leve <code class="font-mono text-[10px]">python:3.12-slim</code> para reduzir a pegada em disco e a superfície de ataque. Instala dependências de compiladores gcc e cabeçalhos de postgres, limpando em seguida os arquivos temporários do apt para otimização da imagem.
+                </p>
+              </div>
+              <div class="p-3 bg-green-500/5 border-l-4 border-primary rounded-r-lg">
+                <strong class="text-slate-900 dark:text-white block mb-0.5">Prestart e Migrações: Verificado</strong>
+                <p class="text-[11px] text-slate-550 leading-normal">
+                  O container utiliza o entrypoint de shell script <code class="font-mono text-[10px]">scripts/prestart.sh</code>. Ele é acionado antes de iniciar o uvicorn para executar o comando <code class="font-mono text-[10px]">alembic upgrade head</code>, garantindo que o NeonDB esteja sincronizado com o último schema.
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TAB 4: API (Render) -->
+    <div id="tab-content-render" class="tab-content hidden space-y-12 animate-fade-in">
+      
+      <div class="bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-3xl p-8 lg:p-10 shadow-sm space-y-6">
+        <div class="flex items-center gap-3">
+          <span class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+            <span class="material-symbols-outlined">dns</span>
+          </span>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white">Deploy do Backend no Render via Imagem Docker</h3>
+        </div>
+
+        <div class="text-xs text-slate-650 dark:text-slate-350 leading-relaxed grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="space-y-4">
+            <h4 class="font-bold text-slate-900 dark:text-white text-sm">Hospedagem e Execução da API no Render</h4>
             <p>
-              A API do backend está implantada no **Railway.app** ou **Render.com**. O deploy é acionado automaticamente através da análise do arquivo `Dockerfile` localizado no diretório `/backend`, encapsulando o servidor ASGI Uvicorn em ambiente Linux isolado.
+              A API do backend foi implantada no **Render** configurada como um **Web Service** baseado em imagem de container externa. O Render puxa a imagem compilada diretamente do repositório DockerHub (<code class="font-mono text-[10px]">docker.io/seu-usuario/britarh-backend:1.0.0</code>) e inicializa o container de forma automática em sua infraestrutura Linux.
+            </p>
+            <p>
+              A orquestração do Render cuida do ciclo de vida do container: injeta as 7 variáveis de ambiente necessárias (como a URL do banco NeonDB e segredos de JWT) e direciona as chamadas HTTP recebidas na URL pública para a porta interna exposta <code class="font-mono text-[10px]">8000</code>.
             </p>
           </div>
-          <div class="space-y-3">
-            <h4 class="font-bold text-slate-900 dark:text-white text-sm">Banco de Dados Neon PostgreSQL (Produção)</h4>
+          
+          <div class="space-y-4">
+            <h4 class="font-bold text-slate-900 dark:text-white text-sm">Configuração de Portas e Healthcheck</h4>
             <p>
-              Hospedado no banco de dados relacional serverless **Neon.tech**. A string de conexão assíncrona utiliza o driver `asyncpg` e exige a diretiva de segurança `ssl=require` para encriptar toda a comunicação em trânsito.
+              Por padrão, o Dockerfile expõe a porta `8000`. O Render detectará automaticamente a porta exposta pelo container ou escutará a porta informada na variável `PORT`.
             </p>
-            <h4 class="font-bold text-slate-900 dark:text-white text-sm">Object Storage para Arquivos (Currículos)</h4>
             <p>
-              O sistema local utiliza o MinIO. Em ambiente de produção, este é substituído por um bucket compatível com S3 (ex: **Cloudflare R2** ou **Backblaze B2**), garantindo custos mínimos de armazenamento e alta durabilidade física.
+              O Render realiza verificações de integridade automáticas (healthchecks). A API do backend BritaRH conta com a rota dedicada `GET /api/v1/health` que responde com status HTTP `200 OK` assim que o serviço está no ar e conectado de forma bem-sucedida ao NeonDB.
             </p>
+            <div class="p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl flex items-start gap-3">
+              <span class="material-symbols-outlined text-primary text-xl">favorite</span>
+              <div>
+                <strong class="text-slate-900 dark:text-white text-xs block">Health Check Endpoint:</strong>
+                <code class="font-mono text-[10px] break-all bg-white dark:bg-slate-950 p-1.5 rounded border border-slate-200 dark:border-slate-800 mt-1 block">/api/v1/health</code>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Environment Variables -->
+    </div>
+
+    <!-- TAB 5: Cloudflare R2 Storage -->
+    <div id="tab-content-cloudflare" class="tab-content hidden space-y-12 animate-fade-in">
+      
+      <div class="bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-3xl p-8 lg:p-10 shadow-sm space-y-6">
+        <div class="flex items-center gap-3">
+          <span class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+            <span class="material-symbols-outlined">folder_shared</span>
+          </span>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white">Armazenamento de PDF com Cloudflare R2</h3>
+        </div>
+
+        <div class="text-xs text-slate-650 dark:text-slate-350 leading-relaxed grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="space-y-4">
+            <h4 class="font-bold text-slate-900 dark:text-white text-sm">Mapeamento de Armazenamento no Cloudflare R2</h4>
+            <p>
+              Para o armazenamento persistente dos arquivos de currículos recebidos, o sistema utiliza o **Cloudflare R2** configurado com protocolo compatível com AWS S3. Foi criado um bucket privado denominado <code class="font-mono text-[10px]">britarh-curriculos</code>.
+            </p>
+            <p>
+              A comunicação com o R2 é validada usando chaves de API S3 privadas do Cloudflare (Access Key ID e Secret Access Key) que concedem acesso restrito de escrita e leitura de objetos. Para permitir a visualização correta do PDF na interface, foram injetadas regras de CORS no bucket R2 liberando chamadas originadas do domínio do frontend Vercel.
+            </p>
+          </div>
+
+          <div class="space-y-4">
+            <h4 class="font-bold text-slate-900 dark:text-white text-sm">Verificação do Código de Integração</h4>
+            <div class="p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl space-y-3">
+              <strong class="text-slate-900 dark:text-white text-xs block">Compatibilidade do StorageService</strong>
+              <p class="text-[11px] text-slate-500">
+                A classe <code class="font-mono text-[10px]">StorageService</code> (escrita no arquivo <code class="font-mono text-[10px]">backend/app/services/storage.py</code>) utiliza a biblioteca oficial da AWS <code class="font-mono text-[10px]">boto3</code>.
+              </p>
+              <p class="text-[11px] text-slate-500">
+                Como o Cloudflare R2 possui compatibilidade nativa com o protocolo S3, a integração funciona de forma nativa apenas configurando o parâmetro <code class="font-mono text-[10px]">endpoint_url</code> apontando para a R2 do Cloudflare.
+              </p>
+              <div class="p-2.5 bg-white dark:bg-slate-950 rounded border border-slate-200 dark:border-slate-800">
+                <div class="text-[9px] font-black text-slate-400 mb-1">MAPPING DE ENDPOINT CLOUDFLARE R2</div>
+                <code class="text-[10px] font-mono text-primary break-all select-all font-mono">https://&lt;cloudflare-account-id&gt;.r2.cloudflarestorage.com</code>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TAB 6: Dicionário de Variáveis -->
+    <div id="tab-content-variaveis" class="tab-content hidden space-y-12 animate-fade-in">
+      
       <div class="bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 rounded-3xl p-8 lg:p-10 shadow-sm space-y-6">
         <h3 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
           <span class="material-symbols-outlined text-primary">key</span>
-          Dicionário de Variáveis de Ambiente (Produção)
+          Variáveis de Ambiente de Produção (Vercel e Render)
         </h3>
-
+        
         <div class="overflow-x-auto custom-scroll">
-          <table class="w-full text-xs text-left border-collapse min-w-[700px]">
+          <table class="w-full text-xs text-left border-collapse min-w-[750px]">
             <thead>
               <tr class="border-b border-slate-200 dark:border-slate-800 text-slate-400 uppercase tracking-wider font-semibold">
-                <th class="py-2.5 px-4">Variável</th>
-                <th class="py-2.5 px-4">Serviço Origem</th>
-                <th class="py-2.5 px-4">Propósito Técnico</th>
-                <th class="py-2.5 px-4">Exemplo de Valor</th>
+                <th class="py-3 px-4">Serviço</th>
+                <th class="py-3 px-4">Variável de Ambiente</th>
+                <th class="py-3 px-4">Tipo/Destino</th>
+                <th class="py-3 px-4">Finalidade do Setup Técnico</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-100 dark:divide-slate-900 text-slate-650 dark:text-slate-350">
               <tr>
-                <td class="py-3 px-4 font-mono font-bold text-slate-900 dark:text-white text-[10px]">NEXT_PUBLIC_API_URL</td>
-                <td class="py-3 px-4">Frontend (Next.js)</td>
-                <td class="py-3 px-4">Aponta o frontend para a URL pública onde a API FastAPI do backend está escutando.</td>
-                <td class="py-3 px-4 font-mono text-[10px]">https://api.britarh.com/api/v1</td>
+                <td class="py-4 px-4 font-bold text-slate-900 dark:text-white">Frontend (Vercel)</td>
+                <td class="py-4 px-4 font-mono text-[10px] text-primary">NEXTAUTH_URL</td>
+                <td class="py-4 px-4">Base URL</td>
+                <td class="py-4 px-4 leading-normal">URL pública final da interface do frontend hospedada na Vercel (ex: `https://britarh.vercel.app`).</td>
               </tr>
               <tr>
-                <td class="py-3 px-4 font-mono font-bold text-slate-900 dark:text-white text-[10px]">NEXTAUTH_SECRET</td>
-                <td class="py-3 px-4">Frontend (Next.js)</td>
-                <td class="py-3 px-4">Hash simétrica usada para encriptar os cookies de sessão JWT do NextAuth.js.</td>
-                <td class="py-3 px-4 font-mono text-[10px]">um-hash-aleatorio-forte-base64</td>
+                <td class="py-4 px-4 font-bold text-slate-900 dark:text-white">Frontend (Vercel)</td>
+                <td class="py-4 px-4 font-mono text-[10px] text-primary">AUTH_URL</td>
+                <td class="py-4 px-4">NextAuth URL</td>
+                <td class="py-4 px-4 leading-normal">URL base de autenticação do NextAuth v5 (equivalente ao `NEXTAUTH_URL` em alguns ambientes).</td>
               </tr>
               <tr>
-                <td class="py-3 px-4 font-mono font-bold text-slate-900 dark:text-white text-[10px]">DATABASE_URL</td>
-                <td class="py-3 px-4">Backend (FastAPI)</td>
-                <td class="py-3 px-4">URL de conexão assíncrona para o banco Neon PostgreSQL com driver asyncpg.</td>
-                <td class="py-3 px-4 font-mono text-[10px] break-all">postgresql+asyncpg://user:pass@host/db?ssl=require</td>
+                <td class="py-4 px-4 font-bold text-slate-900 dark:text-white">Frontend (Vercel)</td>
+                <td class="py-4 px-4 font-mono text-[10px] text-primary">GOOGLE_CLIENT_ID</td>
+                <td class="py-4 px-4">Google API ID</td>
+                <td class="py-4 px-4 leading-normal">ID de cliente gerado na aba Credenciais do Google Cloud Console para o fluxo do Google OAuth.</td>
               </tr>
               <tr>
-                <td class="py-3 px-4 font-mono font-bold text-slate-900 dark:text-white text-[10px]">CORS_ORIGINS</td>
-                <td class="py-3 px-4">Backend (FastAPI)</td>
-                <td class="py-3 px-4">Array JSON de origens permitidas para aceitar chamadas assíncronas do frontend.</td>
-                <td class="py-3 px-4 font-mono text-[10px]">["https://britarh.vercel.app"]</td>
+                <td class="py-4 px-4 font-bold text-slate-900 dark:text-white">Frontend (Vercel)</td>
+                <td class="py-4 px-4 font-mono text-[10px] text-primary">GOOGLE_CLIENT_SECRET</td>
+                <td class="py-4 px-4">Google API Secret</td>
+                <td class="py-4 px-4 leading-normal">Segredo de cliente gerado para o Google OAuth correspondente ao Client ID configurado.</td>
               </tr>
               <tr>
-                <td class="py-3 px-4 font-mono font-bold text-slate-900 dark:text-white text-[10px]">MINIO_ENDPOINT_URL</td>
-                <td class="py-3 px-4">Backend (FastAPI)</td>
-                <td class="py-3 px-4">URL base para o driver da API S3 compatível interagir com o Object Storage na nuvem.</td>
-                <td class="py-3 px-4 font-mono text-[10px]">https://s3.us-east-1.amazonaws.com</td>
+                <td class="py-4 px-4 font-bold text-slate-900 dark:text-white">Frontend (Vercel)</td>
+                <td class="py-4 px-4 font-mono text-[10px] text-primary">BACKEND_SECRET</td>
+                <td class="py-4 px-4">JWT Shared Secret</td>
+                <td class="py-4 px-4 leading-normal">Segredo simétrico compartilhado que deve coincidir com o backend para correta verificação das assinaturas JWT.</td>
+              </tr>
+              <tr>
+                <td class="py-4 px-4 font-bold text-slate-900 dark:text-white">Frontend (Vercel)</td>
+                <td class="py-4 px-4 font-mono text-[10px] text-primary">AUTH_SECRET</td>
+                <td class="py-4 px-4">Session Hash</td>
+                <td class="py-4 px-4 leading-normal">Hash de segurança usado pelo NextAuth.js v5 para criptografar cookies e sessões de usuários.</td>
+              </tr>
+              <tr>
+                <td class="py-4 px-4 font-bold text-slate-900 dark:text-white">Frontend (Vercel)</td>
+                <td class="py-4 px-4 font-mono text-[10px] text-primary">NEXT_PUBLIC_API_URL</td>
+                <td class="py-4 px-4">API Endpoint</td>
+                <td class="py-4 px-4 leading-normal">URL pública da API do backend hospedada no Render (ex: `https://britarh-backend-production.up.railway.app/api/v1`).</td>
+              </tr>
+              <tr>
+                <td class="py-4 px-4 font-bold text-slate-900 dark:text-white">Backend (Render)</td>
+                <td class="py-4 px-4 font-mono text-[10px] text-primary">BACKEND_SECRET</td>
+                <td class="py-4 px-4">JWT Shared Secret</td>
+                <td class="py-4 px-4 leading-normal">Segredo simétrico compartilhado entre frontend e backend para validar as assinaturas dos tokens de autenticação.</td>
+              </tr>
+              <tr>
+                <td class="py-4 px-4 font-bold text-slate-900 dark:text-white">Backend (Render)</td>
+                <td class="py-4 px-4 font-mono text-[10px] text-primary">CORS_ORIGINS</td>
+                <td class="py-4 px-4">JSON Array</td>
+                <td class="py-4 px-4 leading-normal">Array JSON contendo as origens de frontend autorizadas a realizar chamadas (ex: `["https://britarh.vercel.app"]`).</td>
+              </tr>
+              <tr>
+                <td class="py-4 px-4 font-bold text-slate-900 dark:text-white">Backend (Render)</td>
+                <td class="py-4 px-4 font-mono text-[10px] text-primary">DATABASE_URL</td>
+                <td class="py-4 px-4">Neon Connection URL</td>
+                <td class="py-4 px-4 leading-normal">URL de conexão assíncrona com o NeonDB utilizando o driver `asyncpg` e diretiva de SSL (ex: `postgresql+asyncpg://.../neondb?ssl=require`).</td>
+              </tr>
+              <tr>
+                <td class="py-4 px-4 font-bold text-slate-900 dark:text-white">Backend (Render)</td>
+                <td class="py-4 px-4 font-mono text-[10px] text-primary">MINIO_BUCKET_CURRICULOS</td>
+                <td class="py-4 px-4">R2 Bucket Name</td>
+                <td class="py-4 px-4 leading-normal">Nome do bucket criado no Cloudflare R2 para guardar os PDFs (ex: `britarh-curriculos`).</td>
+              </tr>
+              <tr>
+                <td class="py-4 px-4 font-bold text-slate-900 dark:text-white">Backend (Render)</td>
+                <td class="py-4 px-4 font-mono text-[10px] text-primary">MINIO_ENDPOINT_URL</td>
+                <td class="py-4 px-4">R2 API Endpoint</td>
+                <td class="py-4 px-4 leading-normal">Endpoint compatível com S3 do Cloudflare R2 (ex: `https://&lt;account-id&gt;.r2.cloudflarestorage.com`).</td>
+              </tr>
+              <tr>
+                <td class="py-4 px-4 font-bold text-slate-900 dark:text-white">Backend (Render)</td>
+                <td class="py-4 px-4 font-mono text-[10px] text-primary">MINIO_ROOT_USER</td>
+                <td class="py-4 px-4">R2 Access Key ID</td>
+                <td class="py-4 px-4 leading-normal">Chave pública de API do token S3 gerado na aba R2 do console da Cloudflare.</td>
+              </tr>
+              <tr>
+                <td class="py-4 px-4 font-bold text-slate-900 dark:text-white">Backend (Render)</td>
+                <td class="py-4 px-4 font-mono text-[10px] text-primary">MINIO_ROOT_PASSWORD</td>
+                <td class="py-4 px-4">R2 Secret Access Key</td>
+                <td class="py-4 px-4 leading-normal">Chave secreta privada de API do token S3 gerado na aba R2 do console da Cloudflare.</td>
               </tr>
             </tbody>
           </table>
-        </div>
-      </div>
-
-      <!-- Live URLs & Swagger -->
-      <div class="p-8 bg-gradient-to-br from-green-500/10 to-emerald-500/5 border border-green-500/10 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-6">
-        <div>
-          <h4 class="font-bold text-slate-900 dark:text-white text-base">URLs Oficiais do Sistema</h4>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Ambientes ativos para testes e consumo imediato via navegador.</p>
-        </div>
-        <div class="flex flex-col sm:flex-row gap-3">
-          <a 
-            href="https://britarh.vercel.app" 
-            target="_blank" 
-            class="px-5 py-2.5 bg-primary hover:bg-primary-hover text-white font-bold rounded-xl text-xs inline-flex items-center gap-1.5 justify-center shadow-md shadow-green-600/10"
-          >
-            <span class="material-symbols-outlined text-[16px]">open_in_new</span>
-            Acessar Frontend Online
-          </a>
-          <a 
-            href="https://britarh-backend-production.up.railway.app/docs" 
-            target="_blank" 
-            class="px-5 py-2.5 bg-white dark:bg-background-cardDark text-slate-700 dark:text-slate-350 font-bold rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900 text-xs inline-flex items-center gap-1.5 justify-center"
-          >
-            <span class="material-symbols-outlined text-[16px]">api</span>
-            Ver Swagger da API
-          </a>
         </div>
       </div>
 
@@ -577,32 +536,27 @@
   <!-- Footer -->
   <footer class="py-6 text-center text-slate-450 dark:text-slate-500 text-xs border-t border-slate-200/50 dark:border-slate-800/50 transition-colors duration-200">
     <div>
-      © 2026 BritaRH. Documentação Técnica e Especificação de Arquitetura.
+      © 2026 BritaRH. Manual Técnico de Deploy e Arquitetura Cloud.
     </div>
   </footer>
 
   <!-- Script for Tab Switching & Theme Toggle -->
   <script>
-    // Tab switching logic
     function switchTab(tabId) {
-      // Hide all contents
       const contents = document.querySelectorAll('.tab-content');
       contents.forEach(content => content.classList.add('hidden'));
 
-      // Remove active classes from buttons
       const buttons = document.querySelectorAll('.tab-btn');
       buttons.forEach(btn => {
         btn.classList.remove('border-primary', 'text-primary', 'dark:text-green-400', 'dark:border-green-400');
         btn.classList.add('border-transparent', 'text-slate-500');
       });
 
-      // Show current content
       const activeContent = document.getElementById(`tab-content-${tabId}`);
       if (activeContent) {
         activeContent.classList.remove('hidden');
       }
 
-      // Add active classes to selected button
       const activeBtn = document.getElementById(`tab-btn-${tabId}`);
       if (activeBtn) {
         activeBtn.classList.remove('border-transparent', 'text-slate-500');
@@ -610,11 +564,9 @@
       }
     }
 
-    // Theme toggle logic
     const themeToggleBtn = document.getElementById('theme-toggle');
     const themeIcon = document.getElementById('theme-icon');
 
-    // On page load, set the initial theme
     if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
       document.documentElement.classList.add('dark');
       themeIcon.textContent = 'light_mode';
