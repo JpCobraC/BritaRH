@@ -179,7 +179,7 @@
           <div>
             <h3 class="font-bold text-slate-900 dark:text-white mb-1">Armazenamento</h3>
             <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-              PostgreSQL 16 Relacional e Object Storage compatível com AWS S3/MinIO para arquivos.
+              Neon PostgreSQL Relacional e Object Storage compatível com AWS S3/MinIO para arquivos.
             </p>
           </div>
         </div>
@@ -223,7 +223,7 @@
             <div class="bg-white dark:bg-background-cardDark border border-slate-200/60 dark:border-slate-800/60 p-5 rounded-2xl shadow-sm">
               <span class="inline-block md:hidden text-[10px] font-bold text-primary mb-1">Fase 2</span>
               <h4 class="font-bold text-sm text-slate-900 dark:text-white">Modelagem e Clean Architecture</h4>
-              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Desenho físico das entidades e relacionamentos no PostgreSQL. Estruturação do backend em camadas isoladas para manter lógica pura separada do framework FastAPI.</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Desenho físico das entidades e relacionamentos no banco de dados Neon PostgreSQL. Estruturação do backend em camadas isoladas para manter lógica pura separada do framework FastAPI.</p>
             </div>
           </div>
 
@@ -284,7 +284,7 @@
           </div>
           <div class="p-5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl">
             <h4 class="font-bold text-primary mb-2">4. Infraestrutura (Database & Storage)</h4>
-            <p class="text-slate-500 dark:text-slate-400">Conectores físicos. Configurações de conexão assíncrona SQLAlchemy + Alembic para o PostgreSQL e provedor S3 MinIO para armazenamento de currículos.</p>
+            <p class="text-slate-500 dark:text-slate-400">Conectores físicos. Configurações de conexão assíncrona SQLAlchemy + Alembic para o banco Neon PostgreSQL e provedor S3 MinIO para armazenamento de currículos.</p>
           </div>
         </div>
       </div>
@@ -479,9 +479,9 @@
             </p>
           </div>
           <div class="space-y-3">
-            <h4 class="font-bold text-slate-900 dark:text-white text-sm">Banco de Dados PostgreSQL de Produção</h4>
+            <h4 class="font-bold text-slate-900 dark:text-white text-sm">Banco de Dados Neon PostgreSQL (Produção)</h4>
             <p>
-              Hospedado no banco relacional serverless **Neon.tech** ou no add-on gerenciado do **Railway**. A string de conexão contém a diretiva `sslmode=require` para garantir a criptografia em trânsito de todos os dados do banco de dados.
+              Hospedado no banco de dados relacional serverless **Neon.tech**. A string de conexão assíncrona utiliza o driver `asyncpg` e exige a diretiva de segurança `ssl=require` para encriptar toda a comunicação em trânsito.
             </p>
             <h4 class="font-bold text-slate-900 dark:text-white text-sm">Object Storage para Arquivos (Currículos)</h4>
             <p>
@@ -524,8 +524,8 @@
               <tr>
                 <td class="py-3 px-4 font-mono font-bold text-slate-900 dark:text-white text-[10px]">DATABASE_URL</td>
                 <td class="py-3 px-4">Backend (FastAPI)</td>
-                <td class="py-3 px-4">URL de conexão assíncrona com suporte para SQLAlchemy contendo a diretiva +asyncpg.</td>
-                <td class="py-3 px-4 font-mono text-[10px] break-all">postgresql+asyncpg://user:pass@host/db?sslmode=require</td>
+                <td class="py-3 px-4">URL de conexão assíncrona para o banco Neon PostgreSQL com driver asyncpg.</td>
+                <td class="py-3 px-4 font-mono text-[10px] break-all">postgresql+asyncpg://user:pass@host/db?ssl=require</td>
               </tr>
               <tr>
                 <td class="py-3 px-4 font-mono font-bold text-slate-900 dark:text-white text-[10px]">CORS_ORIGINS</td>
