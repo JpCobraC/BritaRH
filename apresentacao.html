@@ -271,7 +271,7 @@
           <div class="p-4 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 space-y-2">
             <strong class="text-slate-900 dark:text-white block">Formato da URL de Conexão:</strong>
             <code class="block font-mono text-[10px] text-primary break-all bg-white dark:bg-slate-950 p-3 rounded-lg border border-slate-200 dark:border-slate-800">
-              postgresql+asyncpg://neondb_owner:npg_iY6cXD3UOhZB@ep-mute-frog-ac62mp15-pooler.sa-east-1.aws.neon.tech/neondb?ssl=require
+              postgresql+asyncpg://&lt;usuario&gt;:&lt;senha&gt;@&lt;host&gt;/neondb?ssl=require
             </code>
             <p class="text-[10px] text-slate-500 mt-2">
               A diretiva <code class="font-mono text-[10px]">?ssl=require</code> força o cliente de banco de dados a exigir túnel encriptado SSL, evitando ataques de Man-in-the-Middle e interceptação de dados sensíveis na comunicação entre a API FastAPI e o banco.
